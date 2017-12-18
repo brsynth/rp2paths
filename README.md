@@ -47,7 +47,7 @@ python RP2paths.py all examples/naringenin/rp2-results.csv --outdir examples/nar
 ### How to cite RP2paths?
 Please cite:
 
-Delépine B, Duigou T, Carbonell P, Faulon JL. RetroPath2.0: A retrosynthesis workflow for metabolic engineers. bioRxiv, 141721, 2017. | doi: https://doi.org/10.1101/141721
+Delépine B, Duigou T, Carbonell P, Faulon JL. RetroPath2.0: A retrosynthesis workflow for metabolic engineers. Metabolic Engineering (2017). DOI: https://doi.org/10.1016/j.ymben.2017.12.002
 
 ### Licence
 RP2paths is released under the MIT licence. See the LICENCE.txt file for details.
