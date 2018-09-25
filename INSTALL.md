@@ -2,9 +2,10 @@
 
 ### Set up a python environment using (ana)conda (tested with Linux & Mac)
 ```
-# Python 3.5
-conda create --name pyenv python=3.5
-source activate pyenv
+# Build a dedicated python 3.6 environment
+conda create --name pyenv python=3.6
+# Activate the newly created environment
+source activate pyenv  # For Linux and Mac OSs
 # Rdkit
 conda install --channel rdkit rdkit
 # pandas
@@ -25,7 +26,7 @@ pip install image
     ```
     apt-get install graphviz
     ```
-- For mac (using HomeBrew):
+- For Mac OS (using HomeBrew):
     ```
     brew install graphviz
     ```
