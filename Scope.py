@@ -178,13 +178,13 @@ class Scope(object):
                 sinkRows.append(int(np.where(self.dfmat.index == c)[0]))
         cSorted2 = sorted(list(set(self.dfmat.index) - sinks))
         sinkRows.sort()
-        smat = np.delete(self.dfmat.as_matrix(), sinkRows, 0)
+        smat = np.delete(self.dfmat.values, sinkRows, 0)
         self.dfmat = pd.DataFrame(data=smat, index=cSorted2,
                                   columns=self.dfmat.columns)
 
     def foldCols(self):
         """Remove duplicated columns."""
-        smat = self.dfmat.as_matrix()
+        smat = self.dfmat.values
         sh = smat.shape
         colFP = {}
         for i in range(0, sh[1]):
@@ -212,14 +212,14 @@ class Scope(object):
         ix = np.where(self.dfmat.index == target)[0]
         outRow = np.zeros((len(self.dfmat.index), 1))
         outRow[ix] = -1.0
-        smat = np.hstack([self.dfmat.as_matrix(), outRow])
+        smat = np.hstack([self.dfmat.values, outRow])
         self.dfmat = pd.DataFrame(data=smat, index=self.dfmat.index,
                                 #   columns=np.hstack([self.dfmat.columns, 'O'+target]))  # TD: not needed
                                   columns=np.hstack([self.dfmat.columns, 'O[' + target + ']']))
 
     def outFiles(self, niter, rxnFull, outFolder):
         """Write scope."""
-        smat = self.dfmat.as_matrix()
+        smat = self.dfmat.values
         with open(path.join(outFolder, 'out_react'), 'w') as out_react:
             cv = csv.writer(out_react, delimiter=' ', quoting=csv.QUOTE_ALL)
             cv.writerow(self.dfmat.columns)
