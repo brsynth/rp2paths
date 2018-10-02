@@ -54,18 +54,30 @@ class DotMaker(object):
 
     @staticmethod
     def ParseReactionName(rxnName):
-        """Return the base name of a MNX reaction."""
-        return rxnName.split('_').pop(0)
+        """Return the label to be printed for a reaction."""
+        first_name = rxnName.split(',')[0]  # In any case, names should be comma separated
+        if first_name.startswith('MNXR'):  # Special case for MNXR reaction
+            return first_name.split('_')[0]
+        else:
+            return first_name
 
     @staticmethod
     def MakeURL(entity, id):
         """Generate URL to MetaNetX."""
         if entity == 'Compound':
-            url = 'http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=' + id
+            if id.startswith('MNXM'):
+                url = 'http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=' + id
+            elif id.startswith('CHEBI'):
+                url = 'https://www.ebi.ac.uk/chebi/searchId.do?chebiId=' + id
+            else:
+                url = None
         elif entity == 'Reaction':
-            url = 'http://www.metanetx.org/cgi-bin/mnxweb/equa_info?equa=' + id
+            if id.startswith('MNXR'):
+                url = 'http://www.metanetx.org/cgi-bin/mnxweb/equa_info?equa=' + id
+            else:
+                url = None
         else:
-            url = ''
+            url = None
         return url
 
     def GetCompoundName(self, cid):
@@ -224,9 +236,11 @@ class DotMaker(object):
                 find('{http://www.w3.org/2000/svg}g').\
                 findall('{http://www.w3.org/2000/svg}g'):
             if g.get('class') == 'node':
-                a = g.find('{http://www.w3.org/2000/svg}g').getchildren().pop()
-                if a.get('{http://www.w3.org/1999/xlink}href') is not None:
-                    a.set('{http://www.w3.org/1999/xlink}show', 'new')
+                parent = g.find('{http://www.w3.org/2000/svg}g')
+                if parent is not None:  # In case there is nothing to change..
+                    a = parent.getchildren().pop()
+                    if a.get('{http://www.w3.org/1999/xlink}href') is not None:
+                        a.set('{http://www.w3.org/1999/xlink}show', 'new')
         return etree.tounicode(tree)
 
     def WriteSvg(self, svgfile):
