@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 r"""Full workflow that converts RetroPath2.0 output to a list of pathways.
 
 Copyright (C) 2017 JL Faulon's research group, INRA
