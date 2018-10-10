@@ -596,8 +596,7 @@ if __name__ == '__main__':
             '--cmpdnamefile', dest='cmpdnamefile',
             help='File with name of compounds.',
             type=str, required=False,
-            default=os.path.join(
-                    os.getcwd(), 'mnx-data', 'mnx-compounds-name.tsv'))
+            default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
 
     # Args: computing dot files
     d_args = argparse.ArgumentParser(add_help=False)
@@ -615,8 +614,7 @@ if __name__ == '__main__':
             '--cmpdnamefile', dest='cmpdnamefile',
             help='File with name of compounds.',
             type=str, required=False,
-            default=os.path.join(
-                    os.getcwd(), 'mnx-data', 'mnx-compounds-name.tsv'))
+            default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
     d_args.add_argument(
             '--customsinkfile', dest='customsinkfile',
             help='User-defined sink file, i.e. file listing compounds to \
@@ -706,8 +704,7 @@ if __name__ == '__main__':
             '--cmpdnamefile', dest='cmpdnamefile',
             help='File with name of compounds.',
             type=str, required=False,
-            default=os.path.join(
-                    os.getcwd(), 'mnx-data', 'mnx-compounds-name.tsv'))
+            default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
     a_args.add_argument(
             '--target',
             help='Target compound internal ID. This internal ID specifies \
