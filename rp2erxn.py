@@ -53,6 +53,12 @@ class Compound(object):
     def AddCid(self, cid):
         """Add a compound ID."""
         if cid not in self.cids:
+            # Remove unwanted characters from compound ID
+            cid = cid.replace(",", "_")
+            cid = cid.replace(":", "_")
+            cid = cid.replace(" ", "_")
+            cid = cid.replace("[", "_")
+            cid = cid.replace("]", "_")
             self.cids.append(cid)
 
     def GetCids(self):
