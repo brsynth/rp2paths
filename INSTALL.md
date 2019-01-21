@@ -11,12 +11,14 @@ conda install --channel rdkit rdkit
 # pandas
 conda install pandas
 # graphviz
+conda install -c anaconda graphviz
 pip install graphviz
 pip install pydotplus
 # svg parsing
 conda install lxml
 # Rdkit issue with picture generation
 # conda install --channel rdkit cairocffi (might be not necessary)
+conda install cairo
 pip install image
 ```
 
