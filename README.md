@@ -25,7 +25,7 @@ In the output folder (here `pathways`), the complete set of pathways enumerated 
 
 
 ### Installation with Docker
-You can use this tool into a Docker container. For this, you have to build the image with:
+You can use this tool into a Docker container. For this, the Docker image has to be built with:
 ```
 docker build -t rp2paths .
 ```
