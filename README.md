@@ -23,6 +23,17 @@ python RP2paths.py all -h
 
 In the output folder (here `pathways`), the complete set of pathways enumerated will be written in the `out_paths.csv` file. In addition, for each pathway there will be a .dot file (.dot representation of the graph) and a .svg file (.svg depiction of the pathway).
 
+### Use of Docker
+You can use this tool into a Docker container. For this, you have to build the image with:
+```
+docker build -t rp2paths .
+```
+
+Then, the tool is runnable by:
+```
+docker run --rm -v $PWD:/home -v $PWD:/home/test -w /home rp2paths bash -c "python RP2paths.py all rp2-results.csv --outdir pathways"
+```
+
 
 
 ### Examples
