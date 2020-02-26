@@ -1,5 +1,9 @@
 # Release history
 
+## v1.1.0
+- Add Dockerfile
+- Add test folder
+
 ## v1.0.2
 - Add #!/ she-bang to make `*.py` executable
 
