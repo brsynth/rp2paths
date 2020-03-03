@@ -5,8 +5,8 @@ services:
   rp2paths:
     image: brsynth/${TOOL}
     build:
-      context: ..
-      dockerfile: docker/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     env_file: .env
     container_name: ${TOOL}
     restart: always
