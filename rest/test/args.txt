@@ -1,0 +1,4 @@
+-rp2_pathways rp2_pathways.csv
+-rp2paths_pathways output_outPaths.csv
+-rp2paths_compounds output_outCompounds.csv
+-timeout 5
