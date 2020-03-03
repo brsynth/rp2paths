@@ -13,4 +13,6 @@ RUN apt-get install -y \
 # For rp2paths
 RUN apt-get install -y openjdk-8-jre
 
-WORKDIR /home/src
+WORKDIR /home
+
+#ENTRYPOINT python3 src/RP2paths.py
