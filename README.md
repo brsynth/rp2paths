@@ -6,9 +6,9 @@ RP2paths extracts the set of pathways that lies in a metabolic space file output
 Installation steps are described in the INSTALL file.
 
 ### Quick start
-The main code is `RP2paths.py`. Once a scope has been produced by RetroPath2.0, a typical command line for extracting the pathways from the results is:
+The main code is `src/RP2paths.py`. Once a scope has been produced by RetroPath2.0, a typical command line for extracting the pathways from the results is:
 ```
-python RP2paths.py all rp2-results.csv --outdir pathways
+python src/RP2paths.py all <path_to_rp2-results.csv> --outdir <path_to_pathways>
 ```
 where:
 - `all` specify that all the tasks needed for retreiving pathways will be executed at once.
@@ -17,8 +17,8 @@ where:
 
 Additional options are described in the embedded help
 ```
-python RP2paths.py -h
-python RP2paths.py all -h
+python src/RP2paths.py -h
+python src/RP2paths.py all -h
 ```
 
 In the output folder (here `pathways`), the complete set of pathways enumerated will be written in the `out_paths.csv` file. In addition, for each pathway there will be a .dot file (.dot representation of the graph) and a .svg file (.svg depiction of the pathway).
@@ -27,13 +27,15 @@ In the output folder (here `pathways`), the complete set of pathways enumerated 
 ### Installation with Docker
 You can use this tool into a Docker container. For this, the Docker image has to be built with:
 ```
-docker build -t rp2paths .
+cd docker
+docker-compose build
 ```
 
 ### Quick start with Docker
 Then, the tool is runnable by:
 ```
-docker run --rm -v $PWD:/home -w /home rp2paths bash -c "python RP2paths.py all rp2-results.csv --outdir pathways"
+cd docker
+./RP2paths-in-docker.sh all rp2-results.csv --outdir pathways
 ```
 
 
