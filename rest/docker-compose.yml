@@ -2,39 +2,20 @@ version: '2.4'
 
 services:
 
-  rest:
-    image: brsynth/${TOOL}-rest:${MODE}
+  flask:
+    image: brsynth/${TOOL}-rest:flask
     build:
-      context: ..
-      dockerfile: rest/${MODE}.dockerfile
-      args:
-        TOOL_NAME: ${TOOL}
-    container_name: ${TOOL}-${MODE}
+      context: .
+      dockerfile: flask.dockerfile
+    env_file: .env
+    container_name: ${TOOL}-flask
     restart: always
-    environment:
-      - REST_MODE=${MODE}
     volumes:
       - $PWD/../src:/home/src
       - $PWD/../efmtool:/home/efmtool
       - $PWD/../mnx-data:/home/mnx-data
       - $PWD/../examples:/home/examples
-
-  rest:
-    image: brsynth/${TOOL}-rest:${MODE}
-    build:
-      context: ..
-      dockerfile: dockerfiles/${MODE}.dockerfile
-      args:
-        TOOL_NAME: ${TOOL}
-    container_name: ${TOOL}-${MODE}
-    restart: always
-    environment:
-      - REST_MODE=${MODE}
-    volumes:
-      - $PWD/rest/src:/REST
-      - $PWD/${TOOL}:/home/${TOOL}
       - $PWD/app:/REST/app
-      - $PWD/conf:/CONF
 
 
 networks:
