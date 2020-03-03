@@ -430,11 +430,10 @@ def doall(args):
     launch(tasks=[c_task, s_task, e_task, p_task, f_task, i_task, d_task],
            outdir=args.outdir, timeout=args.timeout)
 
-import pathlib
 
 if __name__ == '__main__':
 
-    script_path = pathlib.Path().absolute()
+    script_path = os.path.dirname(os.path.realpath(__file__))+"/.."
 
     # Args: converting the EMS from RetroPath2.0 Knime workflow
     c_args = argparse.ArgumentParser(add_help=False)

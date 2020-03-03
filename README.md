@@ -56,7 +56,7 @@ mkdir pathways
 
 3. Retreive pathways:
 ```
-python RP2paths.py all examples/naringenin/rp2-results.csv --outdir examples/naringenin/pathways
+python src/RP2paths.py all examples/naringenin/rp2-results.csv --outdir examples/naringenin/pathways
 ```
 
 ### How to cite RP2paths?
