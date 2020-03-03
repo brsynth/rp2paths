@@ -2,13 +2,13 @@ version: '2.4'
 
 services:
 
-  flask:
-    image: brsynth/${TOOL}-rest:flask
+  rest:
+    image: brsynth/${TOOL}-rest:${MODE}
     build:
       context: .
-      dockerfile: flask.dockerfile
+      dockerfile: ${MODE}.dockerfile
     env_file: .env
-    container_name: ${TOOL}-flask
+    container_name: ${TOOL}-rest
     restart: always
     volumes:
       - $PWD/../src:/home/src
@@ -16,6 +16,7 @@ services:
       - $PWD/../mnx-data:/home/mnx-data
       - $PWD/../examples:/home/examples
       - $PWD/app:/REST/app
+      - $PWD/conf/supervisor.conf:/CONF/supervisor.conf
 
 
 networks:

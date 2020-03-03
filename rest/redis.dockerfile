@@ -1,22 +1,16 @@
-ARG TOOL_NAME
+FROM brsynth/rest:redis-conda
 
-FROM brsynth/${TOOL_NAME}:flask
+RUN conda update -n base -c defaults conda
 
-# FLASK
-RUN pip install --upgrade pip
-RUN pip install flask flask-restful
+RUN conda install -y -c rdkit rdkit
+RUN conda install --quiet --yes python-graphviz pydotplus lxml
 
-# REDIS
-RUN pip install rq
 RUN apt-get update
-RUN apt-get --quiet --yes install supervisor redis-server
+# For rdkit
+RUN apt-get install -y \
+  libxrender1 \
+  libxext6
+# For rp2paths
+RUN apt-get install -y openjdk-8-jre
 
-WORKDIR /REST
-
-RUN export LC_ALL=C.UTF-8 \
- && export LANG=C.UTF-8
-
-ENTRYPOINT supervisord -c /CONF/supervisor.conf & python3 /REST/Main.py redis
-
-# Open server port
-EXPOSE 8888
+WORKDIR /home
