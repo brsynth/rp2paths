@@ -1,0 +1,21 @@
+version: '2.4'
+
+services:
+
+  tool:
+    image: brsynth/${TOOL}
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    env_file: .env
+    container_name: ${TOOL}
+    restart: always
+    volumes:
+      - $PWD/../src:/home/src
+      - $PWD/../efmtool:/home/efmtool
+      - $PWD/../mnx-data:/home/mnx-data
+      - $PWD/../examples:/home/examples
+
+networks:
+  default:
+    name: ${TOOL}
