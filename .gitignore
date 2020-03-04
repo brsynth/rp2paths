@@ -6,3 +6,5 @@ __pycache__
 .DS_Store
 *.pyc
 output_out*
+*.log
+*.pid
