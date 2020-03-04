@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker-compose run --rm rp2paths python src/RP2paths.py $@
+docker-compose run --rm -w /home/src rp2paths python RP2paths.py $@
