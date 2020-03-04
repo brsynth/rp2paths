@@ -4,22 +4,18 @@
 ```
 # Build a dedicated python 3.6 environment
 conda create --name pyenv python=3.6
+
 # Activate the newly created environment
 source activate pyenv  # For Linux and Mac OSs
-# Rdkit
-conda install --channel rdkit rdkit
-# pandas
-conda install pandas
-# graphviz
-conda install -c anaconda graphviz
-pip install graphviz
-pip install pydotplus
-# svg parsing
-conda install lxml
+
+# Install needed mandatory libraries
+conda install --yes --channel rdkit rdkit
+conda install --yes --channel anaconda graphviz
+conda install --yes pandas lxml cairo  # cairo for compound depictions
+yes | pip install graphviz pydotplus image
+
 # Rdkit issue with picture generation
 # conda install --channel rdkit cairocffi (might be not necessary)
-conda install cairo
-pip install image
 ```
 
 ### Install graphviz binaries
