@@ -35,7 +35,7 @@ docker-compose build
 Then, the tool is runnable by:
 ```
 cd docker
-./RP2paths-in-docker.sh all rp2-results.csv --outdir pathways
+./RP2paths-in-docker.sh all <path_to_rp2-results.csv> --outdir <path_to_out_pathways>
 ```
 
 
