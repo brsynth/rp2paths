@@ -29,14 +29,10 @@ In the output folder (here `pathways`), the complete set of pathways enumerated 
 Precomputed result files (i.e. outputted by RetroPath2.0) are provided in the `examples` folder for few compounds (carotene, naringenin, pinocembrin, violacein).
 
 Below are the command lines for generating pathways that lie in `naringenin` result file:
-1. If needed, activate the python environment (here named `py35`) that provides all the mandatory python library (see the installation section for details):
-```
-source activate py35
-```
 
-2. Create the parent folder if it does not exist yet:
+1. If needed, activate the python environment (here named `pyenv`) that provides all the mandatory python library (see the installation section for details):
 ```
-mkdir pathways
+source activate pyenv
 ```
 
 2. Retrieve pathways:
