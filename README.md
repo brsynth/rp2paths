@@ -89,11 +89,11 @@ Others commands are available with:
 ./REST-server.sh [stop|status|logs]
 ```
 
-### Test
-Once RP2Paths RESTful service is up, it can be tested with:
+## Test
+All modes can be tested with:
 ```
-cd rest/test
-./run-in-docker.sh
+cd test
+./test-in-[standalone|docker|rest].sh
 ```
 
 
