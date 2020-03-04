@@ -11,12 +11,9 @@ services:
     container_name: ${TOOL}-rest
     restart: always
     volumes:
-      - $PWD/../src:/home/src
-      - $PWD/../efmtool:/home/efmtool
-      - $PWD/../mnx-data:/home/mnx-data
-      - $PWD/../examples:/home/examples
+      - $PWD/..:/home
       - $PWD/app:/REST/app
-      - $PWD/conf/supervisor.conf:/CONF/supervisor.conf
+      - $PWD/conf/supervisor.conf:/CONF/supervisor.conf:ro
 
 
 networks:
