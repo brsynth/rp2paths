@@ -64,7 +64,7 @@ cd docker
 
 ## REST
 
-RP2Paths can be run as a RESTful service based on Flask or Redis.
+RP2Paths can be run as a RESTful service based on Flask and RQ job manager.
 
 ### Prerequisites
 
