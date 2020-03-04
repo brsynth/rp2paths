@@ -11,10 +11,7 @@ services:
     container_name: ${TOOL}
     restart: always
     volumes:
-      - $PWD/../src:/home/src
-      - $PWD/../efmtool:/home/efmtool
-      - $PWD/../mnx-data:/home/mnx-data
-      - $PWD/../examples:/home/examples
+      - $PWD/..:/home
 
 networks:
   default:
