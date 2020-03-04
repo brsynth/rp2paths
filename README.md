@@ -26,7 +26,7 @@ python src/RP2paths.py all -h
 In the output folder (here `pathways`), the complete set of pathways enumerated will be written in the `out_paths.csv` file. In addition, for each pathway there will be a .dot file (.dot representation of the graph) and a .svg file (.svg depiction of the pathway).
 
 ### Examples
-Pregenerated result files (i.e. outputed by RetroPath2.0) are provided in the `examples` folder for few compounds (carotene, naringenin, pinocembrin, violacein).
+Precomputed result files (i.e. outputted by RetroPath2.0) are provided in the `examples` folder for few compounds (carotene, naringenin, pinocembrin, violacein).
 
 Below are the command lines for generating pathways that lie in `naringenin` result file:
 1. If needed, activate the python environment (here named `py35`) that provides all the mandatory python library (see the installation section for details):
@@ -39,7 +39,7 @@ source activate py35
 mkdir pathways
 ```
 
-3. Retreive pathways:
+2. Retrieve pathways:
 ```
 python src/RP2paths.py all examples/naringenin/rp2-results.csv --outdir examples/naringenin/pathways
 ```
