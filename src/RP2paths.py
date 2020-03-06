@@ -12,6 +12,7 @@ python RP2paths.py all results.csv --outdir pathways
 
 import os
 import sys
+import pathlib
 import argparse
 import signal
 import subprocess
@@ -433,7 +434,7 @@ def doall(args):
 
 if __name__ == '__main__':
 
-    script_path = os.path.dirname(os.path.realpath(__file__))+"/.."
+    script_path = os.path.dirname(os.path.realpath(__file__))
 
     # Args: converting the EMS from RetroPath2.0 Knime workflow
     c_args = argparse.ArgumentParser(add_help=False)
