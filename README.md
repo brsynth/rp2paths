@@ -61,8 +61,17 @@ Then, the tool is runnable by:
 cd docker
 ./RP2paths-in-docker.sh all <path_to_rp2-results.csv> --outdir <path_to_out_pathways>
 ```
-**NOTE**
-Please be careful to be inside `docker` folder. To run the tool from another location, the command `docker-compose run rp2paths` has to be run manually with appropriate folder mappings.
+
+To call the tool from any other location:
+```
+docker run \
+    --rm \
+    --volume <repo_absolute_path>/src:/home/src \
+    --volume <path_to_rp2-results.csv>:/home/input.csv:ro \
+    --volume <path_to_output_folder>:/home/outdir \
+    --workdir /home \
+    brsynth/rp2paths python src/RP2paths.py all input.csv --outdir outdir
+```
 
 ## REST
 
