@@ -8,3 +8,4 @@ __pycache__
 output_out*
 *.log
 *.pid
+dump.rdb
