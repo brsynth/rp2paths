@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import argparse
 import io
 import tarfile
@@ -32,7 +33,9 @@ def rp2pathsUpload(rp2_pathways, rp2paths_pathways, rp2paths_compounds, timeout,
                 rpp.write(tf.extractfile(tf.getmember('./out_paths.csv')).read())
             with open(rp2paths_compounds, 'wb') as rpc:
                 rpc.write(tf.extractfile(tf.getmember('./compounds.txt')).read())
-        else: tf.extractall("out/")
+        else:
+            os.makedirs('out/test-in-rest', exist_ok=True)
+            tf.extractall("out/test-in-rest")
 
 
 
