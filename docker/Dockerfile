@@ -7,7 +7,8 @@ ARG PYTHON_PACKAGES_DIR=/usr/local/lib/python3.8/site-packages
 FROM brsynth/rdkit AS tools
 RUN apk update \
  && apk --no-cache add \
-      g++
+      g++ \
+      libxslt-dev
 RUN pip install \
       pandas \
       pydotplus \
