@@ -2,7 +2,7 @@ ARG PYTHON_PACKAGES_DIR=/usr/local/lib/python3.8/site-packages
 
 
 ###############################################
-# BUILD pandas                                #
+# INSTALL tools for rp2paths                  #
 ###############################################
 FROM brsynth/rdkit AS tools
 RUN apk update \
@@ -15,6 +15,7 @@ RUN pip install \
 
 
 FROM brsynth/rdkit
+# Copy tools
 COPY --from=tools ${PYTHON_PACKAGES_DIR} ${PYTHON_PACKAGES_DIR}
 COPY --from=tools ${PYTHON_PACKAGES_DIR} ${PYTHON_PACKAGES_DIR}
 RUN apk update \
