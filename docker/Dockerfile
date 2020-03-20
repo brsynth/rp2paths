@@ -10,7 +10,8 @@ RUN apk update \
       g++
 RUN pip install \
       pandas \
-      pydotplus
+      pydotplus \
+      graphviz
 
 
 FROM brsynth/rdkit
