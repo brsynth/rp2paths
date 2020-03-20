@@ -1,20 +1,21 @@
-#FROM conda/miniconda3
+ARG PYTHON_PACKAGES_DIR=/usr/local/lib/python3.8/site-packages
+
+
+###############################################
+# BUILD pandas                                #
+###############################################
+FROM brsynth/rdkit AS tools
+RUN apk update \
+ && apk --no-cache add \
+      g++
+RUN pip install --upgrade pandas
+
+
 FROM brsynth/rdkit
-
-#RUN conda update -n base -c defaults conda
-#RUN conda install -y -c rdkit rdkit
-#RUN conda install --quiet --yes python-graphviz pydotplus lxml
-
-RUN apk update
- # \
- # && apk add \
- #      py3-graphviz \
- #      py3-lxml \
- #      libxrender \
- #      libxext
-
-# For rp2paths
-RUN apk add openjdk11-jre
+COPY --from=tools ${PYTHON_PACKAGES_DIR} ${PYTHON_PACKAGES_DIR}
+COPY --from=tools ${PYTHON_PACKAGES_DIR} ${PYTHON_PACKAGES_DIR}
+RUN apk update \
+ && apk add openjdk11-jre
 
 WORKDIR /home
 
