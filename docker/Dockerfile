@@ -11,7 +11,8 @@ RUN apk update \
 RUN pip install \
       pandas \
       pydotplus \
-      graphviz
+      graphviz \
+      lxml
 
 
 FROM brsynth/rdkit
