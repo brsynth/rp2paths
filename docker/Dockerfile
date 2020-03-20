@@ -8,7 +8,9 @@ FROM brsynth/rdkit AS tools
 RUN apk update \
  && apk --no-cache add \
       g++
-RUN pip install --upgrade pandas
+RUN pip install \
+      pandas \
+      pydotplus
 
 
 FROM brsynth/rdkit
