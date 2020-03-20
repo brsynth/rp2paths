@@ -20,7 +20,10 @@ FROM brsynth/rdkit
 # Copy tools
 COPY --from=tools ${PYTHON_PACKAGES_DIR} ${PYTHON_PACKAGES_DIR}
 RUN apk update \
- && apk add openjdk11-jre
+ && apk add \
+      openjdk11-jre \
+      graphviz \
+      bash
 
 WORKDIR /home
 
