@@ -1,4 +1,4 @@
 -rp2_pathways in/rp2_pathways.csv
--rp2paths_pathways out/output_outPaths.csv
--rp2paths_compounds out/output_outCompounds.csv
+-rp2paths_pathways out/test-in-rest/output_outPaths.csv
+-rp2paths_compounds out/test-in-rest/output_outCompounds.csv
 -timeout 5
