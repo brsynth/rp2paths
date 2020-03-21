@@ -15,17 +15,25 @@ import logging
 
 def rp2pathsUpload(rp2_pathways, rp2paths_pathways, rp2paths_compounds, timeout, server_url):
     # Post request
+    files = {'rp2_pathways': open(rp2_pathways, 'rb')}
     data = {'timeout': timeout, 'galaxy': False}
-    files = {'rp2_pathways': open(rp2_pathways, 'rb'),
-            'data': ('data.json', json.dumps(data))}
+    multipart_form_data = {
+        'rp2_pathways': open(rp2_pathways, 'rb'),
+        'data': ('data.json', json.dumps(data))
+        }
     try:
 
-        r = requests.post(server_url+'/Query', files=files)
+        r = requests.post(server_url, files=multipart_form_data)
 
     except requests.exceptions.HTTPError as err:
         logging.error(err)
         logging.error(r.text)
         return False
+
+    if (r.status_code==400):
+        logging.error(r.text)
+        return False
+
 
     with tarfile.open(fileobj=io.BytesIO(r.content), mode='r:gz') as tf:
         if(data['galaxy']):
