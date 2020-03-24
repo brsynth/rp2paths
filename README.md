@@ -73,6 +73,15 @@ docker run \
     brsynth/rp2paths python src/RP2paths.py all input.csv --outdir outdir
 ```
 
+## Test
+All modes can be tested with:
+```
+cd test
+./test-in-[standalone|docker|rest].sh
+```
+
+
+
 ### How to cite RP2paths?
 Please cite:
 
