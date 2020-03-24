@@ -834,9 +834,7 @@ def build_parser():
     return parser
 
 
-
-if __name__ == '__main__':
-
+def entrypoint():
     parser = build_parser()
 
     args = parser.parse_args()
@@ -846,3 +844,6 @@ if __name__ == '__main__':
         exit(1)
 
     args.func(args)
+
+if __name__ == '__main__':
+    enrypoint()
