@@ -432,7 +432,7 @@ def doall(args):
            outdir=args.outdir, timeout=args.timeout)
 
 
-if __name__ == '__main__':
+def build_parser():
 
     script_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -830,6 +830,14 @@ if __name__ == '__main__':
     parser.set_defaults(pathsfile='out_paths.csv')
     parser.set_defaults(dotfilebase='out_graph')
     parser.set_defaults(unfold_stoichio=True)
+
+    return parser
+
+
+
+if __name__ == '__main__':
+
+    parser = build_parser()
 
     args = parser.parse_args()
 
