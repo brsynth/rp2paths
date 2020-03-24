@@ -73,42 +73,6 @@ docker run \
     brsynth/rp2paths python src/RP2paths.py all input.csv --outdir outdir
 ```
 
-## REST
-
-RP2Paths can be run as a RESTful service based on Flask and RQ job manager.
-
-### Prerequisites
-
-* Docker - [Install](https://docs.docker.com/install/)
-
-
-### Installation
-Before running the REST service, the image has to be built with:
-```
-cd rest
-MODE=[flask|redis] docker-compose build
-```
-
-### Run
-Then, the tool is runnable by:
-```
-cd rest
-./REST-server.sh start [flask|redis]
-```
-Others commands are available with:
-```
-./REST-server.sh [stop|status|logs]
-```
-
-## Test
-All modes can be tested with:
-```
-cd test
-./test-in-[standalone|docker|rest].sh
-```
-
-
-
 ### How to cite RP2paths?
 Please cite:
 
