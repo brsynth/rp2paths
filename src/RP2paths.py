@@ -834,10 +834,10 @@ def build_parser():
     return parser
 
 
-def entrypoint():
+def entrypoint(params=sys.argv[1:]):
     parser = build_parser()
 
-    args = parser.parse_args(sys.argv[1:])
+    args = parser.parse_args(params)
 
     if args.selected_parser is None:
         parser.print_help()
