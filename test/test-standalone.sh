@@ -1,3 +1,9 @@
 #!/bin/sh
+outdir=$1
 
-python3 ../src/RP2paths.py all in/rp2_pathways.csv --outdir out/test-standalone --timeout 5
+if [[ "$outdir" == "" ]]; then
+  outdir="out/test-standalone"
+fi
+
+
+python3 ../src/RP2paths.py all in/rp2_pathways.csv --outdir $outdir --timeout 5
