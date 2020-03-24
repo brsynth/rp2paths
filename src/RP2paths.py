@@ -837,7 +837,7 @@ def build_parser():
 def entrypoint():
     parser = build_parser()
 
-    args = parser.parse_args()
+    args = parser.parse_args(sys.argv[1:])
 
     if args.selected_parser is None:
         parser.print_help()
@@ -846,4 +846,4 @@ def entrypoint():
     args.func(args)
 
 if __name__ == '__main__':
-    enrypoint()
+    entrypoint()
