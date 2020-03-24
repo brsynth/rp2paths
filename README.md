@@ -77,7 +77,7 @@ docker run \
 All modes can be tested with:
 ```
 cd test
-./test-in-[standalone|docker|rest].sh
+./test-in-[standalone|docker].sh
 ```
 
 
