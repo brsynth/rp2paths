@@ -1,5 +1,9 @@
 # Release history
 
+## v1.2.0
+- Add docker folder
+- Add tests for standalone and docker modes
+
 ## v1.1.0
 - Add Dockerfile
 - Add test folder
