@@ -7,7 +7,6 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    env_file: .env
     container_name: rp2paths
     restart: always
 
