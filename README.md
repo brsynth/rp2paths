@@ -4,6 +4,10 @@ RP2paths extracts the set of pathways that lies in a metabolic space file output
 
 ## Standalone
 
+### Prerequisites
+
+* Python 3
+
 ### Installation
 Installation steps are described in the INSTALL file.
 
@@ -59,14 +63,18 @@ docker-compose build
 Then, the tool is runnable by:
 ```
 cd docker
-./RP2paths-in-docker.sh all <path_to_rp2-results.csv> --outdir <path_to_out_pathways>
+./RP2paths.sh all <path_to_rp2-results.csv> --outdir <path_to_out_pathways>
+```
+
+To call the tool with fresh code:
+```
+docker-compose run --rm -v <absolutepath_to_src>:/home/src rp2paths
 ```
 
 To call the tool from any other location:
 ```
 docker run \
     --rm \
-    --volume <repo_absolute_path>/src:/home/src \
     --volume <path_to_rp2-results.csv>:/home/input.csv:ro \
     --volume <path_to_output_folder>:/home/outdir \
     --workdir /home \
