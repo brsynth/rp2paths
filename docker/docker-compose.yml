@@ -3,14 +3,14 @@ version: '2.4'
 services:
 
   rp2paths:
-    image: brsynth/${TOOL}
+    image: brsynth/rp2paths
     build:
       context: ..
       dockerfile: docker/Dockerfile
     env_file: .env
-    container_name: ${TOOL}
+    container_name: rp2paths
     restart: always
 
 networks:
   default:
-    name: ${TOOL}
+    name: rp2paths
