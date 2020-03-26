@@ -10,8 +10,6 @@ services:
     env_file: .env
     container_name: ${TOOL}
     restart: always
-    # volumes:
-    #   - $PWD/..:/home
 
 networks:
   default:
