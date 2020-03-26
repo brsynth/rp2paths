@@ -19,10 +19,14 @@ RUN pip install --user graphviz
 ENV PYTHONUSERBASE=$PIP_INSTALL/lxml
 RUN pip install --user lxml
 
+
 FROM brsynth/rdkit
+
 # Copy tools
 ARG PIP_INSTALL
 COPY --from=tools ${PIP_INSTALL}/* /usr/local/
+
+# Install needed packages
 RUN apk update \
  && apk add \
       openjdk11-jre \
@@ -30,6 +34,9 @@ RUN apk update \
       libxslt \
       bash
 
-WORKDIR /home
+WORKDIR /home/src
 
-#ENTRYPOINT python3 src/RP2paths.py
+# Copy source code
+COPY src .
+
+ENTRYPOINT python3 RP2paths.py

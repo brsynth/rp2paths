@@ -5,13 +5,13 @@ services:
   rp2paths:
     image: brsynth/${TOOL}
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile
     env_file: .env
     container_name: ${TOOL}
     restart: always
-    volumes:
-      - $PWD/..:/home
+    # volumes:
+    #   - $PWD/..:/home
 
 networks:
   default:
