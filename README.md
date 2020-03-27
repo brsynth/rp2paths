@@ -71,7 +71,7 @@ To call the tool with fresh code:
 docker-compose run --rm -v <absolutepath_to_src>:/home/src rp2paths
 ```
 
-To call the tool from any other location:
+To call the tool from any location:
 ```
 docker run \
     --rm \
@@ -85,15 +85,15 @@ docker run \
 All modes can be tested with:
 ```
 cd test
-./test-in-[standalone|docker].sh
+./test-[standalone|in-docker].sh
 ```
 
 
 
-### How to cite RP2paths?
+## How to cite RP2paths?
 Please cite:
 
 Delépine B, Duigou T, Carbonell P, Faulon JL. RetroPath2.0: A retrosynthesis workflow for metabolic engineers. Metabolic Engineering, 45: 158-170, 2018. DOI: https://doi.org/10.1016/j.ymben.2017.12.002
 
-### Licence
+## Licence
 RP2paths is released under the MIT licence. See the LICENCE.txt file for details.
