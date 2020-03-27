@@ -39,4 +39,4 @@ WORKDIR /home/src
 # Copy source code
 COPY src .
 
-ENTRYPOINT python3 RP2paths.py
+#ENTRYPOINT python3 RP2paths.py
