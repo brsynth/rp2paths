@@ -7,9 +7,3 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    # container_name: rp2paths
-    # restart: always
-
-# networks:
-#   default:
-#     name: rp2paths
