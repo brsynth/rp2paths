@@ -8,5 +8,5 @@ fi
 
 cd ../docker
 docker-compose run --rm -v $PWD/../test:/home/test -w /home/test --entrypoint="" rp2paths \
-  sh -c "./test-standalone.sh $outdir"
+  sh -c "./run.sh $outdir"
 cd -

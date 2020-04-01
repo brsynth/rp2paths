@@ -2,7 +2,7 @@
 outdir=$1
 
 if [[ "$outdir" == "" ]]; then
-  outdir="out/test-standalone"
+  outdir="out/test"
 fi
 
 
