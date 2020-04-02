@@ -1,5 +1,9 @@
 # Release history
 
+## v1.3.0
+- Add source into the docker image
+- Rename tests scripts
+
 ## v1.2.0
 - Add docker folder
 - Add tests for standalone and docker modes
