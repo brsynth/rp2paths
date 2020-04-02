@@ -4,7 +4,7 @@ ARG PIP_INSTALL=/pip
 ###############################################
 # INSTALL tools for rp2paths                  #
 ###############################################
-FROM brsynth/rdkit AS tools
+FROM python:3-alpine AS tools
 RUN apk update \
  && apk --no-cache add \
       g++ \
