@@ -4,7 +4,8 @@ ARG PIP_INSTALL=/pip
 ###############################################
 # INSTALL tools for rp2paths                  #
 ###############################################
-FROM python:3-alpine AS tools
+# Same as final stage to be sure paths are the same
+FROM brsynth/rdkit:alpine AS tools
 RUN apk update \
  && apk --no-cache add \
       g++ \
@@ -20,7 +21,7 @@ ENV PYTHONUSERBASE=$PIP_INSTALL/lxml
 RUN pip install --user lxml
 
 
-FROM brsynth/rdkit
+FROM brsynth/rdkit:alpine
 
 # Copy tools
 ARG PIP_INSTALL
