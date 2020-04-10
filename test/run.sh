@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 outdir=$1
 
 if [[ "$outdir" == "" ]]; then
