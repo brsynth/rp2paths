@@ -1,7 +1,10 @@
 # Release history
 
+## v1.3.2
+- In Docker environment, switch to debian based image (brsynth/rdkit:alpine)
+
 ## v1.3.1
-- Specify base image tag (brsynth/rdkit:alpine)
+- In Docker environment, specify base image tag (brsynth/rdkit:alpine)
 
 ## v1.3.0
 - Add source into the docker image
