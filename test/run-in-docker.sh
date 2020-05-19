@@ -1,12 +1,9 @@
 #!/bin/bash
 
-outdir=$1
-
-if [[ "$outdir" == "" ]]; then
-  outdir="out/test-in-docker"
-fi
+infile=$1
+outdir=$2
 
 cd ../docker
 docker-compose run --rm -v $PWD/../test:/home/test -w /home/test --entrypoint="" rp2paths \
-  sh -c "./run.sh $outdir"
+  sh -c "./run.sh $infile $outdir"
 cd -
