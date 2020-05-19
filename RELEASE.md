@@ -1,5 +1,8 @@
 # Release history
 
+## v1.3.3
+- Add infile to test scripts command line arguments
+
 ## v1.3.2
 - In Docker environment, switch to Debian based image (brsynth/rdkit:debian)
 
