@@ -23,6 +23,9 @@ from ImgHandler import ImgHandler
 from DotHandler import DotHandler
 from PathFilter import PathFilter
 
+class NoScopeMatrix(Exception):
+   """Raised when no scope matrix was produced"""
+   pass
 
 class GeneralTask(object):
     """Generic class for handling the execution of task."""
@@ -111,8 +114,7 @@ class TaskScope(GeneralTask):
     def _check_output(self):
         """Check wether the outputed scope is empty."""
         if not os.path.exists('out_mat'):
-            print("Scope Task: no scope matrix was produced, exit")
-            sys.exit(1)
+            raise NoScopeMatrix()
 
     def compute(self, timeout):
         """Process the conversion."""
@@ -846,4 +848,7 @@ def entrypoint(params=sys.argv[1:]):
     args.func(args)
 
 if __name__ == '__main__':
-    entrypoint()
+    try: entrypoint()
+    except NoScopeMatrix:
+        print("Scope Task: no scope matrix was produced, exit")
+        sys.exit(1)
