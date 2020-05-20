@@ -7,6 +7,7 @@ ARG PIP_INSTALL=/pip
 # Same as final stage to be sure paths are the same
 FROM brsynth/rdkit:debian AS tools
 
+RUN python -m pip install --upgrade pip
 ARG PIP_INSTALL
 ENV PYTHONUSERBASE=$PIP_INSTALL/pandas
 RUN python -m pip install --user pandas
