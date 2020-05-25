@@ -1,5 +1,9 @@
 # Release history
 
+## v1.3.3
+- Add an exception to handle the case when no scope matrix is produced
+- Add a test with an input that produces no scope matrix
+
 ## v1.3.2
 - In Docker environment, switch to Debian based image (brsynth/rdkit:debian)
 
