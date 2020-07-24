@@ -11,7 +11,7 @@ import sys
 import csv
 import argparse
 from rdkit import Chem
-from IDsHandler import IDsHandler
+from .IDsHandler import IDsHandler
 
 
 class Compound(object):

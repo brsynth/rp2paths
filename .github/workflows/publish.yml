@@ -1,0 +1,70 @@
+# This workflows will upload a Python Package using Twine when a release is created
+# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+
+name: Publish
+
+on:
+  push:
+    branches: [ stable ]
+    paths:
+      - 'RELEASE'
+
+jobs:
+
+  PyPi:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        pip install setuptools wheel twine
+    - name: Build
+      run: |
+        python setup.py sdist bdist_wheel
+    - name: Upload
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        twine upload dist/*
+
+  Conda:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.5, 3.6, 3.7]
+
+    container: docker://continuumio/anaconda3
+
+    steps:
+    - name: Waiting for module availablity on PyPi...
+      run: |
+        sleep 30
+    - name: Get module from PyPi
+      run: |
+        conda skeleton pypi rp2paths
+    - name: Customize recipe
+      run: |
+        sed -i.bck '/\ \ run\:/a \ \ \ \ - rdkit' rp2paths/meta.yaml
+        sed -i.bck '/\ \ run\:/a \ \ \ \ - graphviz' rp2paths/meta.yaml
+        sed -i.bck '/\ \ run\:/a \ \ \ \ - java-jre' rp2paths/meta.yaml
+    - name: Add channels
+      run: |
+        conda config \
+          --add channels conda-forge \
+          --add channels rdkit \
+          --add channel cyclus
+    - name: Build for Python ${{ matrix.python-version }}
+      run: |
+        conda-build --python ${{ matrix.python-version }} rp2paths
+    - name: Upload package
+      env:
+        CONDA_USERNAME: ${{ secrets.CONDA_USERNAME }}
+        CONDA_TOKEN: ${{ secrets.CONDA_TOKEN }}
+      run: |
+        anaconda --token ${CONDA_TOKEN} upload --user ${CONDA_USERNAME} /opt/conda/conda-bld/linux-64/*.tar.bz2

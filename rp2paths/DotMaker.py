@@ -11,8 +11,13 @@ import os
 import copy
 import pydotplus
 import graphviz
-import DotStyle
-from IDsHandler import IDsHandler
+from .DotStyle import Chassis as DS_Chassis
+from .DotStyle import Intermediate as DS_Intermediate
+from .DotStyle import Target as DS_Target
+from .DotStyle import Reaction as DS_Reaction
+from .DotStyle import Consumption as DS_Consumption
+from .DotStyle import Production as DS_Production
+from .IDsHandler import IDsHandler
 from lxml import etree
 
 
@@ -21,12 +26,12 @@ class DotMaker(object):
 
     def __init__(self, pid, pathway, chassis, target, imgdir=None,
                  cmpd_names=None,
-                 chassis_style=DotStyle.Chassis().GetStyle(),
-                 intermediate_style=DotStyle.Intermediate().GetStyle(),
-                 target_style=DotStyle.Target().GetStyle(),
-                 reaction_style=DotStyle.Reaction().GetStyle(),
-                 consumption_style=DotStyle.Consumption().GetStyle(),
-                 production_style=DotStyle.Production().GetStyle()):
+                 chassis_style=DS_Chassis().GetStyle(),
+                 intermediate_style=DS_Intermediate().GetStyle(),
+                 target_style=DS_Target().GetStyle(),
+                 reaction_style=DS_Reaction().GetStyle(),
+                 consumption_style=DS_Consumption().GetStyle(),
+                 production_style=DS_Production().GetStyle()):
         """Initialize."""
         self.pid = pid
         self.pathway = pathway

@@ -16,12 +16,12 @@ import pathlib
 import argparse
 import signal
 import subprocess
-import rp2erxn
-import Scope
-from EFMHandler import EFMHandler
-from ImgHandler import ImgHandler
-from DotHandler import DotHandler
-from PathFilter import PathFilter
+from .rp2erxn import compute as rp2erxn_compute
+from .Scope import compute as Scope_compute
+from .EFMHandler import EFMHandler
+from .ImgHandler import ImgHandler
+from .DotHandler import DotHandler
+from .PathFilter import PathFilter
 
 class NoScopeMatrix(Exception):
     """Raised when no scope matrix was produced"""
@@ -91,9 +91,9 @@ class TaskConvert(GeneralTask):
 
     def compute(self, timeout):
         """Process the conversion."""
-        rp2erxn.compute(self.infile, self.cmpdfile,
-                                    self.reacfile, self.sinkfile,
-                                    self.reverse)
+        rp2erxn_compute(self.infile, self.cmpdfile,
+                        self.reacfile, self.sinkfile,
+                        self.reverse)
 
     def set_absolute_infile_path(self):
         """Change the path of the infile."""
@@ -129,7 +129,7 @@ class TaskScope(GeneralTask):
 
     def compute(self, timeout):
         """Process the conversion."""
-        Scope.compute(out_folder=self.outdir, sink_file=self.sinkfile,
+        Scope_compute(out_folder=self.outdir, sink_file=self.sinkfile,
                       reaction_file=self.reacfile, target=self.target,
                       minDepth=self.minDepth)
         self._check_output()
@@ -445,7 +445,7 @@ def doall(args):
            outdir=args.outdir, timeout=args.timeout)
 
 
-def build_parser():
+def build_args_parser():
 
     script_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -845,23 +845,3 @@ def build_parser():
     parser.set_defaults(unfold_stoichio=True)
 
     return parser
-
-
-def entrypoint(params=sys.argv[1:]):
-    parser = build_parser()
-
-    args = parser.parse_args(params)
-
-    if args.selected_parser is None:
-        parser.print_help()
-        exit(1)
-
-    args.func(args)
-
-if __name__ == '__main__':
-    try: entrypoint()
-    except NoScopeMatrix as e:
-        print()
-        print(e.message)
-        print()
-        sys.exit(1)

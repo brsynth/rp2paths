@@ -1,0 +1,2 @@
+include RELEASE
+recursive-include extras *

@@ -9,7 +9,7 @@ LICENSE.txt file.
 
 import os
 import csv
-from pyEMSv2.reaction import StrReaction
+from .pyEMSv2.reaction import StrReaction
 
 
 class PathFilter(object):

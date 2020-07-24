@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+
+  tests:
+    image: ${PACKAGE}-tests
+    build:
+      context: ../../..
+      args:
+        PKG: ${PACKAGE}
+        HOME: ${HOMEDIR}
+        IMAGE: ${BASE_IMAGE}
+      dockerfile: tests/pytest/docker/Dockerfile
+    # networks:
+    #   db:
+    # depends_on:
+    #   - db
+    # volumes:
+    #   - input_cache:${HOMEDIR}/input_cache
+    #   - cache:${HOMEDIR}/cache
+    entrypoint: pytest --verbose
+    command: test.py
+
+  # db:
+  #   image: redis:5-alpine
+  #   command: redis-server --appendonly yes
+  #   networks:
+  #     db:
+  #   volumes:
+  #     - redis:/data
+
+volumes:
+  # redis:
+  input_cache:
+  cache:
+
+# networks:
+#   db:
