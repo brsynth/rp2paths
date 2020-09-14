@@ -16,7 +16,7 @@ def _cli():
         print()
         print(e.message)
         print()
-        sys.exit(1)
+        exit(1)
 
 
 
