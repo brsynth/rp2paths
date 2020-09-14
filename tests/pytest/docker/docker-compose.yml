@@ -12,4 +12,4 @@ services:
         IMAGE: ${BASE_IMAGE}
       dockerfile: tests/pytest/docker/Dockerfile
     entrypoint: pytest --verbose
-    command: test.py
+    command: _main.py

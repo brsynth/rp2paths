@@ -24,4 +24,4 @@ docker-compose \
     --env-file pytest/docker/.env \
   run --rm \
   --entrypoint="" \
-  tests sh -c "pytest --verbose $file"
+  tests sh -c "pytest --verbose --ignore=_main.py --ignore=_rp2paths.py $file"

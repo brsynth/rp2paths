@@ -1,2 +1,2 @@
-include RELEASE
+include RELEASE.md
 recursive-include extras *
