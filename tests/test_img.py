@@ -8,7 +8,7 @@ from module import module
 
 
 
-hashes = {
+files = {
         module.args.outdir+'/'+module.args.imgdir+'/CMPD_0000000003.svg':   'c7e963be69384a7e1699f97bdbb466fe7f75c6c48e43f26ba34e868af1746ebd16e51d930d8311abb2dcb6569b2290e13ed37b8707cb2578ca1eaf2218518813',
         module.args.outdir+'/'+module.args.imgdir+'/CMPD_0000000005.svg':   '407b70151cb70e76a1a6589ca7a101c4466b9c086ebdd24386487ec3e6bc4cfe116272eab43c84dd6ee7a2f7d321f65e338177f9ebc4bf623be7440e86aa465e',
         module.args.outdir+'/'+module.args.imgdir+'/CMPD_0000000007.svg':   '1d1732a3c33efdfa64160c536620e427677d55acf1ca7a4a49eb7127e8869a68ea7d51959c06fabc6430190bbeab672644c0771592842cad5eba922e0181aa49',
@@ -41,7 +41,7 @@ hashes = {
         module.args.outdir+'/'+module.args.imgdir+'/MNXM799.svg':           '0ec62e7302592a802ac20b1fb230568c08c14783ed4813d7c696042719310b6e4e6abfbb0cded359a183d3be3234a7fb44101ca45346b2a8f254101ce0a17129',
         module.args.outdir+'/'+module.args.imgdir+'/TARGET_0000000001.svg': '3714638da1b28944117246ccb02dd65b9abd2a871c0463884c68d651ff84675718593a07942aea92894d928243b57dc006ae4aadf6243ffb7022874dc9af10bf',
 }
-hashes = list(hashes.items())
+files = list(files.items())
 # preexec_func_names = legacy_preexec + ['filter']
 parent_test = 'filter'
 
@@ -49,7 +49,4 @@ class Test_Img(module):
     __test__ = True
 
     func_name = 'img'
-    hashes = hashes
-
-    def _check(self):
-        self._check_files()
+    files = files

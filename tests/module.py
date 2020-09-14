@@ -24,9 +24,9 @@ class module(Main):
 
         for preexec_func_name in preexec_func_names:
 
-            legacy_hashes = getattr(__import__('test_'+preexec_func_name), 'hashes')
+            legacy_files = getattr(__import__('test_'+preexec_func_name), 'files')
 
-            for file, hash in legacy_hashes:
+            for file, hash in legacy_files:
                 if not os_path.isfile(file):
                     func = self._get_func_from_name(preexec_func_name)
                     self.args.func = func

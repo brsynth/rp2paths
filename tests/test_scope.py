@@ -7,7 +7,7 @@ Created on Jul 15 2020
 from module import module
 
 
-hashes = [
+files = [
     (module.args.outdir+'/'+'out_comp',       '4293088b91b07d7ec62b559ba2bc42c2580cc5a6a5243e93e54772985df494c0fa8319deb470b63df2a4131440bf6c27e43348c5b6e8784f6fb85333904c8bce'),
     (module.args.outdir+'/'+'out_discarded',  'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e'),
     (module.args.outdir+'/'+'out_full_react', '9e2f7d6e8b53f6a687d5a72f18261c89dd44e4bbbc8f3e48542881313d8c2c168999dd929238c8d3a56b68140fb3834b551e0fe0a5f84f572021502850a69a1a'),
@@ -24,13 +24,10 @@ class Test_Scope(module):
     __test__ = True
 
     func_name = 'scope'
-    hashes = hashes
+    files = files
 
     def _postexec(self):
         # 'out_full_react' contains a dict so the order is different each run.
         # In order to check that the content is correct,
         # the file has to be re-written with sorted content
         module._sort_file(module.args.outdir+'/'+'out_full_react')
-
-    def _check(self):
-        self._check_hashes()

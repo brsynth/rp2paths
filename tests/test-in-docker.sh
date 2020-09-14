@@ -13,7 +13,7 @@ docker-compose \
 if [[ $# -eq 1 ]]; then
   file=$1
 else
-  file=$@
+  file="test_convert.py test_scope.py test_efm.py test_paths.py test_filter.py test_dot.py test_img.py"
 fi
 
 
