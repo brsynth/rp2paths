@@ -9,12 +9,12 @@ RP2paths extracts the set of pathways that lies in a metabolic space file output
 
 ### Prerequisites
 
-rp2paths relies on several packages (rdkit, cairo) and binaries (java, graphviz) that can't be installed directly with pyp. Please install them before pursuing the rp2paths set up:
+rp2paths relies on several packages (rdkit, cairo) and binaries (java, graphviz) that can't be installed directly with pip. Please install them before pursuing the rp2paths set up:
 
 ```bash
 # from a new <myenv> conda environment
 conda create --name <myenv> python=3
-conda install --yes --channel rdkit rdkit
+conda install --yes --channel rdkit rdkit cairo
 conda install --yes --channel cyclus java-jre
 
 # system wide installation of graphviz for ubuntu
