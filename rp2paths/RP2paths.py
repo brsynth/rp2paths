@@ -445,12 +445,12 @@ def doall(args):
            outdir=args.outdir, timeout=args.timeout)
 
 
-def build_args_parser():
+def build_args_parser(prog='rp2paths'):
 
     script_path = os.path.dirname(os.path.realpath(__file__))
 
     # Args: converting the EMS from RetroPath2.0 Knime workflow
-    c_args = argparse.ArgumentParser(add_help=False)
+    c_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     c_args.add_argument(
             dest='infile',
             help='File outputed by the RetroPath2.0 Knime workflow',
@@ -467,7 +467,7 @@ def build_args_parser():
             default=True)
 
     # Args: computing the scope
-    s_args = argparse.ArgumentParser(add_help=False)
+    s_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     s_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -499,7 +499,7 @@ def build_args_parser():
             type=str, required=False, default=None)
 
     # Args: enumerating EFMs
-    e_args = argparse.ArgumentParser(add_help=False)
+    e_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     e_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -527,7 +527,7 @@ def build_args_parser():
             default='TARGET_0000000001')
 
     # Args: computing each possible pathways
-    p_args = argparse.ArgumentParser(add_help=False)
+    p_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     p_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -568,7 +568,7 @@ def build_args_parser():
             default='TARGET_0000000001')
 
     # Args: filtering paths
-    f_args = argparse.ArgumentParser(add_help=False)
+    f_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     f_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -597,7 +597,7 @@ def build_args_parser():
             type=str, nargs='+', required=False, default=None)
 
     # Args: computing compound pictures
-    i_args = argparse.ArgumentParser(add_help=False)
+    i_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     i_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -615,7 +615,7 @@ def build_args_parser():
             default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
 
     # Args: computing dot files
-    d_args = argparse.ArgumentParser(add_help=False)
+    d_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     d_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -652,7 +652,7 @@ def build_args_parser():
             default='TARGET_0000000001')
 
     # Args: computing all tasks in once
-    a_args = argparse.ArgumentParser(add_help=False)
+    a_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     a_args.add_argument(
             dest='infile',
             help='File outputed by the RetroPath2.0 Knime workflow',
@@ -734,6 +734,7 @@ def build_args_parser():
 
     # Master parser
     parser = argparse.ArgumentParser(
+        prog='rp2paths',
         description='Full workflow that converts RetroPath2.0 output to a list \
         of pathways')
 

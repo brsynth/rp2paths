@@ -3,7 +3,7 @@
 from rp2paths.RP2paths import build_args_parser, NoScopeMatrix
 
 
-def _cli():
+def main():
     parser = build_args_parser()
     args  = parser.parse_args()
 
@@ -18,7 +18,5 @@ def _cli():
         print()
         exit(1)
 
-
-
 if __name__ == '__main__':
-    _cli()
+    main()
