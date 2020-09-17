@@ -11,13 +11,13 @@ import os
 import copy
 import pydotplus
 import graphviz
-from .DotStyle import Chassis as DS_Chassis
-from .DotStyle import Intermediate as DS_Intermediate
-from .DotStyle import Target as DS_Target
-from .DotStyle import Reaction as DS_Reaction
-from .DotStyle import Consumption as DS_Consumption
-from .DotStyle import Production as DS_Production
-from .IDsHandler import IDsHandler
+from rp2paths.DotStyle import Chassis as DS_Chassis
+from rp2paths.DotStyle import Intermediate as DS_Intermediate
+from rp2paths.DotStyle import Target as DS_Target
+from rp2paths.DotStyle import Reaction as DS_Reaction
+from rp2paths.DotStyle import Consumption as DS_Consumption
+from rp2paths.DotStyle import Production as DS_Production
+from rp2paths.IDsHandler import IDsHandler
 from lxml import etree
 
 

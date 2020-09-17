@@ -10,7 +10,7 @@ LICENSE.txt file.
 import os
 import argparse
 import csv
-from .pyEMSv2.elemodes import Elemodes
+from rp2paths.pyEMSv2.elemodes import Elemodes
 
 
 class EFMHandler(object):

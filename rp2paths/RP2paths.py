@@ -16,12 +16,12 @@ import pathlib
 import argparse
 import signal
 import subprocess
-from .rp2erxn import compute as rp2erxn_compute
-from .Scope import compute as Scope_compute
-from .EFMHandler import EFMHandler
-from .ImgHandler import ImgHandler
-from .DotHandler import DotHandler
-from .PathFilter import PathFilter
+from rp2paths.rp2erxn import compute as rp2erxn_compute
+from rp2paths.Scope import compute as Scope_compute
+from rp2paths.EFMHandler import EFMHandler
+from rp2paths.ImgHandler import ImgHandler
+from rp2paths.DotHandler import DotHandler
+from rp2paths.PathFilter import PathFilter
 
 class NoScopeMatrix(Exception):
     """Raised when no scope matrix was produced"""

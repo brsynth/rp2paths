@@ -8,7 +8,7 @@ LICENSE.txt file.
 """
 
 from itertools import product
-from .reaction import EquivReaction
+from rp2paths.pyEMSv2.reaction import EquivReaction
 
 
 class Elemodes:

@@ -10,8 +10,8 @@ LICENSE.txt file.
 import os
 import argparse
 import csv
-from .pyEMSv2.reaction import StrReaction
-from .DotMaker import DotMaker
+from rp2paths.pyEMSv2.reaction import StrReaction
+from rp2paths.DotMaker import DotMaker
 
 
 class DotHandler(object):

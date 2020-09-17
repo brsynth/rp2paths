@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from .RP2paths import build_args_parser, NoScopeMatrix
+from rp2paths.RP2paths import build_args_parser, NoScopeMatrix
 
 
 def _cli():
