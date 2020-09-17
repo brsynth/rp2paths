@@ -68,7 +68,7 @@ python -m rp2paths all examples/naringenin/rp2-results.csv --outdir examples/nar
 All modes can be tested with:
 ```
 cd tests
-./tests-in-docker.sh
+./test-in-docker.sh
 ```
 
 
