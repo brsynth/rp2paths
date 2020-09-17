@@ -1,2 +1,3 @@
 include RELEASE.md
 recursive-include extras *
+recursive-include examples *
