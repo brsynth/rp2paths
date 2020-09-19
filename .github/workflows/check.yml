@@ -35,7 +35,7 @@ jobs:
 
     - name: Create package link folder
       run: |
-        ln -sf src retropath2_wrapper
+        ln -sf src rp2paths
 
     - name: Install dependencies
       run: |
