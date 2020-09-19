@@ -33,6 +33,10 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Create package link folder
+      run: |
+        ln -sf src retropath2_wrapper
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip

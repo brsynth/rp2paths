@@ -17,4 +17,4 @@ ARG HOME
 WORKDIR ${HOME}/tests
 
 ADD tests .
-ADD ${PKG} ${PKG}
+ADD src ${PKG}
