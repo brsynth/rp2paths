@@ -58,7 +58,7 @@ jobs:
         conda config \
           --add channels conda-forge \
           --add channels rdkit \
-          --add channel cyclus
+          --add channels cyclus
     - name: Build for Python ${{ matrix.python-version }}
       run: |
         conda-build --python ${{ matrix.python-version }} rp2paths
