@@ -50,7 +50,7 @@ jobs:
         conda skeleton pypi rp2paths
     - name: Customize recipe
       run: |
-        sed -i.bck '/\ \ run\:/a \ \ \ \ - rdkit' rp2paths/meta.yaml
+        sed -i.bck '/\ \ run\:/a \ \ \ \ - rdkit'    rp2paths/meta.yaml
         sed -i.bck '/\ \ run\:/a \ \ \ \ - graphviz' rp2paths/meta.yaml
         sed -i.bck '/\ \ run\:/a \ \ \ \ - java-jre' rp2paths/meta.yaml
     - name: Add channels
