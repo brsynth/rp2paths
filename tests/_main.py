@@ -8,6 +8,7 @@ from unittest import TestCase
 
 from pathlib import Path
 from os import stat as os_stat
+from os import path as os_path
 
 
 class Main(TestCase):
@@ -54,6 +55,11 @@ class Main(TestCase):
     def _check_files_size(self):
         for file, size in self.files:
             self.assertTrue(Main._check_file_size(file, size))
+
+    def _check_files_exist(self):
+        for file, size in self.files:
+            self.assertTrue(os_path.exists(file))
+            self.assertGreater(os_stat(file).st_size, 0)
 
     @staticmethod
     def _check_content_hash(content, hash, hash_func='sha256'):

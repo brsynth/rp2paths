@@ -50,3 +50,6 @@ class Test_Img(module):
 
     func_name = 'img'
     files = files
+
+    def _check(self):
+        self._check_files_exist()
