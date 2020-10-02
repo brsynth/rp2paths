@@ -9,8 +9,9 @@ on:
     branches: [ master ]
     paths:
       - '**'
-      - '!RELEASE'
+      - '!RELEASE.md'
       - '!LICENSE'
+      - '!README.md'
   pull_request:
     branches: [ master ]
 
