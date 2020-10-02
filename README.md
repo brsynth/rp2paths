@@ -16,18 +16,7 @@ rp2paths relies on several packages (rdkit, cairo) and binaries (java, graphviz)
 conda create --name <myenv> python=3
 conda install --yes --channel rdkit rdkit cairo
 conda install --yes --channel cyclus java-jre
-
-# system wide installation of graphviz for ubuntu
-apt-get install graphviz
-
-# system wide installation of graphviz for mac OS (using homebrew)
-brew install graphviz
-sudo dot -c
-
-# Or one can try (not tested)
-# brew install graphviz --with-bindings --with-freetype --with-librsvg --with-pangocairo
-# Reconfigure graphviz if needed:
-# sudo dot -c
+conda install --yes --channel conda-forge graphviz
 ```
 
 
@@ -66,7 +55,7 @@ In the `<outdir>` folder, the complete set of pathways enumerated will be writte
 
 Additional options are described in the embedded help:
 ```
-# List of possible modes 
+# List of possible modes
 python -m rp2paths -h
 
 # List of options for the all-in-one mode
