@@ -1,4 +1,5 @@
 from setuptools import setup
+from re         import search as re_search
 
 _readme_file  = 'README.md'
 _release_file = 'RELEASE.md'
@@ -8,7 +9,13 @@ _tests_path   = 'tests/pytest'
 with open(_readme_file, 'r') as f:
     long_description = f.read()
 with open(_release_file, 'r') as f:
-    _version = f.readline().split()[0]
+    line = f.readline()
+    while line:
+        match = re_search("^## (\d\.\d\.\d)$", line)
+        if match:
+            _version = match.group(1)
+            break
+        line = f.readline()
 
 with open(_extras_path+'/.env', 'r') as f:
     for line in f:
