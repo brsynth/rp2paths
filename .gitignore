@@ -9,3 +9,4 @@ output_out*
 *.pid
 dump.rdb
 tests/out
+*egg-info
