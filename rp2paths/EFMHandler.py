@@ -10,7 +10,7 @@ LICENSE.txt file.
 import os
 import argparse
 import csv
-from pyEMSv2.elemodes import Elemodes
+from rp2paths.pyEMSv2.elemodes import Elemodes
 
 
 class EFMHandler(object):
@@ -20,7 +20,7 @@ class EFMHandler(object):
                  full_react_file, react_file, efm_file,
                  outfile='out_paths.csv',
                  unfold_stoichio=False, unfold_compounds=False,
-                 maxsteps=15, maxpaths=150):
+                 maxsteps=float('+inf'), maxpaths=150):
         """Initialization."""
         # .
         self.full_react_file = full_react_file
@@ -37,7 +37,7 @@ class EFMHandler(object):
         """Perform some checking on arguments."""
         assert type(self.unfold_stoichio) is bool
         assert type(self.unfold_compounds) is bool
-        assert type(self.maxsteps) is int and self.maxsteps > 0
+        assert self.maxsteps > 0
         assert type(self.maxpaths) is int and self.maxpaths >= 0
         for filepath in (self.full_react_file, self.react_file, self.efm_file):
             if not os.path.exists(filepath):
@@ -105,9 +105,9 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Unfold pathways based on equivalencie of \
                         compounds (can lead to combinatorial explosion).')
-    parser.add_argument('--maxsteps', default=10, type=int,
+    parser.add_argument('--maxsteps', default=0, type=int,
                         help='Cutoff on the maximum number of steps in a \
-                        pathways.')
+                        pathways. 0 for unlimited number of steps.')
     parser.add_argument('--maxpaths', default=150, type=int,
                         help='cutoff on the maximum number of pathways.')
     # Get arguments

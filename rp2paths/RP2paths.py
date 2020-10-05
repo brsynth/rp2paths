@@ -16,12 +16,12 @@ import pathlib
 import argparse
 import signal
 import subprocess
-import rp2erxn
-import Scope
-from EFMHandler import EFMHandler
-from ImgHandler import ImgHandler
-from DotHandler import DotHandler
-from PathFilter import PathFilter
+from rp2paths.rp2erxn import compute as rp2erxn_compute
+from rp2paths.Scope import compute as Scope_compute
+from rp2paths.EFMHandler import EFMHandler
+from rp2paths.ImgHandler import ImgHandler
+from rp2paths.DotHandler import DotHandler
+from rp2paths.PathFilter import PathFilter
 
 class NoScopeMatrix(Exception):
     """Raised when no scope matrix was produced"""
@@ -91,9 +91,9 @@ class TaskConvert(GeneralTask):
 
     def compute(self, timeout):
         """Process the conversion."""
-        rp2erxn.compute(self.infile, self.cmpdfile,
-                                    self.reacfile, self.sinkfile,
-                                    self.reverse)
+        rp2erxn_compute(self.infile, self.cmpdfile,
+                        self.reacfile, self.sinkfile,
+                        self.reverse)
 
     def set_absolute_infile_path(self):
         """Change the path of the infile."""
@@ -129,7 +129,7 @@ class TaskScope(GeneralTask):
 
     def compute(self, timeout):
         """Process the conversion."""
-        Scope.compute(out_folder=self.outdir, sink_file=self.sinkfile,
+        Scope_compute(out_folder=self.outdir, sink_file=self.sinkfile,
                       reaction_file=self.reacfile, target=self.target,
                       minDepth=self.minDepth)
         self._check_output()
@@ -163,7 +163,7 @@ class TaskPath(object):
 
     def __init__(self, basename, outfile,
                  unfold_stoichio=False, unfold_compounds=False,
-                 maxsteps=15, maxpaths=150):
+                 maxsteps=0, maxpaths=150):
         """Initialization."""
         self.basename = basename
         self.full_react_file = basename + '_full_react'
@@ -172,14 +172,14 @@ class TaskPath(object):
         self.outfile = outfile
         self.unfold_stoichio = unfold_stoichio
         self.unfold_compounds = unfold_compounds
-        self.maxsteps = maxsteps
+        self.maxsteps = maxsteps if maxsteps != 0 else float('+inf')
         self.maxpaths = maxpaths
 
     def _check_args(self):
         """Perform some checking on arguments."""
         assert type(self.unfold_stoichio) is bool
         assert type(self.unfold_compounds) is bool
-        assert type(self.maxsteps) is int and self.maxsteps > 0
+        assert self.maxsteps > 0
         assert type(self.maxpaths) is int and self.maxpaths >= 0
         for filepath in (self.full_react_file, self.react_file, self.efm_file):
             if not os.path.exists(filepath):
@@ -445,12 +445,12 @@ def doall(args):
            outdir=args.outdir, timeout=args.timeout)
 
 
-def build_parser():
+def build_args_parser(prog='rp2paths'):
 
     script_path = os.path.dirname(os.path.realpath(__file__))
 
     # Args: converting the EMS from RetroPath2.0 Knime workflow
-    c_args = argparse.ArgumentParser(add_help=False)
+    c_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     c_args.add_argument(
             dest='infile',
             help='File outputed by the RetroPath2.0 Knime workflow',
@@ -467,7 +467,7 @@ def build_parser():
             default=True)
 
     # Args: computing the scope
-    s_args = argparse.ArgumentParser(add_help=False)
+    s_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     s_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -499,7 +499,7 @@ def build_parser():
             type=str, required=False, default=None)
 
     # Args: enumerating EFMs
-    e_args = argparse.ArgumentParser(add_help=False)
+    e_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     e_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -527,7 +527,7 @@ def build_parser():
             default='TARGET_0000000001')
 
     # Args: computing each possible pathways
-    p_args = argparse.ArgumentParser(add_help=False)
+    p_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     p_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -535,8 +535,9 @@ def build_parser():
             default=os.getcwd()+'/')
     p_args.add_argument(
             '--maxsteps', dest='maxsteps',
-            help='cutoff on the maximum number of steps in a pathways',
-            type=int, default=10)
+            help='Cutoff on the maximum number of steps in a pathways. 0 for \
+            unlimited number of steps.',
+            type=int, default=0)
     p_args.add_argument(
             '--maxpaths', dest='maxpaths',
             help='cutoff on the maximum number of pathways',
@@ -568,7 +569,7 @@ def build_parser():
             default='TARGET_0000000001')
 
     # Args: filtering paths
-    f_args = argparse.ArgumentParser(add_help=False)
+    f_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     f_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -597,7 +598,7 @@ def build_parser():
             type=str, nargs='+', required=False, default=None)
 
     # Args: computing compound pictures
-    i_args = argparse.ArgumentParser(add_help=False)
+    i_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     i_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -615,7 +616,7 @@ def build_parser():
             default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
 
     # Args: computing dot files
-    d_args = argparse.ArgumentParser(add_help=False)
+    d_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     d_args.add_argument(
             '--outdir', dest='outdir',
             help='Folder to put all results',
@@ -652,7 +653,7 @@ def build_parser():
             default='TARGET_0000000001')
 
     # Args: computing all tasks in once
-    a_args = argparse.ArgumentParser(add_help=False)
+    a_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     a_args.add_argument(
             dest='infile',
             help='File outputed by the RetroPath2.0 Knime workflow',
@@ -693,8 +694,9 @@ def build_parser():
             default=900)
     a_args.add_argument(
             '--maxsteps', dest='maxsteps',
-            help='cutoff on the maximum number of steps in a pathways',
-            type=int, default=10)
+            help='Cutoff on the maximum number of steps in a pathways. 0 for \
+            unlimited number of steps.',
+            type=int, default=0)
     a_args.add_argument(
             '--maxpaths', dest='maxpaths',
             help='cutoff on the maximum number of pathways',
@@ -734,6 +736,7 @@ def build_parser():
 
     # Master parser
     parser = argparse.ArgumentParser(
+        prog='rp2paths',
         description='Full workflow that converts RetroPath2.0 output to a list \
         of pathways')
 
@@ -845,23 +848,3 @@ def build_parser():
     parser.set_defaults(unfold_stoichio=True)
 
     return parser
-
-
-def entrypoint(params=sys.argv[1:]):
-    parser = build_parser()
-
-    args = parser.parse_args(params)
-
-    if args.selected_parser is None:
-        parser.print_help()
-        exit(1)
-
-    args.func(args)
-
-if __name__ == '__main__':
-    try: entrypoint()
-    except NoScopeMatrix as e:
-        print()
-        print(e.message)
-        print()
-        sys.exit(1)

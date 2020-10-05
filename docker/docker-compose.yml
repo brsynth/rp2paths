@@ -1,9 +1,0 @@
-version: '2.4'
-
-services:
-
-  rp2paths:
-    image: brsynth/rp2paths
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile

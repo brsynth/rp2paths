@@ -1,93 +1,92 @@
 # RP2paths -- RetroPath2.0 to pathways
 
+[![Anaconda-Server Badge](https://anaconda.org/brsynth/rp2paths/badges/latest_release_date.svg)](https://anaconda.org/brsynth/rp2paths)
+[![Anaconda-Server Badge](https://anaconda.org/brsynth/rp2paths/badges/version.svg)](https://anaconda.org/brsynth/rp2paths)
+
 RP2paths extracts the set of pathways that lies in a metabolic space file outputed by the RetroPath2.0 workflow. RetroPath2.0 is freely accessible on myExperiment.org at: https://www.myexperiment.org/workflows/4987.html.
 
-## Standalone
+## Installation
 
 ### Prerequisites
 
-* Python 3
+rp2paths relies on several packages (rdkit, cairo) and binaries (java, graphviz) that can't be installed directly with pip. Please install them before pursuing the rp2paths set up:
 
-### Installation
-Installation steps are described in the INSTALL file.
+```bash
+# from a new <myenv> conda environment
+conda create --name <myenv> python=3
+conda install --yes --channel rdkit rdkit cairo
+conda install --yes --channel cyclus java-jre
+conda install --yes --channel conda-forge graphviz
+```
 
-### Quick start
-The main code is `src/RP2paths.py`. Once a scope has been produced by RetroPath2.0, a typical command line for extracting the pathways from the results is:
+
+### From pip
+```bash
+# installation in an already existing <myenv> environment (see prerequisites)
+conda activate <myenv>
+python -m pip install rp2paths
 ```
-python src/RP2paths.py all results.csv --outdir pathways
+
+### From conda
+```bash
+# installation in an already existing <myenv> environment (see prerequisites)
+conda activate <myenv>
+conda install -c brsynth rp2paths
 ```
+
+## Usage
+
+### From CLI
+
+Once a scope has been produced by RetroPath2.0, a typical command line for extracting the pathways from the results is
+
+```bash
+python -m rp2paths all <retropath2_scope> [--outdir <outdir>]
+```
+
 where:
-- `all` specify that all the tasks needed for retreiving pathways will be executed at once.
-- `results.csv` is the metabolic space outputted by the RetroPath2.0 workflow.
-- `--outdir pathways` specify the directory in which all files will be outputted (here in `pathways` subfolder).
+- `all` specify that all the tasks needed for retrieving pathways will be executed at once.
+- `<retropath2_scope>` is the metabolic space outputted by the RetroPath2.0 workflow.
+- `--outdir <outdir>` specify the directory in which all files will be outputted.
 
-Additional options are described in the embedded help
-```
-python src/RP2paths.py -h
-python src/RP2paths.py all -h
-```
+In the `<outdir>` folder, the complete set of pathways enumerated will be written in the `out_paths.csv` file. In addition, for each pathway there will be a .dot file (.dot representation of the graph) and a .svg file (.svg depiction of the pathway).
 
-In the output folder (here `pathways`), the complete set of pathways enumerated will be written in the `out_paths.csv` file. In addition, for each pathway there will be a .dot file (.dot representation of the graph) and a .svg file (.svg depiction of the pathway).
+### Available options
+
+Additional options are described in the embedded help:
+```
+# List of possible modes
+python -m rp2paths -h
+
+# List of options for the all-in-one mode
+python -m rp2paths all -h
+```
 
 ### Examples
-Precomputed result files (i.e. outputted by RetroPath2.0) are provided in the `examples` folder for few compounds (carotene, naringenin, pinocembrin, violacein).
+
+Precomputed results (outputted by RetroPath2.0) are provided in the `examples` folder for few compounds (carotene, naringenin, pinocembrin, violacein).
 
 Below are the command lines for generating pathways that lie in `naringenin` result file:
 
-1. If needed, activate the python environment (here named `pyenv`) that provides all the mandatory python library (see the installation section for details):
-```
-source activate pyenv
-```
+```bash
+source activate <myenv>
+python -m rp2paths all examples/naringenin/rp2-results.csv --outdir examples/naringenin/outdir
+````
 
-2. Retrieve pathways:
-```
-python src/RP2paths.py all examples/naringenin/rp2-results.csv --outdir examples/naringenin/pathways
-```
-
-## Docker
-
-RP2Paths can be run into a docker container.
-
-### Prerequisites
-
-* Docker - [Install](https://docs.docker.com/install/)
-
-### Installation
-Before running the container, the image has to be built with:
-```
-cd docker
-docker-compose build
-```
-
-### Run
-Then, the tool is runnable by:
-```
-cd docker
-./RP2paths.sh all <path_to_rp2-results.csv> --outdir <path_to_out_pathways>
-```
-
-To call the tool with fresh code:
-```
-docker-compose run --rm -v <absolutepath_to_src>:/home/src rp2paths
-```
-
-To call the tool from any location:
-```
-docker run \
-    --rm \
-    --volume <path_to_rp2-results.csv>:/home/input.csv:ro \
-    --volume <path_to_output_folder>:/home/outdir \
-    --workdir /home \
-    brsynth/rp2paths python src/RP2paths.py all input.csv --outdir outdir
-```
 
 ## Test
-All modes can be tested with:
+
+All modes can be tested (into Docker containers) with:
 ```
-cd test
-./run[-in-docker].sh
+cd tests
+./test-in-docker.sh [file_to_test]
 ```
 
+To be processed outside of Docker, first move into to the `tests` folder:
+```
+cd tests
+pytest [file_to_test]
+```
 
 
 ## How to cite RP2paths?

@@ -10,8 +10,8 @@ LICENSE.txt file.
 import os
 import argparse
 import csv
-from pyEMSv2.reaction import StrReaction
-from ImgMaker import ImgMaker
+from rp2paths.pyEMSv2.reaction import StrReaction
+from rp2paths.ImgMaker import ImgMaker
 
 
 class ImgHandler(object):

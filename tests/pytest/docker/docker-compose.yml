@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+
+  tests:
+    image: ${PACKAGE}-tests
+    build:
+      context: ../../..
+      args:
+        PKG: ${PACKAGE}
+        HOME: ${HOMEDIR}
+        IMAGE: ${BASE_IMAGE}
+      dockerfile: tests/pytest/docker/Dockerfile
+    entrypoint: pytest --verbose
+    command: _main.py
