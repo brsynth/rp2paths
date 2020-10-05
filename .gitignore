@@ -8,3 +8,4 @@ output_out*
 *.log
 *.pid
 dump.rdb
+tests/out
