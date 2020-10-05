@@ -82,14 +82,11 @@ cd tests
 ./test-in-docker.sh [file_to_test]
 ```
 
-To be processed on the host (outside of Docker), please add a symbolic link towards `src` folder as following:
+To be processed outside of Docker, first move into to the `tests` folder:
 ```
 cd tests
-ln -sf ../src rp2paths
 pytest [file_to_test]
 ```
-
-
 
 
 ## How to cite RP2paths?

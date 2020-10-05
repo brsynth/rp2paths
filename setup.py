@@ -52,7 +52,7 @@ setup(
     long_description_content_type = 'text/markdown',
     url                           = _url,
     packages                      = [_package],
-    package_dir                   = {_package: 'src'},
+    package_dir                   = {_package: 'rp2paths'},
     include_package_data          = True,
     install_requires              = required,
     test_suite                    = 'pytest',
