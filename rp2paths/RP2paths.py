@@ -163,7 +163,7 @@ class TaskPath(object):
 
     def __init__(self, basename, outfile,
                  unfold_stoichio=False, unfold_compounds=False,
-                 maxsteps=15, maxpaths=150):
+                 maxsteps=0, maxpaths=150):
         """Initialization."""
         self.basename = basename
         self.full_react_file = basename + '_full_react'
@@ -172,14 +172,14 @@ class TaskPath(object):
         self.outfile = outfile
         self.unfold_stoichio = unfold_stoichio
         self.unfold_compounds = unfold_compounds
-        self.maxsteps = maxsteps
+        self.maxsteps = maxsteps if maxsteps != 0 else float('+inf')
         self.maxpaths = maxpaths
 
     def _check_args(self):
         """Perform some checking on arguments."""
         assert type(self.unfold_stoichio) is bool
         assert type(self.unfold_compounds) is bool
-        assert type(self.maxsteps) is int and self.maxsteps > 0
+        assert self.maxsteps > 0
         assert type(self.maxpaths) is int and self.maxpaths >= 0
         for filepath in (self.full_react_file, self.react_file, self.efm_file):
             if not os.path.exists(filepath):
@@ -535,8 +535,9 @@ def build_args_parser(prog='rp2paths'):
             default=os.getcwd()+'/')
     p_args.add_argument(
             '--maxsteps', dest='maxsteps',
-            help='cutoff on the maximum number of steps in a pathways',
-            type=int, default=10)
+            help='Cutoff on the maximum number of steps in a pathways. 0 for \
+            unlimited number of steps.',
+            type=int, default=0)
     p_args.add_argument(
             '--maxpaths', dest='maxpaths',
             help='cutoff on the maximum number of pathways',
@@ -693,8 +694,9 @@ def build_args_parser(prog='rp2paths'):
             default=900)
     a_args.add_argument(
             '--maxsteps', dest='maxsteps',
-            help='cutoff on the maximum number of steps in a pathways',
-            type=int, default=10)
+            help='Cutoff on the maximum number of steps in a pathways. 0 for \
+            unlimited number of steps.',
+            type=int, default=0)
     a_args.add_argument(
             '--maxpaths', dest='maxpaths',
             help='cutoff on the maximum number of pathways',
