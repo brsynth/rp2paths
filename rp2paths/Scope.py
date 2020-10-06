@@ -237,8 +237,8 @@ class Scope(object):
                 cv.writerow(np.array(smat[i, :], dtype=int))
         with open(path.join(outFolder, 'out_info'), 'w') as out_info:
             out_info.write('iteration = %d\n' % (niter,))
-        # with open(path.join(outFolder, 'out_discarded'), 'w') as out_discarded:
-        #     pass  # add discarded compounds/reactions?
+        with open(path.join(outFolder, 'out_discarded'), 'w') as out_discarded:
+            pass  # add discarded compounds/reactions?
         with open(path.join(outFolder, 'out_full_react'), 'w') as out_full_react:
             for rxn in self.dfmat.columns:
                 for rid in set(rxn.split(',')) & set(rxnFull):
