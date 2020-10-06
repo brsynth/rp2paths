@@ -37,4 +37,4 @@ services:
 
   bandit:
     <<: *default
-    command: bandit -r ${PACKAGE}
+    command: bandit -r ${PACKAGE} -lll  # -lll to only catch the higher level security issues
