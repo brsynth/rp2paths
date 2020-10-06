@@ -74,17 +74,33 @@ python -m rp2paths all examples/naringenin/rp2-results.csv --outdir examples/nar
 ````
 
 
-## Test
+## For developers
 
-All modes can be tested (into Docker containers) with:
+### Development installation
+
+After a git clone:
+```bash
+cd <repository>
+conda create --name <dev_env> python=3
+conda install --name <dev_env> --yes --channel rdkit rdkit cairo
+conda install --name <dev_env> --yes --channel cyclus java-jre
+conda install --name <dev_env> --yes --channel conda-forge graphviz flake8
+conda install --name <dev_env> --yes pytest
+conda develop --name <dev_env> .
+```
+
+### Tests
+
+Using Docker containers with:
 ```
 cd tests
 ./test-in-docker.sh [file_to_test]
 ```
 
-To be processed outside of Docker, first move into to the `tests` folder:
+Without using Docker containers:
 ```
 cd tests
+conda activate <dev_env>
 pytest [file_to_test]
 ```
 
