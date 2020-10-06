@@ -47,7 +47,7 @@ def reactants(reac):
         v = x.split('.')
         try:
             n = int(v[0])
-        except:
+        except BaseException:
             continue
         c = v[1]
         c = re.sub('\[', '', re.sub('\]', '', c))
@@ -59,8 +59,8 @@ def reactants(reac):
 def readSinks(sinkFile):
     """Get the list of compounds to consider as sink."""
     sinks = set()
-    for l in open(sinkFile):
-        m = l.rstrip().split('\t')
+    for line in open(sinkFile):
+        m = line.rstrip().split('\t')
         sinks.add(m[0])
     return sinks
 
@@ -70,8 +70,8 @@ def readReaction(rxnFile, maxIter=None, keepBoots=False):
     maxDepth = 0
     rxn = {}
     rxnFull = {}
-    for l in open(rxnFile):
-        m = l.rstrip().split('\t')
+    for line in open(rxnFile):
+        m = line.rstrip().split('\t')
         rid = m[0]
         rinfo = rid.split('_')
         niter = 0
@@ -79,7 +79,7 @@ def readReaction(rxnFile, maxIter=None, keepBoots=False):
             niter = int(rinfo[2])
             if niter > maxDepth:
                 maxDepth = niter
-        except:
+        except BaseException:
             pass
         if maxIter is not None:
             if niter > maxIter:
@@ -97,7 +97,7 @@ def readReaction(rxnFile, maxIter=None, keepBoots=False):
             entry[x] = -rsubs[x]
         for x in rprods:
             entry[x] = rprods[x]
-        rxnFull[rid] = l
+        rxnFull[rid] = line
         rxn[rid] = entry
     return rxn, rxnFull, maxDepth
 
@@ -134,6 +134,7 @@ def reachableReactions(rxn, sinks):
 
     return newPending, newSoup, iteration
 
+
 def addFoldedSinks(sinks, rxn):
     for r in rxn:
         for c in rxn[r]:
@@ -148,7 +149,6 @@ def cleanOutFiles(outFolder):
               'out_discarded', 'out_full_react']:
         if path.exists(path.join(outFolder, f)):
             unlink(path.join(outFolder, f))
-
 
 
 class Scope(object):
@@ -213,9 +213,10 @@ class Scope(object):
         outRow = np.zeros((len(self.dfmat.index), 1))
         outRow[ix] = -1.0
         smat = np.hstack([self.dfmat.values, outRow])
-        self.dfmat = pd.DataFrame(data=smat, index=self.dfmat.index,
-                                #   columns=np.hstack([self.dfmat.columns, 'O'+target]))  # TD: not needed
-                                  columns=np.hstack([self.dfmat.columns, 'O[' + target + ']']))
+        self.dfmat = pd.DataFrame(
+            data=smat, index=self.dfmat.index,
+            #   columns=np.hstack([self.dfmat.columns, 'O'+target]))  # TD: not needed
+            columns=np.hstack([self.dfmat.columns, 'O[' + target + ']']))
 
     def outFiles(self, niter, rxnFull, outFolder):
         """Write scope."""
@@ -236,7 +237,7 @@ class Scope(object):
                 cv.writerow(np.array(smat[i, :], dtype=int))
         with open(path.join(outFolder, 'out_info'), 'w') as out_info:
             out_info.write('iteration = %d\n' % (niter,))
-        with open(path.join(outFolder, 'out_discarded'), 'w') as out_discared:
+        with open(path.join(outFolder, 'out_discarded'), 'w') as out_discarded:
             pass  # add discarded compounds/reactions?
         with open(path.join(outFolder, 'out_full_react'), 'w') as out_full_react:
             for rxn in self.dfmat.columns:
@@ -279,11 +280,11 @@ if __name__ == '__main__':
     arg = arguments()
 
     compute(
-            out_folder=arg.out_folder,
-            sink_file=arg.sink_file,
-            reaction_file=arg.reaction_file,
-            target=arg.target,
-            maxIter=arg.maxIter,
-            minDepth=arg.minDepth,
-            keepBoots=arg.keepBoots
-            )
+        out_folder=arg.out_folder,
+        sink_file=arg.sink_file,
+        reaction_file=arg.reaction_file,
+        target=arg.target,
+        maxIter=arg.maxIter,
+        minDepth=arg.minDepth,
+        keepBoots=arg.keepBoots
+    )

@@ -105,10 +105,11 @@ class Reaction(object):
         return '\t'.join([self.name, self.enzyme, subs, '=', prods])
 
     def __eq__(self, other):
-        return (self.name == other.name and
-                self.enzyme == other.enzyme and
-                self.subs == other.subs and
-                self.prods == other.prods)
+        return (
+            self.name == other.name
+            and self.enzyme == other.enzyme
+            and self.subs == other.subs
+            and self.prods == other.prods)
 
     def compounds(self):
         return self.subs + self.prods
@@ -137,14 +138,14 @@ class StrReaction(Reaction):
     def __init__(self, reaction=''):
         super(StrReaction, self).__init__(reaction)
 
-    @staticmethod
-    def create(name, enzyme, subs, prods):
-        react = StrReaction('')
-        self.name = name
-        self.enzyme = enzyme
-        self.subs = subs
-        self.prods = prods
-        return res
+    # @staticmethod
+    # def create(name, enzyme, subs, prods):
+    #     react = StrReaction('')
+    #     self.name = name
+    #     self.enzyme = enzyme
+    #     self.subs = subs
+    #     self.prods = prods
+    #     return res
 
     @staticmethod
     def from_file(f):
@@ -191,14 +192,14 @@ class EquivReaction(Reaction):
     def __init__(self, reaction=''):
         super(EquivReaction, self).__init__(reaction)
 
-    @staticmethod
-    def create(name, enzyme, subs, prods):
-        react = EquivReaction('')
-        self.name = name
-        self.enzyme = enzyme
-        self.subs = subs
-        self.prods = prods
-        return res
+    # @staticmethod
+    # def create(name, enzyme, subs, prods):
+    #     react = EquivReaction('')
+    #     self.name = name
+    #     self.enzyme = enzyme
+    #     self.subs = subs
+    #     self.prods = prods
+    #     return res
 
     @staticmethod
     def from_file(f):

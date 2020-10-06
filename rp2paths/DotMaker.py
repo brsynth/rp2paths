@@ -135,7 +135,7 @@ class DotMaker(object):
         if img is not None:
             attrs.update({'image': img})
         self.graph.add_node(
-                pydotplus.graphviz.Node(name=nid, **attrs))
+            pydotplus.graphviz.Node(name=nid, **attrs))
         # self.graph.node(name=nid, **attrs)
 
     def AddEdge(self, startid, endid, style):
@@ -143,7 +143,7 @@ class DotMaker(object):
         attrs = dict()
         attrs.update(style)
         self.graph.add_edge(
-                pydotplus.graphviz.Edge(src=startid, dst=endid, **attrs))
+            pydotplus.graphviz.Edge(src=startid, dst=endid, **attrs))
         # self.graph.edge(tail_name=startid, head_name=endid, **attrs)
 
     def MakeDot(self, graphname=None):

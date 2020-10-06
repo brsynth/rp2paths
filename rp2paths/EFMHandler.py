@@ -86,6 +86,7 @@ class EFMHandler(object):
         self.ParseEFMs()
         self.WriteCsv()
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Find pathways from \
                                      Elementary Flux Modes enumeration')

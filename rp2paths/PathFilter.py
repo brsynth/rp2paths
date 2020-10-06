@@ -99,12 +99,12 @@ class PathFilter(object):
 
     @staticmethod
     def HasSingleSubstrate(path, sinks, subIDs):
-        """Test wether any subIDs compounds are used as uniq substrate."""
+        """Test whether any subIDs compounds are used as unique substrate."""
         for r in path:
             substrates = set(r.involved_substrates())
             if (
-                len(substrates) == 1 and
-                any([s in subIDs for s in substrates])
+                len(substrates) == 1
+                and any([s in subIDs for s in substrates])
             ):
                 return True
         return False
@@ -115,30 +115,30 @@ class PathFilter(object):
         # Find pathways to delete
         for pid, path in self.pathways.items():
             if (
-                self.filter_bootstraps and
-                PathFilter.HasBootstrapReaction(path, self.sinks)
+                self.filter_bootstraps
+                and PathFilter.HasBootstrapReaction(path, self.sinks)
             ):
                 print("PathFilter: filtering out one pathway",
                       "(has bootstrap reaction)")
                 pids_to_rm.add(pid)
             elif (
-                self.filter_inconsistentsubstrates and
-                PathFilter.HasInconsistentSubstrates(path, self.sinks)
+                self.filter_inconsistentsubstrates
+                and PathFilter.HasInconsistentSubstrates(path, self.sinks)
             ):
                 print("PathFilter: filtering out one pathway",
                       "(has inconsistent initial substrates)")
                 pids_to_rm.add(pid)
             elif (
-                self.onlyPathsStartingBy is not None and
-                not PathFilter.HasSubstratesInFirstStep(path, self.sinks, self.onlyPathsStartingBy)
+                self.onlyPathsStartingBy is not None
+                and not PathFilter.HasSubstratesInFirstStep(path, self.sinks, self.onlyPathsStartingBy)
             ):
                 print("PathFilter: filtering out one pathway",
                       "(does not use any wanted substrate in first step)")
                 pids_to_rm.add(pid)
             elif (
-                self.notPathsStartingBy is not None and
-                PathFilter.HasSubstratesInFirstStep(path, self.sinks, self.notPathsStartingBy) and
-                PathFilter.HasSingleSubstrate(path, self.sinks, self.notPathsStartingBy)
+                self.notPathsStartingBy is not None
+                and PathFilter.HasSubstratesInFirstStep(path, self.sinks, self.notPathsStartingBy)
+                and PathFilter.HasSingleSubstrate(path, self.sinks, self.notPathsStartingBy)
             ):
                 print("PathFilter: filtering out one pathway",
                       "(use an unwanted single substrate in first step)")

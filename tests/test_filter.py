@@ -7,10 +7,11 @@ Created on Jul 15 2020
 from module import module
 
 files = {
-        module.args.outdir+'/'+'out_full_react': '9e2f7d6e8b53f6a687d5a72f18261c89dd44e4bbbc8f3e48542881313d8c2c168999dd929238c8d3a56b68140fb3834b551e0fe0a5f84f572021502850a69a1a',
+    module.args.outdir+'/'+'out_full_react': '9e2f7d6e8b53f6a687d5a72f18261c89dd44e4bbbc8f3e48542881313d8c2c168999dd929238c8d3a56b68140fb3834b551e0fe0a5f84f572021502850a69a1a',
 }
 files = list(files.items())
 parent_test = 'paths'
+
 
 class Test_Filter(module):
     __test__ = True

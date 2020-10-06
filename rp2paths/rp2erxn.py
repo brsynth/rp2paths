@@ -161,20 +161,20 @@ class Transformation(object):
         left_side = ':'.join(sorted([Transformation.CmpdToStr(smi, coeff) for smi, coeff in self.left.items()]))
         right_side = ':'.join(sorted([Transformation.CmpdToStr(smi, coeff) for smi, coeff in self.right.items()]))
         # ..
-        l = list()
+        ls = list()
         if not reverse:
-            l += [self.trs_id]  # Transformation ID
-            l += [','.join(sorted(list(set(self.rule_ids))))]  # Rule IDs
-            l += [left_side]
-            l += ['=']
-            l += [right_side]
+            ls += [self.trs_id]  # Transformation ID
+            ls += [','.join(sorted(list(set(self.rule_ids))))]  # Rule IDs
+            ls += [left_side]
+            ls += ['=']
+            ls += [right_side]
         else:
-            l += [self.trs_id]  # Transformation ID
-            l += [','.join(sorted(list(set(self.rule_ids))))]  # Rule IDs
-            l += [right_side]
-            l += ['=']
-            l += [left_side]
-        return '\t'.join(l)
+            ls += [self.trs_id]  # Transformation ID
+            ls += [','.join(sorted(list(set(self.rule_ids))))]  # Rule IDs
+            ls += [right_side]
+            ls += ['=']
+            ls += [left_side]
+        return '\t'.join(ls)
 
 
 def compute(infile, cmpdfile='compounds.txt', rxnfile='reactions.txt',
@@ -224,7 +224,7 @@ def compute(infile, cmpdfile='compounds.txt', rxnfile='reactions.txt',
             sys.exit(0)
         try:
             assert prods_from_rxn == prods_from_cmpd
-        except:
+        except BaseException:
             print('Assertion error: differences in products')
             print(tid)
             print(prods_from_rxn, prods_from_cmpd)
