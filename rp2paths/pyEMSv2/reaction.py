@@ -105,10 +105,11 @@ class Reaction(object):
         return '\t'.join([self.name, self.enzyme, subs, '=', prods])
 
     def __eq__(self, other):
-        return (self.name == other.name and
-                self.enzyme == other.enzyme and
-                self.subs == other.subs and
-                self.prods == other.prods)
+        return (
+            self.name == other.name
+            and self.enzyme == other.enzyme
+            and self.subs == other.subs
+            and self.prods == other.prods)
 
     def compounds(self):
         return self.subs + self.prods

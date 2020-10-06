@@ -96,6 +96,7 @@ class DotHandler(object):
         self.GetChassisCompoundsFromFile()
         self.MakeAllDot()
 
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Handling and generating \

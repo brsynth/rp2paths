@@ -94,14 +94,14 @@ class ImgMaker(object):
         if rdmol is None:
             rdmol = Chem.MolFromSmiles(self.smiles, sanitize=False)
             Chem.SanitizeMol(
-                rdmol, sanitizeOps=Chem.SanitizeFlags.SANITIZE_ALL ^
-                Chem.SanitizeFlags.SANITIZE_KEKULIZE ^
-                Chem.SanitizeFlags.SANITIZE_SETAROMATICITY)
+                rdmol, sanitizeOps=Chem.SanitizeFlags.SANITIZE_ALL
+                ^ Chem.SanitizeFlags.SANITIZE_KEKULIZE
+                ^ Chem.SanitizeFlags.SANITIZE_SETAROMATICITY)
         # Kekulize if necessary
         if self.kekulize:
             try:
                 Chem.Kekulize(rdmol)
-            except:
+            except BaseException:
                 pass
         # Handle coordinate
         if not rdmol.GetNumConformers():

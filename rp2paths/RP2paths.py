@@ -11,8 +11,6 @@ python RP2paths.py all results.csv --outdir pathways
 """
 
 import os
-import sys
-import pathlib
 import argparse
 import signal
 import subprocess
@@ -22,6 +20,7 @@ from rp2paths.EFMHandler import EFMHandler
 from rp2paths.ImgHandler import ImgHandler
 from rp2paths.DotHandler import DotHandler
 from rp2paths.PathFilter import PathFilter
+
 
 class NoScopeMatrix(Exception):
     """Raised when no scope matrix was produced"""
@@ -123,7 +122,7 @@ class TaskScope(GeneralTask):
                 raise FileNotFoundError(f)
 
     def _check_output(self):
-        """Check wether the outputed scope is empty."""
+        """Check whether the outputted scope is empty."""
         if not os.path.exists('out_mat'):
             raise NoScopeMatrix("*** Scope Task: no scope matrix was produced, exit")
 
@@ -150,8 +149,7 @@ class TaskEfm(GeneralTask):
     def compute(self, timeout):
         """Enumerate EFMs."""
         if not os.path.exists(self.basename + '_mat'):
-            raise IOError(
-                    'No stoichiometry matrix found: ' + self.basename + '_mat')
+            raise IOError('No stoichiometry matrix found: ' + self.basename + '_mat')
 
         command = [self.ebin, self.basename, self.basename]
         self._launch_external_program(command=command, baselog='efm',
@@ -263,8 +261,7 @@ class TaskImg(GeneralTask):
         if self.cmpdnamefile is not None:
             if not os.path.exists(self.cmpdnamefile):
                 self.cmpdnamefile = None
-                print('Warning: --cmpdnamefile is not a valid path, name of ' +
-                      'compounds will be not available.')
+                print('Warning: --cmpdnamefile is not a valid path, name of compounds will be not available.')
 
     def compute(self, timeout):
         """Compute pictures."""
@@ -309,8 +306,7 @@ class TaskDot(object):
         if self.cmpdnamefile is not None:
             if not os.path.exists(self.cmpdnamefile):
                 self.cmpdnamefile = None
-                print('Warning: --cmpdnamefile is not a valid path, name of ' +
-                      'compounds will be not available.')
+                print('Warning: --cmpdnamefile is not a valid path, name of compounds will be not available.')
 
     def compute(self, timeout):
         """Generate all dot files."""
@@ -413,36 +409,37 @@ def dot(args):
 def doall(args):
     """Compute all the tasks at once."""
     c_task = TaskConvert(
-            infile=args.infile, cmpdfile=args.cmpdfile,
-            reacfile=args.reacfile, sinkfile=args.sinkfile,
-            reverse=args.reverse)
+        infile=args.infile, cmpdfile=args.cmpdfile,
+        reacfile=args.reacfile, sinkfile=args.sinkfile,
+        reverse=args.reverse)
     c_task.set_absolute_infile_path()
     s_task = TaskScope(
-            reacfile=args.reacfile, sinkfile=args.sinkfile,
-            target=args.target, minDepth=args.minDepth,
-            customsinkfile=args.customsinkfile)
+        reacfile=args.reacfile, sinkfile=args.sinkfile,
+        target=args.target, minDepth=args.minDepth,
+        customsinkfile=args.customsinkfile)
     e_task = TaskEfm(
-            ebin=args.ebin, basename=args.basename)
+        ebin=args.ebin, basename=args.basename)
     p_task = TaskPath(
-            basename=args.basename, outfile=args.pathsfile,
-            unfold_stoichio=args.unfold_stoichio,
-            unfold_compounds=args.unfold_compounds,
-            maxsteps=args.maxsteps, maxpaths=args.maxpaths)
+        basename=args.basename, outfile=args.pathsfile,
+        unfold_stoichio=args.unfold_stoichio,
+        unfold_compounds=args.unfold_compounds,
+        maxsteps=args.maxsteps, maxpaths=args.maxpaths)
     f_task = TaskFilter(
-            pathfile=args.pathsfile, sinkfile=args.sinkfile,
-            customsinkfile=args.customsinkfile,
-            onlyPathsStartingBy=args.onlyPathsStartingBy,
-            notPathsStartingBy=args.notPathsStartingBy)
+        pathfile=args.pathsfile, sinkfile=args.sinkfile,
+        customsinkfile=args.customsinkfile,
+        onlyPathsStartingBy=args.onlyPathsStartingBy,
+        notPathsStartingBy=args.notPathsStartingBy)
     i_task = TaskImg(
-            pathsfile=args.pathsfile, cmpdfile=args.cmpdfile,
-            imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile)
+        pathsfile=args.pathsfile, cmpdfile=args.cmpdfile,
+        imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile)
     d_task = TaskDot(
-            pathsfile=args.pathsfile, chassisfile=args.sinkfile,
-            target=args.target, outbasename=args.dotfilebase,
-            imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile,
-            customchassisfile=args.customsinkfile)
-    launch(tasks=[c_task, s_task, e_task, p_task, f_task, i_task, d_task],
-           outdir=args.outdir, timeout=args.timeout)
+        pathsfile=args.pathsfile, chassisfile=args.sinkfile,
+        target=args.target, outbasename=args.dotfilebase,
+        imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile,
+        customchassisfile=args.customsinkfile)
+    launch(
+        tasks=[c_task, s_task, e_task, p_task, f_task, i_task, d_task],
+        outdir=args.outdir, timeout=args.timeout)
 
 
 def build_args_parser(prog='rp2paths'):
@@ -452,287 +449,287 @@ def build_args_parser(prog='rp2paths'):
     # Args: converting the EMS from RetroPath2.0 Knime workflow
     c_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     c_args.add_argument(
-            dest='infile',
-            help='File outputed by the RetroPath2.0 Knime workflow',
-            type=str)
+        dest='infile',
+        help='File outputed by the RetroPath2.0 Knime workflow',
+        type=str)
     c_args.add_argument(
-            '--outdir', dest='outdir',
-            help='Folder to put all results',
-            type=str, required=False,
-            default=os.getcwd()+'/')
+        '--outdir', dest='outdir',
+        help='Folder to put all results',
+        type=str, required=False,
+        default=os.getcwd()+'/')
     c_args.add_argument(
-            '--reverse', '-r', dest='reverse',
-            help='Consider reactions in the reverse direction',
-            required=False, action='store_false',
-            default=True)
+        '--reverse', '-r', dest='reverse',
+        help='Consider reactions in the reverse direction',
+        required=False, action='store_false',
+        default=True)
 
     # Args: computing the scope
     s_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     s_args.add_argument(
-            '--outdir', dest='outdir',
-            help='Folder to put all results',
-            type=str, required=False,
-            default=os.getcwd()+'/')
+        '--outdir', dest='outdir',
+        help='Folder to put all results',
+        type=str, required=False,
+        default=os.getcwd()+'/')
     s_args.add_argument(
-            '--minDepth', action='store_true', default=False,
-            help='Use minimal depth scope, i.e. stop the scope computation as \
-            as soon an a first minimal path linking target to sink is found \
-            (default: False).')
+        '--minDepth', action='store_true', default=False,
+        help='Use minimal depth scope, i.e. stop the scope computation as \
+        as soon an a first minimal path linking target to sink is found \
+        (default: False).')
     s_args.add_argument(
-            '--target',
-            help='Target compound internal ID. This internal ID specifies \
-            which compound should be considered as the targeted compound. The \
-            default behavior is to consider as the target the first compound \
-            used as a source compound in a first iteration of a metabolic \
-            exploration. Let this value as it is except if you know what you \
-            are doing.',
-            type=str, required=False,
-            default='TARGET_0000000001')
+        '--target',
+        help='Target compound internal ID. This internal ID specifies \
+        which compound should be considered as the targeted compound. The \
+        default behavior is to consider as the target the first compound \
+        used as a source compound in a first iteration of a metabolic \
+        exploration. Let this value as it is except if you know what you \
+        are doing.',
+        type=str, required=False,
+        default='TARGET_0000000001')
     s_args.add_argument(
-            '--customsinkfile', dest='customsinkfile',
-            help='User-defined sink file, i.e. file listing compounds to \
-            consider as sink compounds. Sink compounds should be provided by \
-            their IDs, as used in the reaction.erxn file. If no file is \
-            provided then the sink file generated during the "convert" task \
-            is used (default behavior). If a file is provided then **only** \
-            comppounds listed in this file will be used.',
-            type=str, required=False, default=None)
+        '--customsinkfile', dest='customsinkfile',
+        help='User-defined sink file, i.e. file listing compounds to \
+        consider as sink compounds. Sink compounds should be provided by \
+        their IDs, as used in the reaction.erxn file. If no file is \
+        provided then the sink file generated during the "convert" task \
+        is used (default behavior). If a file is provided then **only** \
+        compounds listed in this file will be used.',
+        type=str, required=False, default=None)
 
     # Args: enumerating EFMs
     e_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     e_args.add_argument(
-            '--outdir', dest='outdir',
-            help='Folder to put all results',
-            type=str, required=False,
-            default=os.getcwd()+'/')
+        '--outdir', dest='outdir',
+        help='Folder to put all results',
+        type=str, required=False,
+        default=os.getcwd()+'/')
     e_args.add_argument(
-            '--ebin', dest='ebin',
-            help='Path to the binary that enumerate the EFMs',
-            type=str, required=False,
-            default=os.path.join(script_path, 'efmtool/launch_efm.sh'))
+        '--ebin', dest='ebin',
+        help='Path to the binary that enumerate the EFMs',
+        type=str, required=False,
+        default=os.path.join(script_path, 'efmtool/launch_efm.sh'))
     e_args.add_argument(
-            '--timeout', dest='timeout',
-            help='Timeout before killing a process (in s)',
-            type=int, required=False,
-            default=900)
+        '--timeout', dest='timeout',
+        help='Timeout before killing a process (in s)',
+        type=int, required=False,
+        default=900)
     e_args.add_argument(
-            '--target',
-            help='Target compound internal ID. This internal ID specifies \
-            which compound should be considered as the targeted compound. The \
-            default behavior is to consider as the target the first compound \
-            used as a source compound in a first iteration of a metabolic \
-            exploration. Let this value as it is except if you know what you \
-            are doing.',
-            type=str, required=False,
-            default='TARGET_0000000001')
+        '--target',
+        help='Target compound internal ID. This internal ID specifies \
+        which compound should be considered as the targeted compound. The \
+        default behavior is to consider as the target the first compound \
+        used as a source compound in a first iteration of a metabolic \
+        exploration. Let this value as it is except if you know what you \
+        are doing.',
+        type=str, required=False,
+        default='TARGET_0000000001')
 
     # Args: computing each possible pathways
     p_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     p_args.add_argument(
-            '--outdir', dest='outdir',
-            help='Folder to put all results',
-            type=str, required=False,
-            default=os.getcwd()+'/')
+        '--outdir', dest='outdir',
+        help='Folder to put all results',
+        type=str, required=False,
+        default=os.getcwd()+'/')
     p_args.add_argument(
-            '--maxsteps', dest='maxsteps',
-            help='Cutoff on the maximum number of steps in a pathways. 0 for \
-            unlimited number of steps.',
-            type=int, default=0)
+        '--maxsteps', dest='maxsteps',
+        help='Cutoff on the maximum number of steps in a pathways. 0 for \
+        unlimited number of steps.',
+        type=int, default=0)
     p_args.add_argument(
-            '--maxpaths', dest='maxpaths',
-            help='cutoff on the maximum number of pathways',
-            required=False, type=int, default=150)
+        '--maxpaths', dest='maxpaths',
+        help='cutoff on the maximum number of pathways',
+        required=False, type=int, default=150)
     p_args.add_argument(
-            '--timeout', dest='timeout',
-            help='Timeout before killing a process (in s)',
-            type=int, required=False,
-            default=900)
+        '--timeout', dest='timeout',
+        help='Timeout before killing a process (in s)',
+        type=int, required=False,
+        default=900)
     p_args.add_argument(
-            '--reverse', '-r', dest='reverse',
-            help='Consider reactions in the reverse direction',
-            required=False, action='store_false',
-            default=True)
+        '--reverse', '-r', dest='reverse',
+        help='Consider reactions in the reverse direction',
+        required=False, action='store_false',
+        default=True)
     p_args.add_argument(
-            '--unfold_compounds', dest='unfold_compounds',
-            help='Unfold pathways based on equivalencie of compounds (can lead \
-            to combinatorial explosion).',
-            default=False, action='store_true')
+        '--unfold_compounds', dest='unfold_compounds',
+        help='Unfold pathways based on equivalencie of compounds (can lead \
+        to combinatorial explosion).',
+        default=False, action='store_true')
     p_args.add_argument(
-            '--target',
-            help='Target compound internal ID. This internal ID specifies \
-            which compound should be considered as the targeted compound. The \
-            default behavior is to consider as the target the first compound \
-            used as a source compound in a first iteration of a metabolic \
-            exploration. Let this value as it is except if you know what you \
-            are doing.',
-            type=str, required=False,
-            default='TARGET_0000000001')
+        '--target',
+        help='Target compound internal ID. This internal ID specifies \
+        which compound should be considered as the targeted compound. The \
+        default behavior is to consider as the target the first compound \
+        used as a source compound in a first iteration of a metabolic \
+        exploration. Let this value as it is except if you know what you \
+        are doing.',
+        type=str, required=False,
+        default='TARGET_0000000001')
 
     # Args: filtering paths
     f_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     f_args.add_argument(
-            '--outdir', dest='outdir',
-            help='Folder to put all results',
-            type=str, required=False,
-            default=os.getcwd()+'/')
+        '--outdir', dest='outdir',
+        help='Folder to put all results',
+        type=str, required=False,
+        default=os.getcwd()+'/')
     f_args.add_argument(
-            '--customsinkfile', dest='customsinkfile',
-            help='User-defined sink file, i.e. file listing compounds to \
-            consider as sink compounds. Sink compounds should be provided by \
-            their IDs, as used in the reaction.erxn file. If no file is \
-            provided then the sink file generated during the "convert" task \
-            is used (default behavior). If a file is provided then **only** \
-            comppounds listed in this file will be used.',
-            type=str, required=False, default=None)
+        '--customsinkfile', dest='customsinkfile',
+        help='User-defined sink file, i.e. file listing compounds to \
+        consider as sink compounds. Sink compounds should be provided by \
+        their IDs, as used in the reaction.erxn file. If no file is \
+        provided then the sink file generated during the "convert" task \
+        is used (default behavior). If a file is provided then **only** \
+        compounds listed in this file will be used.',
+        type=str, required=False, default=None)
     f_args.add_argument(
-            '--onlyPathsStartingBy', dest='onlyPathsStartingBy',
-            help='List of compounds IDs to consider. If specified, only paths \
-            making use of at least one of these compounds as initial \
-            substrate (first step of a pathway) are kept.',
-            type=str, nargs='+', required=False, default=None)
+        '--onlyPathsStartingBy', dest='onlyPathsStartingBy',
+        help='List of compounds IDs to consider. If specified, only paths \
+        making use of at least one of these compounds as initial \
+        substrate (first step of a pathway) are kept.',
+        type=str, nargs='+', required=False, default=None)
     f_args.add_argument(
-            '--notPathsStartingBy', dest='notPathsStartingBy',
-            help='List of compounds IDs. If specifed, paths making use of \
-            one of these compounds as unique initial substrate will be \
-            filtered out',
-            type=str, nargs='+', required=False, default=None)
+        '--notPathsStartingBy', dest='notPathsStartingBy',
+        help='List of compounds IDs. If specifed, paths making use of \
+        one of these compounds as unique initial substrate will be \
+        filtered out',
+        type=str, nargs='+', required=False, default=None)
 
     # Args: computing compound pictures
     i_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     i_args.add_argument(
-            '--outdir', dest='outdir',
-            help='Folder to put all results',
-            type=str, required=False,
-            default=os.getcwd()+'/')
+        '--outdir', dest='outdir',
+        help='Folder to put all results',
+        type=str, required=False,
+        default=os.getcwd()+'/')
     i_args.add_argument(
-            '--timeout', dest='timeout',
-            help='Timeout before killing a process (in s)',
-            type=int, required=False,
-            default=900)
+        '--timeout', dest='timeout',
+        help='Timeout before killing a process (in s)',
+        type=int, required=False,
+        default=900)
     i_args.add_argument(
-            '--cmpdnamefile', dest='cmpdnamefile',
-            help='File with name of compounds.',
-            type=str, required=False,
-            default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
+        '--cmpdnamefile', dest='cmpdnamefile',
+        help='File with name of compounds.',
+        type=str, required=False,
+        default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
 
     # Args: computing dot files
     d_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     d_args.add_argument(
-            '--outdir', dest='outdir',
-            help='Folder to put all results',
-            type=str, required=False,
-            default=os.getcwd()+'/')
+        '--outdir', dest='outdir',
+        help='Folder to put all results',
+        type=str, required=False,
+        default=os.getcwd()+'/')
     d_args.add_argument(
-            '--timeout', dest='timeout',
-            help='Timeout before killing a process (in s)',
-            type=int, required=False,
-            default=900)
+        '--timeout', dest='timeout',
+        help='Timeout before killing a process (in s)',
+        type=int, required=False,
+        default=900)
     d_args.add_argument(
-            '--cmpdnamefile', dest='cmpdnamefile',
-            help='File with name of compounds.',
-            type=str, required=False,
-            default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
+        '--cmpdnamefile', dest='cmpdnamefile',
+        help='File with name of compounds.',
+        type=str, required=False,
+        default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
     d_args.add_argument(
-            '--customsinkfile', dest='customsinkfile',
-            help='User-defined sink file, i.e. file listing compounds to \
-            consider as sink compounds. Sink compounds should be provided by \
-            their IDs, as used in the reaction.erxn file. If no file is \
-            provided then the sink file generated during the "convert" task \
-            is used (default behavior). If a file is provided then **only** \
-            comppounds listed in this file will be used.',
-            type=str, required=False, default=None)
+        '--customsinkfile', dest='customsinkfile',
+        help='User-defined sink file, i.e. file listing compounds to \
+        consider as sink compounds. Sink compounds should be provided by \
+        their IDs, as used in the reaction.erxn file. If no file is \
+        provided then the sink file generated during the "convert" task \
+        is used (default behavior). If a file is provided then **only** \
+        compounds listed in this file will be used.',
+        type=str, required=False, default=None)
     d_args.add_argument(
-            '--target',
-            help='Target compound internal ID. This internal ID specifies \
-            which compound should be considered as the targeted compound. The \
-            default behavior is to consider as the target the first compound \
-            used as a source compound in a first iteration of a metabolic \
-            exploration. Let this value as it is except if you know what you \
-            are doing.',
-            type=str, required=False,
-            default='TARGET_0000000001')
+        '--target',
+        help='Target compound internal ID. This internal ID specifies \
+        which compound should be considered as the targeted compound. The \
+        default behavior is to consider as the target the first compound \
+        used as a source compound in a first iteration of a metabolic \
+        exploration. Let this value as it is except if you know what you \
+        are doing.',
+        type=str, required=False,
+        default='TARGET_0000000001')
 
     # Args: computing all tasks in once
     a_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
     a_args.add_argument(
-            dest='infile',
-            help='File outputed by the RetroPath2.0 Knime workflow',
-            type=str)
+        dest='infile',
+        help='File outputed by the RetroPath2.0 Knime workflow',
+        type=str)
     a_args.add_argument(
-            '--outdir', dest='outdir',
-            help='Folder to put all results',
-            type=str, required=False,
-            default=os.getcwd()+'/')
+        '--outdir', dest='outdir',
+        help='Folder to put all results',
+        type=str, required=False,
+        default=os.getcwd()+'/')
     a_args.add_argument(
-            '--reverse', '-r', dest='reverse',
-            help='Consider reactions in the reverse direction',
-            required=False, action='store_false',
-            default=True)
+        '--reverse', '-r', dest='reverse',
+        help='Consider reactions in the reverse direction',
+        required=False, action='store_false',
+        default=True)
     a_args.add_argument(
-            '--minDepth', action='store_true', default=False,
-            help='Use minimal depth scope, i.e. stop the scope computation as \
-            as soon an a first minimal path linking target to sink is found \
-            (default: False).')
+        '--minDepth', action='store_true', default=False,
+        help='Use minimal depth scope, i.e. stop the scope computation as \
+        as soon an a first minimal path linking target to sink is found \
+        (default: False).')
     a_args.add_argument(
-            '--customsinkfile', dest='customsinkfile',
-            help='User-defined sink file, i.e. file listing compounds to \
-            consider as sink compounds. Sink compounds should be provided by \
-            their IDs, as used in the reaction.erxn file. If no file is \
-            provided then the sink file generated during the "convert" task \
-            is used (default behavior). If a file is provided then **only** \
-            comppounds listed in this file will be used.',
-            type=str, required=False, default=None)
+        '--customsinkfile', dest='customsinkfile',
+        help='User-defined sink file, i.e. file listing compounds to \
+        consider as sink compounds. Sink compounds should be provided by \
+        their IDs, as used in the reaction.erxn file. If no file is \
+        provided then the sink file generated during the "convert" task \
+        is used (default behavior). If a file is provided then **only** \
+        compounds listed in this file will be used.',
+        type=str, required=False, default=None)
     a_args.add_argument(
-            '--ebin', dest='ebin',
-            help='Path to the binary that enumerate the EFMs',
-            type=str, required=False,
-            default=os.path.join(script_path, 'efmtool/launch_efm.sh'))
+        '--ebin', dest='ebin',
+        help='Path to the binary that enumerate the EFMs',
+        type=str, required=False,
+        default=os.path.join(script_path, 'efmtool/launch_efm.sh'))
     a_args.add_argument(
-            '--timeout', dest='timeout',
-            help='Timeout before killing a process (in s)',
-            type=int, required=False,
-            default=900)
+        '--timeout', dest='timeout',
+        help='Timeout before killing a process (in s)',
+        type=int, required=False,
+        default=900)
     a_args.add_argument(
-            '--maxsteps', dest='maxsteps',
-            help='Cutoff on the maximum number of steps in a pathways. 0 for \
-            unlimited number of steps.',
-            type=int, default=0)
+        '--maxsteps', dest='maxsteps',
+        help='Cutoff on the maximum number of steps in a pathways. 0 for \
+        unlimited number of steps.',
+        type=int, default=0)
     a_args.add_argument(
-            '--maxpaths', dest='maxpaths',
-            help='cutoff on the maximum number of pathways',
-            required=False, type=int, default=150)
+        '--maxpaths', dest='maxpaths',
+        help='cutoff on the maximum number of pathways',
+        required=False, type=int, default=150)
     a_args.add_argument(
-            '--unfold_compounds', dest='unfold_compounds',
-            help='Unfold pathways based on equivalencie of compounds (can lead \
-            to combinatorial explosion).',
-            default=False, action='store_true')
+        '--unfold_compounds', dest='unfold_compounds',
+        help='Unfold pathways based on equivalencie of compounds (can lead \
+        to combinatorial explosion).',
+        default=False, action='store_true')
     a_args.add_argument(
-            '--onlyPathsStartingBy', dest='onlyPathsStartingBy',
-            help='List of compounds IDs to consider. If specified, only paths \
-            making use of at least one of these compounds as initial \
-            substrate (first step of a pathway) are kept.',
-            type=str, nargs='+', required=False, default=None)
+        '--onlyPathsStartingBy', dest='onlyPathsStartingBy',
+        help='List of compounds IDs to consider. If specified, only paths \
+        making use of at least one of these compounds as initial \
+        substrate (first step of a pathway) are kept.',
+        type=str, nargs='+', required=False, default=None)
     a_args.add_argument(
-            '--notPathsStartingBy', dest='notPathsStartingBy',
-            help='List of compounds IDs. If specifed, paths making use of \
-            one of these compounds as unique initial substrate will be \
-            filtered out',
-            type=str, nargs='+', required=False, default=None)
+        '--notPathsStartingBy', dest='notPathsStartingBy',
+        help='List of compounds IDs. If specifed, paths making use of \
+        one of these compounds as unique initial substrate will be \
+        filtered out',
+        type=str, nargs='+', required=False, default=None)
     a_args.add_argument(
-            '--cmpdnamefile', dest='cmpdnamefile',
-            help='File with name of compounds.',
-            type=str, required=False,
-            default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
+        '--cmpdnamefile', dest='cmpdnamefile',
+        help='File with name of compounds.',
+        type=str, required=False,
+        default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
     a_args.add_argument(
-            '--target',
-            help='Target compound internal ID. This internal ID specifies \
-            which compound should be considered as the targeted compound. The \
-            default behavior is to consider as the target the first compound \
-            used as a source compound in a first iteration of a metabolic \
-            exploration. Let this value as it is except if you know what you \
-            are doing.',
-            type=str, required=False,
-            default='TARGET_0000000001')
+        '--target',
+        help='Target compound internal ID. This internal ID specifies \
+        which compound should be considered as the targeted compound. The \
+        default behavior is to consider as the target the first compound \
+        used as a source compound in a first iteration of a metabolic \
+        exploration. Let this value as it is except if you know what you \
+        are doing.',
+        type=str, required=False,
+        default='TARGET_0000000001')
 
     # Master parser
     parser = argparse.ArgumentParser(
@@ -744,76 +741,76 @@ def build_args_parser(prog='rp2paths'):
 
     # Subparser: converting
     c_parser = subparser.add_parser(
-            'convert',
-            help='Format the output of the RetroPath2.0 workflow into a \
-            format usable by the stoichiometry code',
-            parents=[c_args],
-            conflict_handler='resolve',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        'convert',
+        help='Format the output of the RetroPath2.0 workflow into a \
+        format usable by the stoichiometry code',
+        parents=[c_args],
+        conflict_handler='resolve',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     c_parser.set_defaults(func=convert)
 
     # Subparser: computing the scope
     s_parser = subparser.add_parser(
-            'scope',
-            help='Computing the scope leading to a given compounds',
-            parents=[s_args],
-            conflict_handler='resolve',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        'scope',
+        help='Computing the scope leading to a given compounds',
+        parents=[s_args],
+        conflict_handler='resolve',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     s_parser.set_defaults(func=scope)
 
     # Subparser: compute EFMs
     e_parser = subparser.add_parser(
-            'efm',
-            help='Enumerating EFMs according to a computed scope',
-            parents=[e_args],
-            conflict_handler='resolve',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        'efm',
+        help='Enumerating EFMs according to a computed scope',
+        parents=[e_args],
+        conflict_handler='resolve',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     e_parser.set_defaults(func=efm)
 
     # Subparser: computing each possible pathways
     p_parser = subparser.add_parser(
-            'paths',
-            help='Computing each possible pathways according to a enumerated \
-            EFMs',
-            parents=[p_args],
-            conflict_handler='resolve',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        'paths',
+        help='Computing each possible pathways according to a enumerated \
+        EFMs',
+        parents=[p_args],
+        conflict_handler='resolve',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p_parser.set_defaults(func=paths)
 
     # Subparser: filtering paths
     f_parser = subparser.add_parser(
-            'filter',
-            help='Filter out unwanted pathways',
-            parents=[f_args],
-            conflict_handler='resolve',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        'filter',
+        help='Filter out unwanted pathways',
+        parents=[f_args],
+        conflict_handler='resolve',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     f_parser.set_defaults(func=filter)
 
     # Subparser: producing images
     i_parser = subparser.add_parser(
-            'img',
-            help='Computing compound pictures',
-            parents=[i_args],
-            conflict_handler='resolve',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        'img',
+        help='Computing compound pictures',
+        parents=[i_args],
+        conflict_handler='resolve',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     i_parser.set_defaults(func=img)
 
     # Subparser: producing images
     d_parser = subparser.add_parser(
-            'dot',
-            help='Computing dot file of pathways',
-            parents=[d_args],
-            conflict_handler='resolve',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        'dot',
+        help='Computing dot file of pathways',
+        parents=[d_args],
+        conflict_handler='resolve',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     d_parser.set_defaults(func=dot)
 
     # Subparser: do all the tasks
     a_parser = subparser.add_parser(
-            'all',
-            help='Compute the full workflow',
-            parents=[a_args],
-            conflict_handler='resolve',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        'all',
+        help='Compute the full workflow',
+        parents=[a_args],
+        conflict_handler='resolve',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     a_parser.set_defaults(func=doall)
 
     # Add some other values that the user probably do not take care.
@@ -828,11 +825,11 @@ def build_args_parser(prog='rp2paths'):
     #       stoichiometry matrix (can lead to combinatorial explosion).
     #       Setting this option to False will make the process to only
     #       consider the first pathway from amongst all pathways sharing
-    #       a same topology. This reduces the combinatory at the risk of
+    #       a same topology. This reduces the combinatorics at the risk of
     #       missing some valid pathways (and even missing ALL valid
     #       pathways) because of the bootstraps filtering, i.e. the
     #       pathway popped out might be invalid while a further with same
-    #       same topoology could be OK (but will be not outputed if we do
+    #       same topology could be OK (but will be not outputted if we do
     #       not unfold the topology).
     #       Notice that the unfolding option is only relevant when using
     #       the old scope, as the new scope always unfold.

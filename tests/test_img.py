@@ -7,7 +7,6 @@ Created on Jul 15 2020
 from module import module
 
 
-
 files = {
         module.args.outdir+'/'+module.args.imgdir+'/CMPD_0000000003.svg':   'c7e963be69384a7e1699f97bdbb466fe7f75c6c48e43f26ba34e868af1746ebd16e51d930d8311abb2dcb6569b2290e13ed37b8707cb2578ca1eaf2218518813',
         module.args.outdir+'/'+module.args.imgdir+'/CMPD_0000000005.svg':   '407b70151cb70e76a1a6589ca7a101c4466b9c086ebdd24386487ec3e6bc4cfe116272eab43c84dd6ee7a2f7d321f65e338177f9ebc4bf623be7440e86aa465e',
