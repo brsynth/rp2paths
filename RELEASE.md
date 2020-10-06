@@ -1,5 +1,12 @@
 # Release history
 
+## 1.4.0
+- feat: rp2paths is now packaged!
+- fix: set maxstep argument default value to +inf (instead of 15)
+- style: improve PEP style, correct typos
+- docs: add "installation for developers" section
+- tests: refactor test scripts
+
 ## 1.3.3
 - Add an exception to handle the case when no scope matrix is produced
 - Add a test with an input that produces no scope matrix
