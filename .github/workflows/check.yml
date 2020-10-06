@@ -52,4 +52,4 @@ jobs:
 
     - name: Test for security flaws with bandit
       run: |
-        bandit -r .
+        bandit -r . -lll  # -lll to only catch the higher level security issues
