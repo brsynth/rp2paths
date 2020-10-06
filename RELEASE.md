@@ -1,5 +1,8 @@
 # Release history
 
+## 1.5.0
+- fix: on purpose increasing version number to please PyPI
+
 ## 1.4.0
 - feat: rp2paths is now packaged!
 - fix: set maxstep argument default value to +inf (instead of 15)
