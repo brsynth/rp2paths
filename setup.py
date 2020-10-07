@@ -33,9 +33,6 @@ with open(_extras_path+'/.env', 'r') as f:
 required = []
 with open(_extras_path+'/requirements.txt', 'r') as f:
     required = [line.splitlines()[0] for line in f]
-tests_require = []
-with open(_tests_path+'/requirements.txt', 'r') as f:
-    tests_require = [line.splitlines()[0] for line in f]
 
 # # hack to handle diff between pip and conda package name
 # from sys import argv as sys_argv
