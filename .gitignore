@@ -10,3 +10,6 @@ output_out*
 dump.rdb
 tests/out
 *egg-info
+package.json
+package-lock.json
+node_modules
