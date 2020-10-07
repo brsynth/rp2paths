@@ -1,5 +1,8 @@
 # Release history
 
+## 1.5.1
+- fix(setup.py): remove requirements file for unit tests
+
 ## 1.5.0
 - fix: on purpose increasing version number to please PyPI
 
