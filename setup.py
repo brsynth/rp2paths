@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from re         import search as re_search
 
 _readme_file  = 'README.md'
@@ -48,7 +48,7 @@ setup(
     long_description              = long_description,
     long_description_content_type = 'text/markdown',
     url                           = _url,
-    packages                      = [_package],
+    packages                      = find_packages(),
     package_dir                   = {_package: 'rp2paths'},
     include_package_data          = True,
     install_requires              = required,
