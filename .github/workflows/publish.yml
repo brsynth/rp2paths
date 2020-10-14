@@ -76,4 +76,4 @@ jobs:
           upload \
           --user ${ANACONDA_USER} \
           --label ${ANACONDA_LABEL} \
-          ${CONDA_BLD_PATH}/*/rpreactor-*.tar.bz2
+          ${CONDA_BLD_PATH}/*/rp2paths-*.tar.bz2
