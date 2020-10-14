@@ -108,7 +108,7 @@ pytest [file_to_test]
 ## How to cite RP2paths?
 Please cite:
 
-Delépine B, Duigou T, Carbonell P, Faulon JL. RetroPath2.0: A retrosynthesis workflow for metabolic engineers. Metabolic Engineering, 45: 158-170, 2018. DOI: https://doi.org/10.1016/j.ymben.2017.12.002
+Delepine B, Duigou T, Carbonell P, Faulon JL. RetroPath2.0: A retrosynthesis workflow for metabolic engineers. Metabolic Engineering, 45: 158-170, 2018. DOI: https://doi.org/10.1016/j.ymben.2017.12.002
 
 ## Licence
 RP2paths is released under the MIT licence. See the LICENCE.txt file for details.
