@@ -82,7 +82,7 @@ After a git clone:
 ```bash
 cd <repository>
 conda create --name <dev_env> python=3
-conda install --name <dev_env> --yes --channel rdkit rdkit cairo
+conda install --name <dev_env> --yes --channel conda-forge rdkit cairo
 conda install --name <dev_env> --yes --channel cyclus java-jre
 conda install --name <dev_env> --yes --channel conda-forge graphviz flake8
 conda install --name <dev_env> --yes pytest
