@@ -30,14 +30,9 @@ with open(_extras_path+'/.env', 'r') as f:
         if line.startswith('CORR_AUTHOR='):
             _corr_author = line.splitlines()[0].split('=')[1].lower()
 
-required = []
-with open(_extras_path+'/requirements.txt', 'r') as f:
-    required = [line.splitlines()[0] for line in f]
-
-# # hack to handle diff between pip and conda package name
-# from sys import argv as sys_argv
-# if 'conda' in sys_argv:
-#     required += ['rdkit']
+# required = []
+# with open(_extras_path+'/requirements.txt', 'r') as f:
+#     required = [line.splitlines()[0] for line in f]
 
 setup(
     name                          = _package,
@@ -51,7 +46,7 @@ setup(
     packages                      = find_packages(),
     package_dir                   = {_package: 'rp2paths'},
     include_package_data          = True,
-    install_requires              = required,
+    # install_requires              = required,
     test_suite                    = 'pytest',
     license                       = 'MIT',
     classifiers=[
