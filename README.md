@@ -104,6 +104,23 @@ conda activate <dev_env>
 pytest [file_to_test]
 ```
 
+### Build and deployment
+
+The process is automated with GitHub's Action.
+
+If you want to check the build process locally:
+
+```bash
+CONDA_BLD_PATH=<repository>/conda-bld
+mkdir -p ${CONDA_BLD_PATH} 
+cd <repository>
+
+conda env create -f recipe/conda_build_env.yaml -n <build_env>
+conda activate <build_env>
+conda build -c conda-forge -c cyclus --output-folder ${CONDA_BLD_PATH} recipe
+
+conda convert --platform osx-64 --platform linux-64 --platform win-64 --output-dir ${CONDA_BLD_PATH} ${CONDA_BLD_PATH}/*/rp2paths-*
+```
 
 ## How to cite RP2paths?
 Please cite:
