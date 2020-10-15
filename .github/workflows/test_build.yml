@@ -3,6 +3,10 @@ name: Test build
 on:
   push:
     branches: [ master ]
+    paths:
+      - '!RELEASE.md'
+      - '!README.md'
+      - '!LICENSE.md'
 
 jobs:
 
