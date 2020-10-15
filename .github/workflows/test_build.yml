@@ -30,7 +30,7 @@ jobs:
     - name: Build conda package
       shell: bash -l {0}
       run: |
-        conda build --output-folder ${CONDA_BLD_PATH} recipe
+        conda build -c conda-forge -c cyclus --output-folder ${CONDA_BLD_PATH} recipe
 
     - name: Convert to other platforms
       shell: bash -l {0}
