@@ -34,6 +34,7 @@ jobs:
         auto-activate-base: false
 
     - name: Pytest
+      shell: bash -l {0}
       run: |
         cd tests
         pytest --doctest-modules --verbose
