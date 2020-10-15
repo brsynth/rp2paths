@@ -34,7 +34,8 @@ jobs:
         auto-activate-base: false
 
     - name: Symlink data
-      ln -sf tests/data data
+      run: |
+        ln -sf tests/data data
 
     - name: Pytest
       shell: bash -l {0}
