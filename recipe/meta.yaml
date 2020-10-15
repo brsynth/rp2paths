@@ -17,7 +17,6 @@ requirements:
   run:
     - python {{ python }}
     - java-jre
-    - python=3.6|3.7
     - rdkit=2019.03.1.0
     - pytest
     - pandas
