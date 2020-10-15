@@ -14,7 +14,7 @@ on:
 
 jobs:
 
-  Functional:
+  test:
 
     runs-on: ubuntu-latest
 
@@ -25,14 +25,15 @@ jobs:
     steps:
 
     - uses: actions/checkout@v2
-
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    - uses: conda-incubator/setup-miniconda@v1
       with:
+        auto-update-conda: true
         python-version: ${{ matrix.python-version }}
+        activate-environment: rp2paths
+        environment-file: environment.yml
+        auto-activate-base: false
 
-    - name: Test
+    - name: Pytest
       run: |
         cd tests
-        bash ./test-in-docker.sh
-#        pytest --verbose
+        pytest --doctest-modules --verbose
