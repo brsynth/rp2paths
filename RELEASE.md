@@ -1,10 +1,11 @@
 # Release history
 
-## 1.5.1
+## 1.4.1
+- build: provide conda packaging
+- build: remove pip packaging
+- ci(publish): add github workflows for testing build and publishing 
+- docs(readme): update
 - fix(setup.py): remove requirements file for unit tests
-
-## 1.5.0
-- fix: on purpose increasing version number to please PyPI
 
 ## 1.4.0
 - feat: rp2paths is now packaged!
