@@ -30,7 +30,7 @@ jobs:
         auto-update-conda: true
         python-version: ${{ matrix.python-version }}
         activate-environment: rp2paths
-        environment-file: environment.yml
+        environment-file: environment.yaml
         auto-activate-base: false
 
     - name: Pytest

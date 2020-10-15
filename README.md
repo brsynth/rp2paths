@@ -62,7 +62,7 @@ python -m rp2paths all examples/naringenin/rp2-results.csv --outdir examples/nar
 After a git clone:
 ```bash
 cd <repository>
-conda env create -f environment.yml -n <dev_env>
+conda env create -f environment.yaml -n <dev_env>
 conda develop -n <dev_env> .
 conda activate <dev_env>
 ```
