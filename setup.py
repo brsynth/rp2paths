@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from re         import search as re_search
 
 _readme_file  = 'README.md'
@@ -30,14 +30,9 @@ with open(_extras_path+'/.env', 'r') as f:
         if line.startswith('CORR_AUTHOR='):
             _corr_author = line.splitlines()[0].split('=')[1].lower()
 
-required = []
-with open(_extras_path+'/requirements.txt', 'r') as f:
-    required = [line.splitlines()[0] for line in f]
-
-# # hack to handle diff between pip and conda package name
-# from sys import argv as sys_argv
-# if 'conda' in sys_argv:
-#     required += ['rdkit']
+# required = []
+# with open(_extras_path+'/requirements.txt', 'r') as f:
+#     required = [line.splitlines()[0] for line in f]
 
 setup(
     name                          = _package,
@@ -48,10 +43,10 @@ setup(
     long_description              = long_description,
     long_description_content_type = 'text/markdown',
     url                           = _url,
-    packages                      = [_package],
+    packages                      = find_packages(),
     package_dir                   = {_package: 'rp2paths'},
     include_package_data          = True,
-    install_requires              = required,
+    # install_requires              = required,
     test_suite                    = 'pytest',
     license                       = 'MIT',
     classifiers=[

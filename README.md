@@ -82,7 +82,7 @@ After a git clone:
 ```bash
 cd <repository>
 conda create --name <dev_env> python=3
-conda install --name <dev_env> --yes --channel rdkit rdkit cairo
+conda install --name <dev_env> --yes --channel conda-forge rdkit cairo
 conda install --name <dev_env> --yes --channel cyclus java-jre
 conda install --name <dev_env> --yes --channel conda-forge graphviz flake8
 conda install --name <dev_env> --yes pytest
@@ -104,11 +104,28 @@ conda activate <dev_env>
 pytest [file_to_test]
 ```
 
+### Build and deployment
+
+The process is automated with GitHub's Action.
+
+If you want to check the build process locally:
+
+```bash
+CONDA_BLD_PATH=<repository>/conda-bld
+mkdir -p ${CONDA_BLD_PATH} 
+cd <repository>
+
+conda env create -f recipe/conda_build_env.yaml -n <build_env>
+conda activate <build_env>
+conda build -c conda-forge -c cyclus --output-folder ${CONDA_BLD_PATH} recipe
+
+conda convert --platform osx-64 --platform linux-64 --platform win-64 --output-dir ${CONDA_BLD_PATH} ${CONDA_BLD_PATH}/*/rp2paths-*
+```
 
 ## How to cite RP2paths?
 Please cite:
 
-Delépine B, Duigou T, Carbonell P, Faulon JL. RetroPath2.0: A retrosynthesis workflow for metabolic engineers. Metabolic Engineering, 45: 158-170, 2018. DOI: https://doi.org/10.1016/j.ymben.2017.12.002
+Delepine B, Duigou T, Carbonell P, Faulon JL. RetroPath2.0: A retrosynthesis workflow for metabolic engineers. Metabolic Engineering, 45: 158-170, 2018. DOI: https://doi.org/10.1016/j.ymben.2017.12.002
 
 ## Licence
 RP2paths is released under the MIT licence. See the LICENCE.txt file for details.

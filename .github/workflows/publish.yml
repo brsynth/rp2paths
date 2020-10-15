@@ -1,70 +1,79 @@
-# This workflows will upload a Python Package using Twine when a release is created
-# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
-
 name: Publish
 
 on:
   push:
+    tags: releases/[1-9]+.[0-9]+.[0-9]+
     branches: [ stable ]
-    paths:
-      - 'RELEASE.md'
+#    paths:
+#      - 'RELEASE.md'
 
 jobs:
 
-  PyPi:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        pip install setuptools wheel twine
-    - name: Build
-      run: |
-        python setup.py sdist bdist_wheel
-    - name: Upload
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: |
-        twine upload dist/* --verbose
+#  PyPi:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Set up Python
+#      uses: actions/setup-python@v2
+#      with:
+#        python-version: '3.x'
+#    - name: Install dependencies
+#      run: |
+#        pip install setuptools wheel twine
+#    - name: Build
+#      run: |
+#        python setup.py sdist bdist_wheel
+#    - name: Upload
+#      env:
+#        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+#        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+#      run: |
+#        twine upload dist/* --verbose
 
   Conda:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        python-version: [3.5, 3.6, 3.7]
-
-    container: docker://continuumio/anaconda3
+    env:
+      ANACONDA_TOKEN: ${{secrets.ANACONDA_TOKEN}}
+      ANACONDA_USER: ${{secrets.ANACONDA_USER}}
+      ANACONDA_LABEL: main
+      CONDA_BLD_PATH: /tmp/conda-bld
 
     steps:
-    - name: Waiting for module availablity on PyPi...
+    - uses: actions/checkout@v2
+    - uses: conda-incubator/setup-miniconda@v1
+      with:
+        activate-environment: build_env
+        auto-update-conda: true
+        environment-file: recipe/conda_build_env.yaml
+        miniconda-version: "latest"
+        auto-activate-base: false
+
+    - name: Set up output folder
       run: |
-        sleep 30
-    - name: Get module from PyPi
+        mkdir -p ${CONDA_BLD_PATH}
+
+    - name: Build conda package
+      shell: bash -l {0}
       run: |
-        conda skeleton pypi rp2paths
-    - name: Customize recipe
+        conda build -c conda-forge -c cyclus --output-folder ${CONDA_BLD_PATH} recipe
+
+    - name: Convert to other platforms
+      shell: bash -l {0}
       run: |
-        sed -i.bck '/\ \ run\:/a \ \ \ \ - rdkit'    rp2paths/meta.yaml
-        sed -i.bck '/\ \ run\:/a \ \ \ \ - graphviz' rp2paths/meta.yaml
-        sed -i.bck '/\ \ run\:/a \ \ \ \ - java-jre' rp2paths/meta.yaml
-    - name: Add channels
+        conda convert \
+          --platform osx-64 \
+          --platform linux-64 \
+          --platform win-64 \
+          --output-dir ${CONDA_BLD_PATH} \
+          ${CONDA_BLD_PATH}/*/rp2paths-*
+
+    - name: Upload to anaconda
+      shell: bash -l {0}
       run: |
-        conda config \
-          --add channels conda-forge \
-          --add channels rdkit \
-          --add channels cyclus
-    - name: Build for Python ${{ matrix.python-version }}
-      run: |
-        conda-build --python ${{ matrix.python-version }} rp2paths
-    - name: Upload package
-      env:
-        CONDA_USERNAME: ${{ secrets.CONDA_USERNAME }}
-        CONDA_TOKEN: ${{ secrets.CONDA_TOKEN }}
-      run: |
-        anaconda --token ${CONDA_TOKEN} upload --user ${CONDA_USERNAME} /opt/conda/conda-bld/linux-64/*.tar.bz2
+        anaconda \
+          --token ${ANACONDA_TOKEN} \
+          upload \
+          --user ${ANACONDA_USER} \
+          --label ${ANACONDA_LABEL} \
+          ${CONDA_BLD_PATH}/*/rp2paths-*.tar.bz2

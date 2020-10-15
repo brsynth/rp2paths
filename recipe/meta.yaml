@@ -1,0 +1,51 @@
+{% set data = load_setup_py_data() %}
+
+package:
+  name: rp2paths
+  version: {{ data['version'] }}
+
+source:
+  path: ..
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed -vv .
+
+requirements:
+  host:
+    - python {{ python }}
+  run:
+    - python {{ python }}
+    - java-jre
+    - python=3.6|3.7
+    - rdkit=2019.03.1.0
+    - pytest
+    - pandas
+    - pydotplus
+    - graphviz
+    - python-graphviz
+    - lxml
+
+test:
+  source_files:
+    - tests
+  imports:
+    - rp2paths
+  requires:
+    - pytest
+  commands:
+    - python -m rp2paths --help
+    - cd tests
+    - pytest -v
+
+about:
+  home: https://github.com/brsynth/rp2paths
+  summary: {{ data['description'] }}
+  license: {{ data.get('license') }}
+  license_file: LICENSE.md
+
+extra:
+  recipe-maintainers:
+    # GitHub IDs for maintainers of the recipe.
+    # Always check with the people listed below if they are OK becoming maintainers of the recipe. (There will be spam!)
+    - tduigou

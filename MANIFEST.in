@@ -1,3 +1,5 @@
 include RELEASE.md
-recursive-include extras *
-recursive-include examples *
+graft extras
+graft examples
+graft rp2paths/mnx-data
+graft rp2paths/efmtool
