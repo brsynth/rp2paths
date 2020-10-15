@@ -3,7 +3,7 @@
 [![Anaconda-Server Badge](https://anaconda.org/brsynth/rp2paths/badges/latest_release_date.svg)](https://anaconda.org/brsynth/rp2paths)
 [![Anaconda-Server Badge](https://anaconda.org/brsynth/rp2paths/badges/version.svg)](https://anaconda.org/brsynth/rp2paths)
 
-RP2paths extracts the set of pathways that lies in a metabolic space file outputed by the RetroPath2.0 workflow. RetroPath2.0 is freely accessible on myExperiment.org at: https://www.myexperiment.org/workflows/4987.html.
+RP2paths extracts the set of pathways that lies in a metabolic space file outputted by the RetroPath2.0 workflow. RetroPath2.0 is freely accessible on myExperiment.org at: https://www.myexperiment.org/workflows/4987.html.
 
 ## Installation
 
@@ -81,12 +81,9 @@ python -m rp2paths all examples/naringenin/rp2-results.csv --outdir examples/nar
 After a git clone:
 ```bash
 cd <repository>
-conda create --name <dev_env> python=3
-conda install --name <dev_env> --yes --channel conda-forge rdkit cairo
-conda install --name <dev_env> --yes --channel cyclus java-jre
-conda install --name <dev_env> --yes --channel conda-forge graphviz flake8
-conda install --name <dev_env> --yes pytest
-conda develop --name <dev_env> .
+conda env create -f environment.yml -n <dev_env>
+conda develop -n <dev_env> .
+conda activate <dev_env>
 ```
 
 ### Tests
