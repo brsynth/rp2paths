@@ -33,8 +33,10 @@ jobs:
         environment-file: environment.yaml
         auto-activate-base: false
 
+    - name: Symlink data
+      ln -sf tests/data data
+
     - name: Pytest
       shell: bash -l {0}
       run: |
-        cd tests
         pytest --doctest-modules --verbose
