@@ -67,38 +67,19 @@ conda develop -n <dev_env> .
 conda activate <dev_env>
 ```
 
-### Tests
+## Tests
+Test can be run with the following commands:
 
-Using Docker containers with:
-```
-cd tests
-./test-in-docker.sh [file_to_test]
-```
-
-Without using Docker containers:
-```
-cd tests
-conda activate <dev_env>
-pytest [file_to_test]
-```
-
-### Build and deployment
-
-The process is automated with GitHub's Action.
-
-If you want to check the build process locally:
-
+### Natively
 ```bash
-CONDA_BLD_PATH=<repository>/conda-bld
-mkdir -p ${CONDA_BLD_PATH} 
-cd <repository>
-
-conda env create -f recipe/conda_build_env.yaml -n <build_env>
-conda activate <build_env>
-conda build -c conda-forge -c cyclus --output-folder ${CONDA_BLD_PATH} recipe
-
-conda convert --platform osx-64 --platform linux-64 --platform win-64 --output-dir ${CONDA_BLD_PATH} ${CONDA_BLD_PATH}/*/rp2paths-*
+cd tests
+pytest -v
 ```
+
+# CI/CD
+For further tests and development tools, a CI toolkit is provided in `ci` folder (see [ci/README.md](ci/README.md)).
+
+
 
 ## How to cite RP2paths?
 Please cite:
