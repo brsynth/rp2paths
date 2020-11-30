@@ -7,50 +7,39 @@ on:
 
 jobs:
 
-  Conda:
+  Publish:
     runs-on: ubuntu-latest
 
     env:
       ANACONDA_TOKEN: ${{secrets.ANACONDA_TOKEN}}
       ANACONDA_USER: ${{secrets.ANACONDA_USER}}
-      ANACONDA_LABEL: main
-      CONDA_BLD_PATH: /tmp/conda-bld
 
     steps:
     - uses: actions/checkout@v2
-    - uses: conda-incubator/setup-miniconda@v1
-      with:
-        activate-environment: build_env
-        auto-update-conda: true
-        environment-file: recipe/conda_build_env.yaml
-        miniconda-version: "latest"
-        auto-activate-base: false
+    - uses: docker://continuumio/miniconda3
 
-    - name: Set up output folder
-      run: |
-        mkdir -p ${CONDA_BLD_PATH}
+    - name: Updating conda
+      run: conda update --all -y
 
-    - name: Build conda package
-      shell: bash -l {0}
-      run: |
-        conda build -c conda-forge -c cyclus --output-folder ${CONDA_BLD_PATH} recipe
+    - name: Installing make
+      run: conda install -y make
 
-    - name: Convert to other platforms
-      shell: bash -l {0}
+    - name: Building package
       run: |
-        conda convert \
-          --platform osx-64 \
-          --platform linux-64 \
-          --platform win-64 \
-          --output-dir ${CONDA_BLD_PATH} \
-          ${CONDA_BLD_PATH}/*/rp2paths-*
+        cd ci
+        make conda-build
 
-    - name: Upload to anaconda
-      shell: bash -l {0}
+    - name: Testing package
       run: |
-        anaconda \
-          --token ${ANACONDA_TOKEN} \
-          upload \
-          --user ${ANACONDA_USER} \
-          --label ${ANACONDA_LABEL} \
-          ${CONDA_BLD_PATH}/*/rp2paths-*.tar.bz2
+        cd ci
+        make conda-test
+
+    - name: Converting to other platforms
+      run: |
+        cd ci
+        make conda-convert
+
+    - name: Uploading to anaconda
+      run: |
+        cd ci
+        make conda-publish
