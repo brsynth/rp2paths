@@ -12,7 +12,7 @@ RP2paths extracts the set of pathways that lies in a metabolic space file output
 ```bash
 # installation in an already existing <myenv> environment (see prerequisites)
 conda activate <myenv>
-conda install -c brsynth rp2paths
+conda install -c brsynth -c conda-forge rp2paths
 ```
 
 ## Usage
