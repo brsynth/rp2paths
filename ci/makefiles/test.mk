@@ -25,7 +25,8 @@ all: check test ## Run check and test code
 check: flake bandit ## Run flake and bandit over code and tests
 bandit: ## Run bandit over code
 	@echo "=== BANDIT REPORT ==="
-	@bandit -r ../../${PACKAGE}
+	# -lll to only catch the higher level security issues
+	@bandit -r -lll ../../${PACKAGE}
 flake: ## Run flake over code and tests
 	@echo "=== FLAKE REPORT ==="
 	# stop the build if there are Python syntax errors or undefined names
