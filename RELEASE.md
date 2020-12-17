@@ -1,5 +1,9 @@
 # Release history
 
+## 1.4.2
+- ci: integrate CI toolkit
+- chore: switch to openjdk dependency
+
 ## 1.4.1
 - build: provide conda packaging
 - build: remove pip packaging
