@@ -1,7 +1,8 @@
+{% set name = "rp2paths" %}
 {% set data = load_setup_py_data() %}
 
 package:
-  name: rp2paths
+  name: {{ name|lower }}
   version: {{ data['version'] }}
 
 source:
@@ -16,9 +17,8 @@ requirements:
     - python {{ python }}
   run:
     - python {{ python }}
-    - java-jre
+    - openjdk
     - rdkit=2019.03.1.0
-    - pytest
     - pandas
     - pydotplus
     - graphviz
@@ -29,16 +29,16 @@ test:
   source_files:
     - tests
   imports:
-    - rp2paths
+    - {{ name|lower }}
   requires:
     - pytest
   commands:
-    - python -m rp2paths --help
+    - python -m {{ name|lower }} --help
     - cd tests
     - pytest -v
 
 about:
-  home: https://github.com/brsynth/rp2paths
+  home: https://github.com/brsynth/{{ name|lower }}
   summary: {{ data['description'] }}
   license: {{ data.get('license') }}
   license_file: LICENSE.md
