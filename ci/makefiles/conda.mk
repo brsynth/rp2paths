@@ -197,5 +197,5 @@ ifneq ($(strip $(cmd)),)
 	conda run --name $(env) $(cmd) args="$(args)"
 else
 	@conda run --name $(env) \
-		$(MAKE_CMD) -f conda.mk $(target) args=$(args)
+		$(MAKE_CMD) -f conda.mk $(target) args="$(args)"
 endif

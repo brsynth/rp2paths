@@ -98,7 +98,7 @@ python -m {PACKAGE} --help
 #### Run from Python command-line
 ```bash
 python
-from brs_libs import rpSBML
+from {PACKAGE} import {function | class}
 ```
 
 ## Workflows
