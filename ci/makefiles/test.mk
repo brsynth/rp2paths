@@ -45,8 +45,8 @@ else
 endif
 
 test: ## Test code with 'pytest'
-	@$(ECHO) "Testing $(test_src)...\n"
+	@$(ECHO) "Testing...\n"
 	@export PYTHONPATH=$$PWD/../.. ; \
 	cd ../.. ; \
-	$(test_cmd) -p no:cacheprovider $(test_src) ; \
-	echo OK
+	$(test_cmd) -p no:cacheprovider $(test_src) ; \ \
+	&& echo OK

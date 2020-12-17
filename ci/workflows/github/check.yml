@@ -6,7 +6,7 @@ name: Check
 on:
 
   push:
-    branches: [ master, dev ]
+    branches: [ main, master, dev ]
     paths-ignore:
       - '**/RELEASE*'
       - '**/README*'
