@@ -155,7 +155,33 @@ class TaskEfm(GeneralTask):
         if not os.path.exists(self.basename + '_mat'):
             raise IOError('No stoichiometry matrix found: ' + self.basename + '_mat')
 
-        command = [self.ebin, self.basename, self.basename]
+        # command = [self.ebin, self.basename, self.basename]
+        elemodes = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            'efmtool', 'elemodes.jar'
+        )
+        def filename(name: str):
+            return os.path.join(
+                os.getcwd(),
+                self.basename+'_'+name
+            )
+        command = f'java -jar \
+            {elemodes} \
+            -kind stoichiometry \
+            -stoich {filename("mat")} \
+            -rev {filename("rever")} \
+            -meta {filename("comp")} \
+            -reac {filename("react")} \
+            -arithmetic double \
+            -zero 1e-10  \
+            -compression default \
+            -log console \
+            -level INFO \
+            -maxthreads -1 \
+            -normalize min \
+            -adjacency-method pattern-tree-minzero \
+            -rowordering MostZerosOrAbsLexMin \
+            -out text-boolean {filename("efm")}'
 
         self._launch_external_program(command=command, baselog='efm',
                                       timeout=timeout, use_shell=True)
