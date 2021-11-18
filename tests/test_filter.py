@@ -4,10 +4,11 @@ Created on Jul 15 2020
 @author: Joan Hérisson
 """
 
+from os import path as os_path
 from module import module
 
 files = {
-    module.args.outdir+'/'+'out_full_react': '9e2f7d6e8b53f6a687d5a72f18261c89dd44e4bbbc8f3e48542881313d8c2c168999dd929238c8d3a56b68140fb3834b551e0fe0a5f84f572021502850a69a1a',
+    os_path.join(module.args.outdir, 'out_full_react'): '6c27133dd6cad5285c9141a0756ebb331f94384fd1ca06963c36fc7a63889c84dc0bf488c48d29cea7d463af5e721de13891311c8e872beda644dc3782b27f5a',
 }
 files = list(files.items())
 parent_test = 'paths'
