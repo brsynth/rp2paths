@@ -45,11 +45,11 @@ class GeneralTask(object):
         """Make a system call to an external program."""
         if hasattr(os,'setsid'): #setsid not present on Windows
             p = subprocess.Popen(command, stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE, shell=False,
+                                 stderr=subprocess.PIPE, shell=use_shell,
                                  preexec_fn=os.setsid)
         else:
             p = subprocess.Popen(command, stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE, shell=False)
+                                 stderr=subprocess.PIPE, shell=use_shell)
         try:
             fout = open(baselog+'.log', 'w')
             ferr = open(baselog+'.err', 'w')
