@@ -94,14 +94,20 @@ class Main(TestCase):
 
     @staticmethod
     def _check_file_size(file, size):
+
+        lines = open(file,'r').readlines()
+        _size = 0
+        for line in lines:
+            _size += len(line.rstrip())
+
         print()
         print(file)
         print('-- SIZE')
         s = os_stat(file).st_size
-        print('computed: ', s)
+        print('computed: ', _size)
         print('stored:   ', size)
         print('--')
-        return s == size
+        return _size == size
 
     # def _check_files(self):
     #     for file, hash in self.hashes:
