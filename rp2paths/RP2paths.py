@@ -43,9 +43,13 @@ class GeneralTask(object):
     def _launch_external_program(self, command, baselog, timeout,
                                  use_shell=False):
         """Make a system call to an external program."""
-        p = subprocess.Popen(command, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, shell=False,
-                             preexec_fn=os.setsid)
+        if hasattr(os,'setsid'): #setsid not present on Windows
+            p = subprocess.Popen(command, stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE, shell=False,
+                                 preexec_fn=os.setsid)
+        else:
+            p = subprocess.Popen(command, stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE, shell=False)
         try:
             fout = open(baselog+'.log', 'w')
             ferr = open(baselog+'.err', 'w')
@@ -152,6 +156,7 @@ class TaskEfm(GeneralTask):
             raise IOError('No stoichiometry matrix found: ' + self.basename + '_mat')
 
         command = [self.ebin, self.basename, self.basename]
+
         self._launch_external_program(command=command, baselog='efm',
                                       timeout=timeout, use_shell=True)
 
@@ -506,7 +511,7 @@ def build_args_parser(prog='rp2paths'):
         '--ebin', dest='ebin',
         help='Path to the binary that enumerate the EFMs',
         type=str, required=False,
-        default=os.path.join(script_path, 'efmtool/launch_efm.sh'))
+        default=os.path.join(script_path, 'efmtool', 'launch_efm.sh'))
     e_args.add_argument(
         '--timeout', dest='timeout',
         help='Timeout before killing a process (in s)',
