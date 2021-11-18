@@ -231,7 +231,7 @@ class Scope(object):
         with open(path.join(outFolder, 'out_rever'), 'w') as out_rever:
             cv = csv.writer(out_rever, delimiter=' ', quoting=csv.QUOTE_MINIMAL)
             cv.writerow(np.zeros(len(self.dfmat.columns), dtype=int))
-        with open(path.join(outFolder, 'out_mat'), 'w') as out_mat:
+        with open(path.join(outFolder, 'out_mat'), 'w', newline='') as out_mat:
             cv = csv.writer(out_mat, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
             for i in range(0, len(self.dfmat.index)):
                 cv.writerow(np.array(smat[i, :], dtype=int))
