@@ -61,7 +61,11 @@ class GeneralTask(object):
             fout.write(' '.join(command) + '\n')
             print('TIMEOUT:' + ' '.join(command) + '\n')
             ferr.write('TIMEOUT')
-            os.killpg(p.pid, signal.SIGKILL)
+            if hasattr(os,'killpg'): #killpg not present on Windows
+                os.killpg(p.pid, signal.SIGKILL)
+            else:
+                from signal import CTRL_C_EVENT
+                os.kill(p.pid, CTRL_C_EVENT)
 
         fout.close()
         ferr.close()
