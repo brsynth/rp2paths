@@ -43,9 +43,13 @@ class GeneralTask(object):
     def _launch_external_program(self, command, baselog, timeout,
                                  use_shell=False):
         """Make a system call to an external program."""
-        p = subprocess.Popen(command, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, shell=False,
-                             preexec_fn=os.setsid)
+        if hasattr(os,'setsid'): #setsid not present on Windows
+            p = subprocess.Popen(command, stdout=subprocess.PIPE,  # nosec
+                                 stderr=subprocess.PIPE, shell=use_shell,
+                                 preexec_fn=os.setsid)
+        else:
+            p = subprocess.Popen(command, stdout=subprocess.PIPE,  # nosec
+                                 stderr=subprocess.PIPE, shell=use_shell)
         try:
             fout = open(baselog+'.log', 'w')
             ferr = open(baselog+'.err', 'w')
@@ -57,7 +61,11 @@ class GeneralTask(object):
             fout.write(' '.join(command) + '\n')
             print('TIMEOUT:' + ' '.join(command) + '\n')
             ferr.write('TIMEOUT')
-            os.killpg(p.pid, signal.SIGKILL)
+            if hasattr(os,'killpg'): #killpg not present on Windows
+                os.killpg(p.pid, signal.SIGKILL)
+            else:
+                from signal import CTRL_C_EVENT
+                os.kill(p.pid, CTRL_C_EVENT)
 
         fout.close()
         ferr.close()
@@ -151,7 +159,34 @@ class TaskEfm(GeneralTask):
         if not os.path.exists(self.basename + '_mat'):
             raise IOError('No stoichiometry matrix found: ' + self.basename + '_mat')
 
-        command = [self.ebin, self.basename, self.basename]
+        # command = [self.ebin, self.basename, self.basename]
+        elemodes = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            'efmtool', 'elemodes.jar'
+        )
+        def filename(name: str):
+            return os.path.join(
+                os.getcwd(),
+                self.basename+'_'+name
+            )
+        command = f'java -jar \
+            {elemodes} \
+            -kind stoichiometry \
+            -stoich {filename("mat")} \
+            -rev {filename("rever")} \
+            -meta {filename("comp")} \
+            -reac {filename("react")} \
+            -arithmetic double \
+            -zero 1e-10  \
+            -compression default \
+            -log console \
+            -level INFO \
+            -maxthreads -1 \
+            -normalize min \
+            -adjacency-method pattern-tree-minzero \
+            -rowordering MostZerosOrAbsLexMin \
+            -out text-boolean {filename("efm")}'
+
         self._launch_external_program(command=command, baselog='efm',
                                       timeout=timeout, use_shell=True)
 
@@ -506,7 +541,7 @@ def build_args_parser(prog='rp2paths'):
         '--ebin', dest='ebin',
         help='Path to the binary that enumerate the EFMs',
         type=str, required=False,
-        default=os.path.join(script_path, 'efmtool/launch_efm.sh'))
+        default=os.path.join(script_path, 'efmtool', 'launch_efm.sh'))
     e_args.add_argument(
         '--timeout', dest='timeout',
         help='Timeout before killing a process (in s)',

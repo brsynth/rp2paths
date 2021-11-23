@@ -4,13 +4,22 @@ Created on Jul 15 2020
 @author: Joan Hérisson
 """
 
+from os import path as os_path
 from module import module
 
-
 files = {
-    module.args.outdir+'/'+module.args.cmpdfile: '3ec79b17620b1f887a15a243a0ae12dd2f4b62cdb4f6f6c2430e585f930000456f51a1ebc6b40bee714ae818c6b95c295ec2ca0cfbcc4160d40b3dcd2d50f3fd',
-    module.args.outdir+'/'+module.args.reacfile: '9e2f7d6e8b53f6a687d5a72f18261c89dd44e4bbbc8f3e48542881313d8c2c168999dd929238c8d3a56b68140fb3834b551e0fe0a5f84f572021502850a69a1a',
-    module.args.outdir+'/'+module.args.sinkfile: '0d42bbd52aeec14631705d58b4d9ebb339174b314e7aa191ca18085414a81e1fed63bf110f2c0066c5d922c8ccb0dcebfc8c821a7e2c76cfead4926f94c4f5c3',
+    os_path.join(
+        module.args.outdir,
+        module.args.cmpdfile
+    ): 'c17ce779ba4b9fd99f01e2e4d00ec728c44af3529d4a654b0f1eb2676b1c49cba21855b0896c4f4d1ba48a7b86d62f7c3801114ae991b6fd0ec08bc2d4be0de1',
+    os_path.join(
+        module.args.outdir,
+        module.args.reacfile
+    ): '6c27133dd6cad5285c9141a0756ebb331f94384fd1ca06963c36fc7a63889c84dc0bf488c48d29cea7d463af5e721de13891311c8e872beda644dc3782b27f5a',
+    os_path.join(
+        module.args.outdir,
+        module.args.sinkfile
+    ): '6d0d3652696ca6d043541a57279214c00e91754ac14b05f05cc62c7221cde503f8b4f7de4cb29d882540bd2bd2cee7a71cb50d1fcace06073e550ef2bb98dfef',
 }
 files = list(files.items())
 parent_test = ''

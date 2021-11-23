@@ -38,6 +38,7 @@ class Elemodes:
         """Read the ID of the reactions present in the _react file."""
         with open(filepath, 'r') as fh:
             lines = fh.readlines()
+        lines = [line for line in lines if line.strip() != ""]
         assert len(lines) == 1  # Everything should be on one line
         res = []
         names = lines[0].rstrip().split()

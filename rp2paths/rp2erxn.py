@@ -271,7 +271,7 @@ def compute(infile, cmpdfile='compounds.txt', rxnfile='reactions.txt',
                     all_cmpds[target_smi].SetUid(new_uid)
 
     # Write the compounds file
-    with open(cmpdfile, 'w') as fh:
+    with open(cmpdfile, 'w', newline='') as fh:
         header = ['Compound ID', 'Structure']
         writer = csv.DictWriter(fh, fieldnames=header,
                                 delimiter='\t', quoting=csv.QUOTE_NONE)

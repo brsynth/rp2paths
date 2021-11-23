@@ -78,24 +78,36 @@ class Main(TestCase):
         module = __import__('hashlib')
         func = getattr(module, hash_func)
 
+        lines = open(file,'r').readlines()
+        _lines = []
+        for line in lines:
+            _lines.append(line.rstrip())
+
+        computed_hash = func('\n'.join(_lines).encode()).hexdigest()
         print()
         print(file)
         print('-- HASH')
-        print('computed: ', func(Path(file).read_bytes()).hexdigest())
+        print('computed: ', computed_hash)
         print('stored:   ', hash)
         print('--')
-        return func(Path(file).read_bytes()).hexdigest() == hash
+        return computed_hash == hash
 
     @staticmethod
     def _check_file_size(file, size):
+
+        lines = open(file,'r').readlines()
+        _size = 0
+        for line in lines:
+            _size += len(line.rstrip())
+
         print()
         print(file)
         print('-- SIZE')
         s = os_stat(file).st_size
-        print('computed: ', s)
+        print('computed: ', _size)
         print('stored:   ', size)
         print('--')
-        return s == size
+        return _size == size
 
     # def _check_files(self):
     #     for file, hash in self.hashes:

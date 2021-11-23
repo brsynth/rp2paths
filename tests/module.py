@@ -13,7 +13,10 @@ class module(Main):
 
     mod_name = 'rp2paths'
     cls_name = 'RP2paths'
-    cmd  = 'all data/rp2_pathways.csv --outdir out --timeout 5'.split()
+    cur_folder = os_path.dirname(os_path.realpath(__file__))
+    infile = os_path.join(cur_folder, 'data', 'rp2_pathways.csv')
+    out_folder = os_path.join(cur_folder, 'out')
+    cmd  = str(f'all {infile} --outdir {out_folder}').split()
     bap  = getattr(__import__(mod_name), 'build_args_parser')
     args = bap().parse_args(cmd)
 

@@ -54,7 +54,7 @@ class EFMHandler(object):
         """Unfold (if necessary) and write results."""
         # Prepare output file
         fields = ['Path ID', 'Unique ID', 'Rule ID', 'Left', 'Right']
-        fh = open(self.outfile, 'w')
+        fh = open(self.outfile, 'w', newline='')
         writer = csv.DictWriter(fh, fieldnames=fields, quoting=csv.QUOTE_ALL)
         writer.writeheader()
         # Get pathways from enumeration results
