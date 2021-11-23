@@ -1,5 +1,8 @@
 # Release history
 
+## 1.4.3
+- feat: bring compatibility with Windows
+
 ## 1.4.2
 - ci: integrate CI toolkit
 - chore: switch to openjdk dependency
