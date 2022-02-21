@@ -1,5 +1,9 @@
 # Release history
 
+## 1.5.0
+- chore!(main): change exit code when NoScopeMatrix is raised
+- chore(main): add WARNING when NoScopeMatrix is raised
+
 ## 1.4.3
 - feat: bring compatibility with Windows
 
