@@ -15,7 +15,7 @@ def main():
         args.func(args)
     except NoScopeMatrix as e:
         print()
-        print(e.message)
+        print('WARNING:', e.message)
         print()
         # exit(1)
 
