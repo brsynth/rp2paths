@@ -52,8 +52,10 @@ Below are the command lines for generating pathways that lie in `naringenin` res
 ```bash
 source activate <myenv>
 python -m rp2paths all examples/naringenin/rp2-results.csv --outdir examples/naringenin/outdir
-````
+```
 
+### No scope warnings
+A warning message `WARNING: *** Scope Task: no scope matrix was produced, exit` indicates that no reaction have been indified as being part of a pathway. This can happen when the retrosynthesis exploration performed by RetroPath2.0 does not reach a minimal set of sink compounds.
 
 ## For developers
 
