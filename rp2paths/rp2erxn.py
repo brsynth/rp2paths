@@ -10,6 +10,7 @@ LICENSE.txt file.
 import sys
 import csv
 import argparse
+from re import match as re_match
 from rdkit import Chem
 from rp2paths.IDsHandler import IDsHandler
 
@@ -86,7 +87,10 @@ class Compound(object):
                 break
         # Sort IDs
         if mnx_case:
-            return sorted(cids, key=lambda x: int(x[4:]))
+            try:
+                return sorted(cids, key=lambda x: int(re_match(r'MNXM(\d+)\w*', x).group(1)))
+            except ValueError:
+                return sorted(cids)
         else:
             return sorted(cids)
 

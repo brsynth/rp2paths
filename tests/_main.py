@@ -6,9 +6,10 @@ Created on Jul 15 2020
 
 from unittest import TestCase
 
-from pathlib import Path
 from os import stat as os_stat
 from os import path as os_path
+
+from rp2paths.rp2erxn import Compound
 
 
 class Main(TestCase):
