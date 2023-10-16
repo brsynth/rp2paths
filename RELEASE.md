@@ -1,5 +1,8 @@
 # Release history
 
+## 1.5.1
+- chore(rp2erxn): handle different cmp IDs
+
 ## 1.5.0
 - chore!(main): change exit code when NoScopeMatrix is raised
 - chore(main): add WARNING when NoScopeMatrix is raised
