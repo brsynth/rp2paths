@@ -4,7 +4,7 @@ channels:
   - defaults
 dependencies:
   - python >= 3.6
-  - rdkit = 2019.03.1.0
+  - rdkit <2024.09
   - openjdk
   - pytest
   - pandas
