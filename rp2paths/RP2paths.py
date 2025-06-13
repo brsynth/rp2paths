@@ -82,13 +82,13 @@ class GeneralTask(object):
 class TaskConvert(GeneralTask):
     """Handling the execution of the conversion task."""
 
-    def __init__(self, infile, cmpdfile, reacfile, sinkfile, reverse):
+    def __init__(self, infile, cmpdfile, reacfile, sinkfile, forward):
         """Initializing."""
         self.infile = infile
         self.cmpdfile = cmpdfile
         self.reacfile = reacfile
         self.sinkfile = sinkfile
-        self.reverse = reverse
+        self.forward = forward
         self._check_args()
 
     def _check_args(self):
@@ -100,7 +100,7 @@ class TaskConvert(GeneralTask):
         """Process the conversion."""
         rp2erxn_compute(self.infile, self.cmpdfile,
                         self.reacfile, self.sinkfile,
-                        self.reverse)
+                        self.forward)
 
     def set_absolute_infile_path(self):
         """Change the path of the infile."""
@@ -111,7 +111,7 @@ class TaskScope(GeneralTask):
     """Handling the execution of the scope task."""
 
     def __init__(self, reacfile, sinkfile, target, minDepth=False,
-                 customsinkfile=None):
+                 customsinkfile=None, forward=False):
         """Initialize."""
         self.outdir = '.'
         self.reacfile = reacfile
@@ -122,6 +122,7 @@ class TaskScope(GeneralTask):
         if customsinkfile is not None:
             self.sinkfile = customsinkfile
             self.sinkfile = os.path.abspath(self.sinkfile)
+        self.forward = forward
 
     def _check_args(self):
         """Check the validity of some arguments."""
@@ -138,7 +139,7 @@ class TaskScope(GeneralTask):
         """Process the conversion."""
         Scope_compute(out_folder=self.outdir, sink_file=self.sinkfile,
                       reaction_file=self.reacfile, target=self.target,
-                      minDepth=self.minDepth)
+                      minDepth=self.minDepth, forward=self.forward)
         self._check_output()
 
 
@@ -388,7 +389,7 @@ def convert(args):
     """Convert output from RetroPath2.0 workflow."""
     task = TaskConvert(infile=args.infile, cmpdfile=args.cmpdfile,
                        reacfile=args.reacfile, sinkfile=args.sinkfile,
-                       reverse=args.reverse)
+                       forward=args.forward)
     task.set_absolute_infile_path()
     launch(tasks=[task], outdir=args.outdir, timeout=None)
 
@@ -446,12 +447,14 @@ def doall(args):
     c_task = TaskConvert(
         infile=args.infile, cmpdfile=args.cmpdfile,
         reacfile=args.reacfile, sinkfile=args.sinkfile,
-        reverse=args.reverse)
+        forward=args.forward)
     c_task.set_absolute_infile_path()
+    # Extract sinks and reactions, either in retro (default) or forward direction
     s_task = TaskScope(
         reacfile=args.reacfile, sinkfile=args.sinkfile,
         target=args.target, minDepth=args.minDepth,
-        customsinkfile=args.customsinkfile)
+        customsinkfile=args.customsinkfile,
+        forward=args.forward)
     e_task = TaskEfm(
         ebin=args.ebin, basename=args.basename)
     p_task = TaskPath(
@@ -493,10 +496,10 @@ def build_args_parser(prog='rp2paths'):
         type=str, required=False,
         default=os.getcwd()+'/')
     c_args.add_argument(
-        '--reverse', '-r', dest='reverse',
-        help='Consider reactions in the reverse direction',
-        required=False, action='store_false',
-        default=True)
+        '--forward', '-r', dest='forward',
+        help='Consider reactions in the forward direction',
+        required=False, action='store_true',
+        default=False)
 
     # Args: computing the scope
     s_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
@@ -580,10 +583,10 @@ def build_args_parser(prog='rp2paths'):
         type=int, required=False,
         default=900)
     p_args.add_argument(
-        '--reverse', '-r', dest='reverse',
-        help='Consider reactions in the reverse direction',
-        required=False, action='store_false',
-        default=True)
+        '--forward', '-r', dest='forward',
+        help='Consider reactions in the forward direction',
+        required=False, action='store_true',
+        default=False)
     p_args.add_argument(
         '--unfold_compounds', dest='unfold_compounds',
         help='Unfold pathways based on equivalencie of compounds (can lead \
@@ -696,10 +699,10 @@ def build_args_parser(prog='rp2paths'):
         type=str, required=False,
         default=os.getcwd()+'/')
     a_args.add_argument(
-        '--reverse', '-r', dest='reverse',
-        help='Consider reactions in the reverse direction',
-        required=False, action='store_false',
-        default=True)
+        '--forward', '-r', dest='forward',
+        help='Consider reactions in the forward direction',
+        required=False, action='store_true',
+        default=False)
     a_args.add_argument(
         '--minDepth', action='store_true', default=False,
         help='Use minimal depth scope, i.e. stop the scope computation as \

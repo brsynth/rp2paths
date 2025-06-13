@@ -159,14 +159,14 @@ class Transformation(object):
         self.score = row['Score']
         self.iteration = row['Iteration']
 
-    def ToStr(self, reverse=False):
+    def ToStr(self, forward=True):
         """Printing."""
         # Prepare left & right
         left_side = ':'.join(sorted([Transformation.CmpdToStr(smi, coeff) for smi, coeff in self.left.items()]))
         right_side = ':'.join(sorted([Transformation.CmpdToStr(smi, coeff) for smi, coeff in self.right.items()]))
         # ..
         ls = list()
-        if not reverse:
+        if forward:
             ls += [self.trs_id]  # Transformation ID
             ls += [','.join(sorted(list(set(self.rule_ids))))]  # Rule IDs
             ls += [left_side]
@@ -182,7 +182,7 @@ class Transformation(object):
 
 
 def compute(infile, cmpdfile='compounds.txt', rxnfile='reactions.txt',
-            sinkfile='sinks.txt', reverse=False):
+            sinkfile='sinks.txt', forward=True):
     """Convert the output from the RetroPath2.0 workflow."""
     # Get content
     content = dict()
@@ -297,7 +297,7 @@ def compute(infile, cmpdfile='compounds.txt', rxnfile='reactions.txt',
     # Write the reactions file
     with open(rxnfile, 'w') as fh:
         for trs in sorted(all_trs.values(), key=lambda x: x.trs_id):
-            fh.write(trs.ToStr(reverse=reverse) + '\n')
+            fh.write(trs.ToStr(forward=forward) + '\n')
 
 
 if __name__ == "__main__":
@@ -310,8 +310,8 @@ if __name__ == "__main__":
         help='a result file outputed by the RetroPath2.0 workflow',
         type=str, required=True)
     parser.add_argument(
-        '--reverse', '-r', dest='reverse',
-        help='switch, if used, the reactions will be outputed in the reverse \
+        '--forward', '-r', dest='forward',
+        help='switch, if used, the reactions will be outputed in the forward \
         directions',
         required=False, action='store_true', default=False)
     parser.add_argument(
@@ -330,4 +330,4 @@ if __name__ == "__main__":
 
     compute(infile=args.infile, cmpdfile=args.compound_outfile,
             rxnfile=args.react_outfile, sinkfile=args.sink_outfile,
-            reverse=args.reverse)
+            forward=args.forward)

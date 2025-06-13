@@ -246,8 +246,9 @@ class Scope(object):
 
 
 def compute(out_folder, sink_file, reaction_file, target,
-            maxIter=None, minDepth=False, keepBoots=False):
+            maxIter=None, minDepth=False, keepBoots=False, forward=False):
     """Compute scope."""
+    """ Extract the sub-network where reactions can be fired, either because substrates are in sink or they are products of other reactions can be fired"""
     rxn, rxnFull, maxDepth = readReaction(reaction_file, keepBoots=keepBoots)
     cleanOutFiles(out_folder)
     if minDepth:
@@ -262,9 +263,15 @@ def compute(out_folder, sink_file, reaction_file, target,
     for depth in range(startDepth, endDepth+1):
         rxn, rxnFull, maxDepth = readReaction(reaction_file, maxIter=depth,
                                               keepBoots=keepBoots)
-        sinks = readSinks(sink_file)
-        sinks = addFoldedSinks(sinks, rxn)
+        if not forward:
+            sinks = readSinks(sink_file)
+            sinks = addFoldedSinks(sinks, rxn)
+        else: # empty sink
+            sinks = set()
+            sinks.add(target)
         nonReachableReactions, broth, niter = reachableReactions(rxn, sinks)
+        # nonReachableReactions, broth, niter = reachableReactions(rxn, get_compounds(rxn))
+
         if target not in broth:
             nonReachableReactions = set(rxn)
         scope = Scope(rxn, reachable=set(rxn) - nonReachableReactions)
@@ -274,6 +281,15 @@ def compute(out_folder, sink_file, reaction_file, target,
         if scope.dfmat.shape[0] > 0:
             scope.outFiles(niter, rxnFull, out_folder)
             break
+
+
+# def get_compounds(rxn):
+#     """Get the list of compounds in the reaction."""
+#     compounds = set()
+#     for r in rxn:
+#         for c in rxn[r]:
+#             compounds.add(c)
+#     return set(compounds)
 
 
 if __name__ == '__main__':
