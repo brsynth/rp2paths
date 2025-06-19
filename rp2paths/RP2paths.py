@@ -20,6 +20,7 @@ from rp2paths.EFMHandler import EFMHandler
 from rp2paths.ImgHandler import ImgHandler
 from rp2paths.DotHandler import DotHandler
 from rp2paths.PathFilter import PathFilter
+from rp2paths.enumerate import enumerate
 
 
 class NoScopeMatrix(Exception):
@@ -146,10 +147,13 @@ class TaskScope(GeneralTask):
 class TaskEfm(GeneralTask):
     """Handling the execution of the efm task."""
 
-    def __init__(self, ebin, basename):
+    def __init__(self, ebin, basename, max_steps, max_paths, forward=False):
         """Initialize."""
         self.ebin = ebin
         self.basename = basename
+        self.forward = forward
+        self.max_steps = max_steps
+        self.max_paths = max_paths
 
     def _check_args(self):
         if not os.path.exists(self.ebin):
@@ -170,26 +174,38 @@ class TaskEfm(GeneralTask):
                 os.getcwd(),
                 self.basename+'_'+name
             )
-        command = f'java -jar \
-            {elemodes} \
-            -kind stoichiometry \
-            -stoich {filename("mat")} \
-            -rev {filename("rever")} \
-            -meta {filename("comp")} \
-            -reac {filename("react")} \
-            -arithmetic double \
-            -zero 1e-10  \
-            -compression default \
-            -log console \
-            -level INFO \
-            -maxthreads -1 \
-            -normalize min \
-            -adjacency-method pattern-tree-minzero \
-            -rowordering MostZerosOrAbsLexMin \
-            -out text-boolean {filename("efm")}'
+        if not self.forward:
+            command = f'java -jar \
+                {elemodes} \
+                -kind stoichiometry \
+                -stoich {filename("mat")} \
+                -rev {filename("rever")} \
+                -meta {filename("comp")} \
+                -reac {filename("react")} \
+                -arithmetic double \
+                -zero 1e-10  \
+                -compression default \
+                -log console \
+                -level INFO \
+                -maxthreads -1 \
+                -normalize min \
+                -adjacency-method pattern-tree-minzero \
+                -rowordering MostZerosOrAbsLexMin \
+                -out text-boolean {filename("efm")}'
 
-        self._launch_external_program(command=command, baselog='efm',
-                                      timeout=timeout, use_shell=True)
+            self._launch_external_program(command=command, baselog='efm',
+                                        timeout=timeout, use_shell=True)
+        else:
+            # Enumerate all longest pathways w/o running EFM
+            enumerate(
+                mat_file=filename("mat"),
+                react_file=filename("react"),
+                comp_file=filename("comp"),
+                start_cmpd='TARGET_0000000001',
+                max_depth=self.max_steps,
+                max_paths=self.max_paths,
+                output_file=filename("efm")
+            )
 
 
 class TaskPath(object):
@@ -404,7 +420,7 @@ def scope(args):
 
 def efm(args):
     """Enumerate EFMs."""
-    task = TaskEfm(ebin=args.ebin, basename=args.basename)
+    task = TaskEfm(ebin=args.ebin, basename=args.basename, max_steps=args.maxsteps, max_paths=args.maxpaths)
     launch(tasks=[task], outdir=args.outdir, timeout=args.timeout)
 
 
@@ -456,7 +472,8 @@ def doall(args):
         customsinkfile=args.customsinkfile,
         forward=args.forward)
     e_task = TaskEfm(
-        ebin=args.ebin, basename=args.basename)
+        ebin=args.ebin, basename=args.basename,
+        forward=args.forward, max_steps=args.maxsteps, max_paths=args.maxpaths)
     p_task = TaskPath(
         basename=args.basename, outfile=args.pathsfile,
         unfold_stoichio=args.unfold_stoichio,
