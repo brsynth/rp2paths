@@ -9,6 +9,7 @@ LICENSE.txt file.
 
 import os
 import csv
+from logging import getLogger
 from rp2paths.pyEMSv2.reaction import StrReaction
 
 
@@ -19,7 +20,8 @@ class PathFilter(object):
                  filter_bootstraps=True,
                  filter_inconsistentsubstrates=True,
                  onlyPathsStartingBy=None,
-                 notPathsStartingBy=None):
+                 notPathsStartingBy=None,
+                 logger=getLogger(__name__)):
         """Initialize."""
         self.pathfile = pathfile
         self.sinkfile = sinkfile
@@ -30,6 +32,7 @@ class PathFilter(object):
         self.filter_inconsistentsubstrates = filter_inconsistentsubstrates
         self.onlyPathsStartingBy = onlyPathsStartingBy
         self.notPathsStartingBy = notPathsStartingBy
+        self.logger = logger
 
     def _CheckArgs(self):
         if not os.path.exists(self.pathfile):
@@ -118,30 +121,30 @@ class PathFilter(object):
                 self.filter_bootstraps
                 and PathFilter.HasBootstrapReaction(path, self.sinks)
             ):
-                print("PathFilter: filtering out one pathway",
-                      "(has bootstrap reaction)")
+                self.logger.debug("PathFilter: filtering out one pathway \
+                      (has bootstrap reaction)")
                 pids_to_rm.add(pid)
             elif (
                 self.filter_inconsistentsubstrates
                 and PathFilter.HasInconsistentSubstrates(path, self.sinks)
             ):
-                print("PathFilter: filtering out one pathway",
-                      "(has inconsistent initial substrates)")
+                self.logger.debug("PathFilter: filtering out one pathway \
+                                 (has inconsistent initial substrates)")
                 pids_to_rm.add(pid)
             elif (
                 self.onlyPathsStartingBy is not None
                 and not PathFilter.HasSubstratesInFirstStep(path, self.sinks, self.onlyPathsStartingBy)
             ):
-                print("PathFilter: filtering out one pathway",
-                      "(does not use any wanted substrate in first step)")
+                self.logger.debug("PathFilter: filtering out one pathway \
+                                 (does not use any wanted substrate in first step)")
                 pids_to_rm.add(pid)
             elif (
                 self.notPathsStartingBy is not None
                 and PathFilter.HasSubstratesInFirstStep(path, self.sinks, self.notPathsStartingBy)
                 and PathFilter.HasSingleSubstrate(path, self.sinks, self.notPathsStartingBy)
             ):
-                print("PathFilter: filtering out one pathway",
-                      "(use an unwanted single substrate in first step)")
+                self.logger.debug("PathFilter: filtering out one pathway \
+                                    (use an unwanted single substrate in first step)")
                 pids_to_rm.add(pid)
         # Delete unwanted pathways
         for pid in pids_to_rm:

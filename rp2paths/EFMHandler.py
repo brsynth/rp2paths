@@ -10,6 +10,7 @@ LICENSE.txt file.
 import os
 import argparse
 import csv
+import logging
 from rp2paths.pyEMSv2.elemodes import Elemodes
 
 
@@ -20,7 +21,8 @@ class EFMHandler(object):
                  full_react_file, react_file, efm_file,
                  outfile='out_paths.csv',
                  unfold_stoichio=False, unfold_compounds=False,
-                 maxsteps=float('+inf'), maxpaths=150):
+                 maxsteps=float('+inf'), maxpaths=150,
+                 logger=logging.getLogger(__name__)):
         """Initialization."""
         # .
         self.full_react_file = full_react_file

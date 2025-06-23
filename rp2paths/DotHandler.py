@@ -10,6 +10,7 @@ LICENSE.txt file.
 import os
 import argparse
 import csv
+from logging import getLogger
 from rp2paths.pyEMSv2.reaction import StrReaction
 from rp2paths.DotMaker import DotMaker
 
@@ -19,7 +20,8 @@ class DotHandler(object):
 
     def __init__(self, pathsfile, chassisfile,
                  target=None, outbasename='out_graph',
-                 imgdir=None, cmpdnamefile=None):
+                 imgdir=None, cmpdnamefile=None,
+                 logger=getLogger(__name__)):
         """Initialize."""
         self.pathsfile = pathsfile
         self.chassisfile = chassisfile
@@ -30,6 +32,7 @@ class DotHandler(object):
         self.pathways = dict()
         self.cmpdnamefile = cmpdnamefile
         self.cmpd_names = dict()
+        self.logger = logger
 
     def _CheckArgs(self):
         """Perform some checking on arguments."""

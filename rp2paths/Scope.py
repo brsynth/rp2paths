@@ -14,6 +14,7 @@ import re
 import numpy as np
 import pandas as pd
 import csv
+from logging import getLogger
 
 
 def arguments():
@@ -246,7 +247,7 @@ class Scope(object):
 
 
 def compute(out_folder, sink_file, reaction_file, target,
-            maxIter=None, minDepth=False, keepBoots=False, forward=False):
+            maxIter=None, minDepth=False, keepBoots=False, forward=False, logger=getLogger(__name__)):
     """Compute scope."""
     """ Extract the sub-network where reactions can be fired, either because
     substrates are in sink or they are products of other reactions can be fired"""

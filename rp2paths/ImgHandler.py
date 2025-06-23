@@ -10,6 +10,7 @@ LICENSE.txt file.
 import os
 import argparse
 import csv
+from logging import getLogger
 from rp2paths.pyEMSv2.reaction import StrReaction
 from rp2paths.ImgMaker import ImgMaker
 
@@ -20,7 +21,8 @@ class ImgHandler(object):
     def __init__(self, pathsfile, cmpdfile, imgdir,
                  cmpdnamefile=None,
                  width=400, height=200,
-                 tryCairo=True, kekulize=True):
+                 tryCairo=True, kekulize=True,
+                 logger=getLogger(__name__)):
         """Initialize."""
         self.pathsfile = pathsfile
         self.cmpdfile = cmpdfile
@@ -33,6 +35,7 @@ class ImgHandler(object):
         self.cmpd_involved = set()
         self.cmpd_smiles = dict()  # Cmpd ID, SMILES
         self.cmpd_names = dict()  # Cmpd ID, name
+        self.logger = logger
 
     def _CheckArgs(self):
         if not os.path.isdir(self.imgdir):

@@ -55,7 +55,7 @@ def enumerate_longest_paths(
     substrates2reactions,
     reaction2products,
     max_depth=0,  # 0 means unlimited depth
-    max_paths=None,
+    max_paths=0,  # 0 means unlimited paths
     logger = logging.getLogger(__name__)
 ):
     """
@@ -69,7 +69,7 @@ def enumerate_longest_paths(
             if current_path not in all_paths:
                 all_paths.append(current_path)
                 logger.debug(f"Path {len(all_paths)}: {start_cmpd}, " + " -> ".join([f"({step})" for step in current_path]))
-            if max_paths is not None and len(all_paths) >= max_paths:
+            if max_paths > 0 and len(all_paths) >= max_paths:
                 logger.info(f"Reached maximum number of paths ({max_paths}). Stopping enumeration.")
                 # exit(0)
             return
@@ -92,14 +92,21 @@ def enumerate(
     comp_file,
     start_cmpd,
     max_depth = 0,  # 0 means unlimited depth
-    max_paths = None,
+    max_paths = 0,  # 0 means unlimited paths
     output_file = None,
     logger = logging.getLogger(__name__)
 ):
     logger.info("Reading input files...")
     stoich_mat, reactions, compounds = read_inputs(mat_file, react_file, comp_file, logger)
     logger.info(f"Number of compounds: {len(compounds)}")
+    logger.debug(f"Compounds: {compounds}")
     logger.info(f"Number of reactions: {len(reactions)}")
+    logger.debug(f"Reactions: {reactions}")
+    logger.debug(f"Stoichiometry matrix:\n{stoich_mat}")
+
+    # Invert the reactions in the stoichiometry matrix,
+    # i.e. multiply by -1 to get the correct direction
+    # stoich_mat = stoich_mat.map(lambda x: -x if x < 0 else x)
 
     # Add brackets to fit the expected format
     start_cmpd = f"[{start_cmpd}]"
@@ -147,7 +154,8 @@ def main():
     parser.add_argument("--start", required=True, help="Starting compound (e.g. TARGET_0000000001)")
     parser.add_argument("--max_depth", type=int, default=0, help="Optional: Maximum depth for path search, 0 (default) for \
         unlimited number of steps.")
-    parser.add_argument("--max_paths", type=int, default=None, help="Optional: Maximum number of unique paths to enumerate, not limited by default")
+    parser.add_argument("--max_paths", type=int, default=0, help="Optional: Maximum number of unique paths to enumerate, 0 \
+        (default) for unlimited paths.")
     parser.add_argument("--output", default=None, help="Optional: Output file to save the paths (default: print to stdout)")
     parser.add_argument("--loglevel", default="INFO", help="Set logging level (DEBUG, INFO, WARNING, ERROR)")
     args = parser.parse_args()
