@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
+from rdkit import RDLogger
+
 from rp2paths.RP2paths import build_args_parser, NoScopeMatrix
+from brs_utils import (
+    create_logger
+)
 
 
 def main():
@@ -11,12 +16,15 @@ def main():
         parser.print_help()
         exit(1)
 
+    # Disable RDKit logging
+    RDLogger.DisableLog('rdApp.*')
+    # Setup logger
+    logger = create_logger('rp2paths', args.loglevel)
+
     try:
-        args.func(args)
+        args.func(args, logger)
     except NoScopeMatrix as e:
-        print()
-        print('WARNING:', e.message)
-        print()
+        logger.warning(e.message)
         # exit(1)
 
 
