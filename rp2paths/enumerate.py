@@ -64,7 +64,7 @@ def enumerate_longest_paths(
     """
     all_paths = []
 
-    def dfs(current_cmpd, current_path, depth):
+    def dfs(current_cmpd, current_path, depth, consumed_cmpds):
         if (max_depth > 0 and depth >= max_depth) or (current_cmpd not in substrates2reactions):
             if current_path not in all_paths:
                 all_paths.append(current_path)
@@ -77,11 +77,13 @@ def enumerate_longest_paths(
         for rxn in substrates2reactions[current_cmpd]:
             products = reaction2products[rxn]
             for product in products:
-                # Avoid cycles by checking if the current reaction is already in the path
-                if rxn not in current_path:
-                    dfs(product, current_path + [rxn], depth + 1)
+                # Avoid cycles by checking:
+                # - if the current reaction is already in the path, and
+                # - if the product is not already consumed in the path
+                if rxn not in current_path and product not in consumed_cmpds:
+                    dfs(product, current_path + [rxn], depth + 1, consumed_cmpds + [current_cmpd])
 
-    dfs(start_cmpd, [], 0)
+    dfs(start_cmpd, [], 0, [start_cmpd])
     return all_paths
 
 
@@ -106,7 +108,7 @@ def enumerate(
 
     # Invert the reactions in the stoichiometry matrix,
     # i.e. multiply by -1 to get the correct direction
-    # stoich_mat = stoich_mat.map(lambda x: -x if x < 0 else x)
+#    stoich_mat = stoich_mat.map(lambda x: -x)
 
     # Add brackets to fit the expected format
     start_cmpd = f"[{start_cmpd}]"
