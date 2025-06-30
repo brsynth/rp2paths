@@ -65,22 +65,34 @@ def enumerate_longest_paths(
     all_paths = []
 
     def dfs(current_cmpd, current_path, depth, consumed_cmpds):
+        if max_paths > 0 and len(all_paths) >= max_paths:
+            logger.info(f"Reached maximum number of paths ({max_paths}). Stopping enumeration.")
+            return
         if (max_depth > 0 and depth >= max_depth) or (current_cmpd not in substrates2reactions):
             if current_path not in all_paths:
                 all_paths.append(current_path)
                 logger.debug(f"Path {len(all_paths)}: {start_cmpd}, " + " -> ".join([f"({step})" for step in current_path]))
-            if max_paths > 0 and len(all_paths) >= max_paths:
-                logger.info(f"Reached maximum number of paths ({max_paths}). Stopping enumeration.")
-                # exit(0)
             return
 
         for rxn in substrates2reactions[current_cmpd]:
+            if max_paths > 0 and len(all_paths) >= max_paths:
+                logger.info(f"Reached maximum number of paths ({max_paths}). Stopping enumeration.")
+                break
+            # Avoid cycles by checking:
+            # - if the current reaction is already in the path, and
+            # - if none of the products are already consumed in the path
+            if rxn in current_path:
+                logger.warning(f"Cycle detected: reaction {rxn} already in path {current_path}. Skipping.")
+                continue
+            ok = True
             products = reaction2products[rxn]
             for product in products:
-                # Avoid cycles by checking:
-                # - if the current reaction is already in the path, and
-                # - if the product is not already consumed in the path
-                if rxn not in current_path and product not in consumed_cmpds:
+                if product in consumed_cmpds:
+                    logger.warning(f"Product {product} already consumed in path {consumed_cmpds}. Skipping.")
+                    ok = False
+                    break
+            if ok:
+                for product in products:
                     dfs(product, current_path + [rxn], depth + 1, consumed_cmpds + [current_cmpd])
 
     dfs(start_cmpd, [], 0, [start_cmpd])
