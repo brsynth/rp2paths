@@ -21,7 +21,7 @@ class EFMHandler(object):
                  full_react_file, react_file, efm_file,
                  outfile='out_paths.csv',
                  unfold_stoichio=False, unfold_compounds=False,
-                 maxsteps=float('+inf'), maxpaths=150,
+                 maxsteps=float('+inf'),
                  logger=logging.getLogger(__name__)):
         """Initialization."""
         # .
@@ -32,7 +32,6 @@ class EFMHandler(object):
         self.unfold_stoichio = unfold_stoichio
         self.unfold_compounds = unfold_compounds
         self.maxsteps = maxsteps
-        self.maxpaths = maxpaths
         self.elemodes = None
 
     def _CheckArgs(self):
@@ -40,7 +39,6 @@ class EFMHandler(object):
         assert type(self.unfold_stoichio) is bool
         assert type(self.unfold_compounds) is bool
         assert self.maxsteps > 0
-        assert type(self.maxpaths) is int and self.maxpaths >= 0
         for filepath in (self.full_react_file, self.react_file, self.efm_file):
             if not os.path.exists(filepath):
                 raise IOError(filepath)
@@ -68,10 +66,10 @@ class EFMHandler(object):
         pid = 0
         for path in pathways:
             pid += 1
-            # Stop enumerating if we reach the allowed max number of pathways
-            if pid > self.maxpaths:
-                fh.close()
-                return
+            # # Stop enumerating if we reach the allowed max number of pathways
+            # if self.maxpaths > 0 and pid > self.maxpaths:
+            #     fh.close()
+            #     return
             for rxn in path:
                 writer.writerow(
                     {'Path ID': pid,
@@ -110,9 +108,10 @@ if __name__ == '__main__':
                         compounds (can lead to combinatorial explosion).')
     parser.add_argument('--maxsteps', default=0, type=int,
                         help='Cutoff on the maximum number of steps in a \
-                        pathways. 0 for unlimited number of steps.')
-    parser.add_argument('--maxpaths', default=150, type=int,
-                        help='cutoff on the maximum number of pathways.')
+                        pathways. 0 (default) for unlimited number of steps.')
+    parser.add_argument('--maxpaths', default=0, type=int,
+                        help='cutoff on the maximum number of pathways. 0 (default) for \
+                        unlimited number of pathways.')
     # Get arguments
     args = parser.parse_args()
 
