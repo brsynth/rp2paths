@@ -169,7 +169,8 @@ class DotMaker(object):
         for rxn in self.pathway:
             subs |= rxn.involved_substrates()
             prods |= rxn.involved_products()
-        assert self.target in prods
+        if self.chassis:
+            assert self.target in prods
         # Intermediate compounds: all those not in chassis and not target
         intermediates = (subs | prods) - (self.chassis | set([self.target]))
         substrates = subs - intermediates

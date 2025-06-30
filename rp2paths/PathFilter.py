@@ -68,7 +68,11 @@ class PathFilter(object):
 
     @staticmethod
     def HasInconsistentSubstrates(path, sinks):
-        """Test wether initial substrates are all amongst sink compounds."""
+        """Test wether initial substrates are all amongst sink compounds.
+        Except if the sink is empty, in which case the pathway is kept."""
+        # If sinks is empty then we keep the pathway
+        if not sinks:
+            return False
         all_substrates = set()
         all_products = set()
         for r in path:
