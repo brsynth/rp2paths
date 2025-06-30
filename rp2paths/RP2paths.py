@@ -220,7 +220,7 @@ class TaskPath(GeneralTask):
 
     def __init__(self, basename, outfile,
                  unfold_stoichio=False, unfold_compounds=False,
-                 maxsteps=0, maxpaths=150, forward=False, logger=logging.getLogger(__name__)):
+                 maxsteps=0, forward=False, logger=logging.getLogger(__name__)):
         """Initialization."""
         self.basename = basename
         self.full_react_file = basename + '_full_react'
@@ -230,7 +230,6 @@ class TaskPath(GeneralTask):
         self.unfold_stoichio = unfold_stoichio
         self.unfold_compounds = unfold_compounds
         self.maxsteps = maxsteps if maxsteps != 0 else float('+inf')
-        self.maxpaths = maxpaths
         # Initialize parameters through mother class
         super(TaskPath, self).__init__(forward=forward, logger=logger)
 
@@ -239,7 +238,6 @@ class TaskPath(GeneralTask):
         assert type(self.unfold_stoichio) is bool
         assert type(self.unfold_compounds) is bool
         assert self.maxsteps > 0
-        assert type(self.maxpaths) is int and self.maxpaths >= 0
         for filepath in (self.full_react_file, self.react_file, self.efm_file):
             if not os.path.exists(filepath):
                 raise IOError(filepath)
@@ -254,7 +252,6 @@ class TaskPath(GeneralTask):
             unfold_stoichio=self.unfold_stoichio,
             unfold_compounds=self.unfold_compounds,
             maxsteps=self.maxsteps,
-            maxpaths=self.maxpaths,
             logger=self.logger
         )
         efmh.ParseEFMs()
@@ -503,7 +500,7 @@ def doall(args, logger=logging.getLogger(__name__)):
         basename=args.basename, outfile=args.pathsfile,
         unfold_stoichio=args.unfold_stoichio,
         unfold_compounds=args.unfold_compounds,
-        maxsteps=args.maxsteps, maxpaths=args.maxpaths, logger=logger)
+        maxsteps=args.maxsteps, logger=logger)
     f_task = TaskFilter(
         pathfile=args.pathsfile, sinkfile=args.sinkfile,
         customsinkfile=args.customsinkfile,
@@ -612,13 +609,14 @@ def build_args_parser(prog='rp2paths'):
         default=os.getcwd()+'/')
     p_args.add_argument(
         '--maxsteps', dest='maxsteps',
-        help='Cutoff on the maximum number of steps in a pathways. 0 for \
+        help='Cutoff on the maximum number of steps in a pathways. 0 (default) for \
         unlimited number of steps.',
         type=int, default=0)
     p_args.add_argument(
         '--maxpaths', dest='maxpaths',
-        help='cutoff on the maximum number of pathways',
-        required=False, type=int, default=150)
+        help='cutoff on the maximum number of pathways. 0 (default) for \
+        unlimited number of pathways.',
+        required=False, type=int, default=0)
     p_args.add_argument(
         '--timeout', dest='timeout',
         help='Timeout before killing a process (in s)',
@@ -771,13 +769,14 @@ def build_args_parser(prog='rp2paths'):
         default=900)
     a_args.add_argument(
         '--maxsteps', dest='maxsteps',
-        help='Cutoff on the maximum number of steps in a pathways. 0 for \
+        help='Cutoff on the maximum number of steps in a pathways. 0 (default) for \
         unlimited number of steps.',
         type=int, default=0)
     a_args.add_argument(
         '--maxpaths', dest='maxpaths',
-        help='cutoff on the maximum number of pathways',
-        required=False, type=int, default=150)
+        help='cutoff on the maximum number of pathways. 0 (default) for \
+        unlimited number of pathways.',
+        required=False, type=int, default=0)
     a_args.add_argument(
         '--unfold_compounds', dest='unfold_compounds',
         help='Unfold pathways based on equivalencie of compounds (can lead \
