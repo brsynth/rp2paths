@@ -59,8 +59,9 @@ def enumerate_longest_paths(
     logger = logging.getLogger(__name__)
 ):
     """
-    Enumerate all longest paths (i.e., those that cannot be further extended)
-    starting from the specified compound.
+    Starting from the specified compound, enumerate all longest paths
+    in the metabolic network. The longest paths are those that cannot be further extended,
+    because they reach a dead end or the maximum depth or the maximum number of unique paths.
     """
     all_paths = []
 
@@ -82,13 +83,13 @@ def enumerate_longest_paths(
             # - if the current reaction is already in the path, and
             # - if none of the products are already consumed in the path
             if rxn in current_path:
-                logger.warning(f"Cycle detected: reaction {rxn} already in path {current_path}. Skipping.")
+                logger.debug(f"Cycle detected: reaction {rxn} already in path {current_path}. Skipping.")
                 continue
             ok = True
             products = reaction2products[rxn]
             for product in products:
                 if product in consumed_cmpds:
-                    logger.warning(f"Product {product} already consumed in path {consumed_cmpds}. Skipping.")
+                    logger.debug(f"Product {product} already consumed in path {consumed_cmpds}. Skipping.")
                     ok = False
                     break
             if ok:
