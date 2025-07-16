@@ -15,6 +15,7 @@ import argparse
 import signal
 import subprocess
 import logging
+from rdkit import Chem
 from rp2paths.rp2erxn import compute as rp2erxn_compute
 from rp2paths.Scope import compute as Scope_compute
 from rp2paths.EFMHandler import EFMHandler
@@ -22,6 +23,22 @@ from rp2paths.ImgHandler import ImgHandler
 from rp2paths.DotHandler import DotHandler
 from rp2paths.PathFilter import PathFilter
 from rp2paths.enumerate import enumerate
+
+
+def canonicalize_smiles(smiles: str) -> str:
+    """
+    Convert a SMILES string to its canonical form using RDKit.
+
+    Parameters:
+    - smiles (str): Input SMILES string.
+
+    Returns:
+    - str: Canonical SMILES string. Returns None if input is invalid.
+    """
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        return None  # Handle invalid SMILES
+    return Chem.MolToSmiles(mol, canonical=True)
 
 
 class NoScopeMatrix(Exception):
@@ -42,9 +59,13 @@ class NoScopeMatrix(Exception):
 class GeneralTask(object):
     """Generic class for handling the execution of task."""
 
-    def __init__(self, forward=False, logger=logging.getLogger(__name__)):
+    def __init__(self, forward=False, check_args = True, logger=logging.getLogger(__name__)):
         self.forward = forward
         self.logger = logger
+        if check_args:
+            # If check_args is True, check the arguments
+            # Otherwise, do not check them (used in TaskPath)
+            self._check_args()
 
     def _launch_external_program(self, command, baselog, timeout,
                                  use_shell=False):
@@ -95,7 +116,6 @@ class TaskConvert(GeneralTask):
         self.reacfile = reacfile
         self.sinkfile = sinkfile
         super(TaskConvert, self).__init__(forward=forward, logger=logger)
-        self._check_args()
 
     def _check_args(self):
         """Checking that arguments are usable."""
@@ -111,6 +131,161 @@ class TaskConvert(GeneralTask):
     def set_absolute_infile_path(self):
         """Change the path of the infile."""
         self.infile = os.path.abspath(self.infile)
+
+
+class TaskCofactors(GeneralTask):
+    """Handling the execution of the cofactors task."""
+
+    def __init__(self, cmpdfile, reacfile, cofile, logger=logging.getLogger(__name__)):
+        """Initialize."""
+        self.cmpdfile = cmpdfile
+        self.reacfile = reacfile
+        self.cofile = cofile
+        self.logger = logger
+        super(TaskCofactors, self).__init__(logger=logger)
+
+    def _check_args(self):
+        """Check the validity of some arguments."""
+        for f in [self.reacfile, self.cmpdfile]:
+            if not os.path.exists(f):
+                raise FileNotFoundError(f)
+
+    @staticmethod
+    def read_cofactors(cofile, logger=logging.getLogger(__name__)):
+        # Read cofactors from cofile whose the header is:
+        # <ID>	<SMILES>	<INCHI>	<INCHIKEY>
+        # as a dict with <SMILES> as key and value is a sub-dict like:
+        # {<SMILES>: {'id': <ID>, 'inchi': <INCHI>, 'inchikey': <INCHIKEY> }}
+        cofactors = {}
+        with open(cofile, 'r') as f:
+            next(f)  # Skip header line
+            for line in f:
+                parts = line.strip().split('\t')
+                # convert into canonized smiles using rdkit
+                if len(parts) >= 2:
+                    smiles = canonicalize_smiles(parts[1])
+                    cofactors[smiles] = {'id': parts[0], 'inchi': parts[2], 'inchikey': parts[3]}
+        logger.debug(f"Read cofactors: {cofactors}")
+        return cofactors
+
+    @staticmethod
+    def rm_cofactors_in_cmpdfile(cmpdfile, cofactors, logger=logging.getLogger(__name__)):
+        """Remove cofactors from the compound file."""
+        # In cmpdfile, remove lines that are in cofactors
+        # Keep remaining compounds in a dict with id as key and structure as value
+        compounds = {}
+        with open(cmpdfile, 'r') as f:
+            # Keep the header line
+            header = f.readline()
+            cmpdlines = f.readlines()
+        with open(cmpdfile, 'w') as f:
+            f.write(header)
+            for line in cmpdlines:
+                id_struct = line.strip().split('\t')
+                smiles = canonicalize_smiles(id_struct[1])
+                if smiles not in cofactors:
+                    compounds[id_struct[0]] = id_struct[1]
+                    f.write(line)
+                else:
+                    logger.debug(f"Removing cofactor {line.strip()} from cmpdfile {cmpdfile}")
+        logger.debug(f"Remaining compounds after removing cofactors: {compounds}")
+        return compounds
+
+    @staticmethod
+    def dict_from_reacfile(reacfile, logger=logging.getLogger(__name__)):
+        reac_dict = {}
+        with open(reacfile, 'r') as f:
+            for line in f:
+                parts = line.strip().split('\t')
+                if len(parts) >= 5:
+                    reac_dict[parts[0]] = {
+                        'rules': parts[1].split(','),
+                        'reactants': [r.split('].')[-1].replace('[','').replace(']','') if '].' in r else r.split('.')[-1].replace('[','').replace(']','') for r in parts[2].split(':')],
+                        'products': [p.split('].')[-1].replace('[','').replace(']','') if '].' in p else p.split('.')[-1].replace('[','').replace(']','') for p in parts[4].split(':')]
+                    }
+        return reac_dict
+
+    @staticmethod
+    def rm_cofactors_in_reactions(reacdict, compounds, cofactors, logger=logging.getLogger(__name__)):
+        # Replace reactants and products IDs with their structure
+        # using the cofactors dict
+        for _, values in reacdict.items():
+            values['reactants'] = [compounds[r] for r in values['reactants'] if r in compounds]
+            values['products'] = [compounds[p] for p in values['products'] if p in compounds]
+        # Remove cofactors from reactants and products
+        for _, values in reacdict.items():
+            values['reactants'] = [r for r in values['reactants'] if r not in cofactors]
+            values['products'] = [p for p in values['products'] if p not in cofactors]
+        # Remove reactions with empty reactants or products
+        len_reacdict = len(reacdict)
+        reacdict = {k: v for k, v in reacdict.items() if v['reactants'] and v['products']}
+        logger.debug(f"Removed {len_reacdict - len(reacdict)} reactions with empty reactants or products.")
+        logger.debug(f"Reactions after removing cofactors: {reacdict}")
+        return reacdict
+
+    @staticmethod
+    def filter_reactions(reacfile, reacdict, compounds, logger=logging.getLogger(__name__)):
+        # Read reactions from file and:
+        # - filter out those that are not in reac_dict,
+        # - remove cofactors from the reactions
+        # - remove new duplicates while merging rules
+        with open(reacfile, 'r') as f:
+            reaclines = f.readlines()
+        # Write back the filtered reactions
+        reactions = {}
+        for line in reaclines:
+            # Split the line to get all elements
+            line = line.split('\t')
+            if line[0] in reacdict:
+                # Get reactants and products with stoichiometry
+                reactants = [r.replace('\n','') for r in line[2].split(':')]
+                products = [r.replace('\n','') for r in line[4].split(':')]
+                # Filter out cofactors from the reactions
+                logger.debug(f"Filtering out cofactors from reaction: {reactants} -> {products}")
+                reactants = [r for r in reactants if r.split('.')[-1].replace('[','').replace(']','') in compounds]
+                products = [p for p in products if p.split('.')[-1].replace('[','').replace(']','') in compounds]
+                logger.debug(f"\tbecomes: {reactants} -> {products}")
+                # If the reaction becomes same as another one (with stoichiometry), merge the rules
+                rules = set(line[1].split(','))
+                key = (','.join(sorted(reactants)), ','.join(sorted(products)))
+                if key in reactions:
+                    logger.debug(f"Duplicate reaction found: {reactants} -> {products}. Merging rules.")
+                    # Merge rules
+                    rules |= reactions[key][1]
+                    # Update the existing reaction with merged rules
+                    reactions[key][1] = rules
+                else:
+                    reactions[key] = [line[0], rules, reactants, products]
+        logger.debug(f"Filtered reactions: {reactions}")
+        return reactions
+
+    @staticmethod
+    def rm_cofactors_in_reacfile(reacfile, cofactors, compounds, logger=logging.getLogger(__name__)):
+        # In reacfile, remove cofactors from reactants and products
+        # Lines are like: "TRS_0_0_0	RR-02-77772258027d599a-16-F	1.[TARGET_0000000001]	=	1.[CMPD_0000000003]:2.[CMPD_0000000001]"
+        # If a side becomes empty, remove the whole line
+        reacdict = TaskCofactors.dict_from_reacfile(reacfile, logger)
+        reacdict = TaskCofactors.rm_cofactors_in_reactions(reacdict, compounds, cofactors, logger)
+        reactions = TaskCofactors.filter_reactions(reacfile, reacdict, compounds, logger)
+        # Return a dictionary with reaction ID as key and a list of [rules, reactants, products]
+        return reactions
+
+    def compute(self, timeout):
+        """Process the conversion."""
+        # If cofile does not exist, do nothing
+        if not os.path.exists(self.cofile):
+            self.logger.warning(f"Cofactor file {self.cofile} does not exist.")
+            return
+        cofactors = TaskCofactors.read_cofactors(self.cofile, self.logger)
+        # Edit the cmpdfile to remove cofactors
+        compounds = TaskCofactors.rm_cofactors_in_cmpdfile(self.cmpdfile, cofactors, self.logger)
+        # Edit the reacfile to remove cofactors
+        reactions = TaskCofactors.rm_cofactors_in_reacfile(self.reacfile, cofactors, compounds, self.logger)
+        # Write the filtered reactions back to the reacfile
+        with open(self.reacfile, 'w') as f:
+            for _, line in reactions.items():
+                # Write the line with updated reactants and products
+                f.write(f"{line[0]}\t{','.join(line[1])}\t{':'.join(line[2])}\t=\t{':'.join(line[3])}\n")
 
 
 class TaskScope(GeneralTask):
@@ -220,7 +395,7 @@ class TaskPath(GeneralTask):
 
     def __init__(self, basename, outfile,
                  unfold_stoichio=False, unfold_compounds=False,
-                 maxsteps=0, forward=False, logger=logging.getLogger(__name__)):
+                 maxsteps=0, logger=logging.getLogger(__name__)):
         """Initialization."""
         self.basename = basename
         self.full_react_file = basename + '_full_react'
@@ -231,7 +406,7 @@ class TaskPath(GeneralTask):
         self.unfold_compounds = unfold_compounds
         self.maxsteps = maxsteps if maxsteps != 0 else float('+inf')
         # Initialize parameters through mother class
-        super(TaskPath, self).__init__(forward=forward, logger=logger)
+        super(TaskPath, self).__init__(check_args=False, logger=logger)
 
     def _check_args(self):
         """Perform some checking on arguments."""
@@ -244,6 +419,7 @@ class TaskPath(GeneralTask):
 
     def compute(self, timeout):
         """Generate pathways from EFM enumerations."""
+        self._check_args()
         efmh = EFMHandler(
             full_react_file=self.full_react_file,
             react_file=self.react_file,
@@ -427,6 +603,14 @@ def convert(args, logger=logging.getLogger(__name__)):
     launch(tasks=[task], outdir=args.outdir, timeout=None)
 
 
+def remove_cofactors(args, logger=logging.getLogger(__name__)):
+    """Remove cofactors from the cmpd and reac files."""
+    task = TaskCofactors(cmpdfile=args.cmpdfile, reacfile=args.reacfile,
+                         cofile=args.cofile, logger=logger)
+    task.compute(timeout=None)
+    launch(tasks=[task], outdir=args.outdir, timeout=None)
+
+
 def scope(args, logger=logging.getLogger(__name__)):
     """Compute the scope using new version."""
     task = TaskScope(reacfile=args.reacfile, sinkfile=args.sinkfile,
@@ -487,6 +671,9 @@ def doall(args, logger=logging.getLogger(__name__)):
         reacfile=args.reacfile, sinkfile=args.sinkfile,
         forward=args.forward, logger=logger)
     c_task.set_absolute_infile_path()
+    r_task = TaskCofactors(
+        reacfile=args.reacfile, cmpdfile=args.cmpdfile,
+        cofile=args.cofile, logger=logger)
     # Extract sinks and reactions, either in retro (default) or forward direction
     s_task = TaskScope(
         reacfile=args.reacfile, sinkfile=args.sinkfile,
@@ -496,9 +683,12 @@ def doall(args, logger=logging.getLogger(__name__)):
     e_task = TaskEfm(
         ebin=args.ebin, basename=args.basename,
         forward=args.forward, max_steps=args.maxsteps, max_paths=args.maxpaths, logger=logger)
+    unfold_stoichio = args.unfold_stoichio
+    if args.forward:
+        unfold_stoichio = False
     p_task = TaskPath(
         basename=args.basename, outfile=args.pathsfile,
-        unfold_stoichio=args.unfold_stoichio,
+        unfold_stoichio=unfold_stoichio,
         unfold_compounds=args.unfold_compounds,
         maxsteps=args.maxsteps, logger=logger)
     f_task = TaskFilter(
@@ -515,7 +705,8 @@ def doall(args, logger=logging.getLogger(__name__)):
         imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile,
         customchassisfile=args.customsinkfile, forward=args.forward, logger=logger)
     launch(
-        tasks=[c_task, s_task, e_task, p_task, f_task, i_task, d_task],
+        tasks=[c_task, r_task, s_task, e_task, p_task, f_task, i_task, d_task],
+        # tasks=[c_task, r_task],
         outdir=args.outdir, timeout=args.timeout)
 
 
@@ -539,6 +730,24 @@ def build_args_parser(prog='rp2paths'):
         help='Consider reactions in the forward direction',
         required=False, action='store_true',
         default=False)
+
+    # Remove cofactors from the cmpd and reac files    
+    r_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
+    r_args.add_argument(
+        '--reacfile', dest='reacfile',
+        help='Path to the reaction file',
+        type=str, required=False,
+        default=os.path.join(script_path, 'reactions.erxn'))
+    r_args.add_argument(
+        '--cmpdfile', dest='cmpdfile',
+        help='Path to the compound file',
+        type=str, required=False,
+        default=os.path.join(script_path, 'compounds.tsv'))
+    r_args.add_argument(
+        '--cofile', dest='cofile',
+        help='Path to the cofactor file',
+        type=str, required=False,
+        default=os.path.join(script_path, 'cofactors.csv'))
 
     # Args: computing the scope
     s_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
@@ -744,6 +953,11 @@ def build_args_parser(prog='rp2paths'):
         required=False, action='store_true',
         default=False)
     a_args.add_argument(
+        '--cofile', dest='cofile',
+        help='Path to the cofactor file',
+        type=str, required=False,
+        default=os.path.join(script_path, 'cofactors.csv'))
+    a_args.add_argument(
         '--minDepth', action='store_true', default=False,
         help='Use minimal depth scope, i.e. stop the scope computation as \
         as soon an a first minimal path linking target to sink is found \
@@ -827,6 +1041,15 @@ def build_args_parser(prog='rp2paths'):
         conflict_handler='resolve',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     c_parser.set_defaults(func=convert)
+
+    # Subparser: removing cofactors
+    r_parser = subparser.add_parser(
+        'remove_cofactors',
+        help='Remove cofactors from the pathways',
+        parents=[r_args],
+        conflict_handler='resolve',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    r_parser.set_defaults(func=remove_cofactors)
 
     # Subparser: computing the scope
     s_parser = subparser.add_parser(
