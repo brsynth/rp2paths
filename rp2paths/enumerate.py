@@ -134,7 +134,6 @@ def enumerate_longest_paths(
     dfs(start_cmpd, [], 0, [start_cmpd])
     return all_paths
 
-
 # main function called from code with all arguments and parameters
 def enumerate_paths(
     mat_file,
@@ -193,7 +192,6 @@ def enumerate_paths(
             line = ["1" if rxn in path else "0" for rxn in reactions]
             line[-1] = "1"
             print("".join(line) + "\n")
-
 
 def main():
     parser = argparse.ArgumentParser(description="Enumerate all longest metabolic pathways from a given starting compound.")
