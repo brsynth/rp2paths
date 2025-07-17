@@ -49,6 +49,36 @@ def build_reaction_dicts(stoich_mat, reactions, logger = logging.getLogger(__nam
         reaction2products[rxn] = products
     return substrates2reactions, reaction2products
 
+def check_cycle(rxn, current_path, consumed_cmpds, products, logger = logging.getLogger(__name__)):
+    """
+    Check if the current reaction leads to a cycle.
+    A cycle is detected if the reaction is already in the current path,
+    or if any of the products are already consumed in the current path.
+    """
+    if rxn in current_path:
+        logger.debug(f"Cycle detected: reaction {rxn} is already in the current path {current_path}.")
+        return True
+    for product in products:
+        if product in consumed_cmpds:
+            logger.debug(f"Cycle detected: product {product} is already consumed in the current path {consumed_cmpds}.")
+            return True
+    return False
+
+def check_limits(nb_paths, max_paths, depth, max_depth, logger = logging.getLogger(__name__)):
+    """
+    Check if the current limits for paths and depth are reached.
+    """
+    limit_reached = False
+    return_value = False
+    if nb_paths >= max_paths > 0:
+        logger.info(f"Maximum number of paths ({max_paths}) reached. Stopping enumeration.")
+        limit_reached = True
+        return_value = True
+    if depth >= max_depth > 0:
+        logger.debug(f"Maximum depth ({max_depth}) reached. Exploring a new branch.")
+        limit_reached = True
+    return limit_reached, return_value
+
 def enumerate_longest_paths(
     start_cmpd,
     substrates2reactions,
@@ -77,33 +107,21 @@ def enumerate_longest_paths(
             # If the current path is not already in all_paths, add it
             if current_path not in all_paths:
                 all_paths.append(current_path)
-                logger.debug(f"Path {len(all_paths)}: {start_cmpd}, " + " -> ".join([f"({step})" for step in current_path]))
+                logger.debug(f"Added path {len(all_paths)}: {start_cmpd}, " + " -> ".join([f"({step})" for step in current_path]))
             else:
                 logger.debug(f"Path {current_path} already exists in all_paths. Skipping.")
         else:
             for rxn in substrates2reactions[current_cmpd]:
-                # Max number of paths reached, return True to stop further exploration
-                if len(all_paths) >= max_paths > 0:
-                    logger.info(f"Maximum number of paths ({max_paths}) reached. Stopping enumeration.")
-                    return True
-                # Maximum depth reached, return False to explore a new branch
-                if depth >= max_depth > 0:
-                    logger.debug(f"Maximum depth ({max_depth}) reached. Exploring a new branch.")
-                    return False
-                # Avoid cycles by checking:
-                # - if the current reaction is already in the path, and
-                # - if none of the products are already consumed in the path
-                if rxn in current_path:
-                    logger.debug(f"Cycle detected: reaction {rxn} already in path {current_path}. Skipping.")
-                    continue
-                ok = True
+                # Check if the maximum number of paths or depth is reached
+                limit_reached, return_value = check_limits(
+                    len(all_paths), max_paths, depth, max_depth, logger
+                )
+                if limit_reached:
+                    return return_value
                 products = reaction2products[rxn]
-                for product in products:
-                    if product in consumed_cmpds:
-                        logger.debug(f"Product {product} already consumed in path {consumed_cmpds}. Skipping.")
-                        ok = False
-                        break
-                if ok:
+                # Check if the current reaction leads to a cycle
+                cycle_detected = check_cycle(rxn, current_path, consumed_cmpds, products, logger)
+                if not cycle_detected:
                     for product in products:
                         max_paths_reached = dfs(product, current_path + [rxn], depth + 1, consumed_cmpds + [current_cmpd])
                         logger.debug(f"{'-> ' * depth}Returning from a recursive call with product {product} and path: {current_path + [rxn]}")
