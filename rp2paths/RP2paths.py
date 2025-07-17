@@ -22,7 +22,7 @@ from rp2paths.EFMHandler import EFMHandler
 from rp2paths.ImgHandler import ImgHandler
 from rp2paths.DotHandler import DotHandler
 from rp2paths.PathFilter import PathFilter
-from rp2paths.enumerate import enumerate
+from rp2paths.enumerate import enumerate_paths
 
 
 def canonicalize_smiles(smiles: str) -> str:
@@ -378,7 +378,7 @@ class TaskEfm(GeneralTask):
                                         timeout=timeout, use_shell=True)
         else:
             # Enumerate all longest pathways w/o running EFM
-            enumerate(
+            enumerate_paths(
                 mat_file=filename("mat"),
                 react_file=filename("react"),
                 comp_file=filename("comp"),
