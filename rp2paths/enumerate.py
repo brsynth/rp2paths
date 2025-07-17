@@ -15,17 +15,17 @@ def read_inputs(mat_file, react_file, comp_file, logger = logging.getLogger(__na
     Read the stoichiometry matrix, reaction labels, and compound labels from input files.
     """
     if logger:
-        logger.info(f"Reading reaction labels from {react_file}")
+        logger.debug(f"Reading reaction labels from {react_file}")
     with open(react_file, "r", encoding="utf-8") as f:
         react_content = f.read()
     if logger:
-        logger.info(f"Reading compound labels from {comp_file}")
+        logger.debug(f"Reading compound labels from {comp_file}")
     with open(comp_file, "r", encoding="utf-8") as f:
         comp_content = f.read()
     reactions = parse_labels(react_content, logger)
     compounds = parse_labels(comp_content, logger)
     if logger:
-        logger.info(f"Reading stoichiometry matrix from {mat_file}")
+        logger.debug(f"Reading stoichiometry matrix from {mat_file}")
     stoich_mat = pd.read_csv(mat_file, sep="\t", header=None)
     stoich_mat.index = compounds
     stoich_mat.columns = reactions
@@ -35,8 +35,7 @@ def build_reaction_dicts(stoich_mat, reactions, logger = logging.getLogger(__nam
     """
     Build dictionaries mapping each reaction to its substrates and products.
     """
-    if logger:
-        logger.info("Building reaction dictionaries.")
+    logger.debug("Building reaction dictionaries.")
     substrates2reactions = {}
     reaction2products = {}
     for rxn in reactions:
@@ -54,8 +53,8 @@ def enumerate_longest_paths(
     start_cmpd,
     substrates2reactions,
     reaction2products,
-    max_depth=0,  # 0 means unlimited depth
-    max_paths=0,  # 0 means unlimited paths
+    max_depth = 0,  # 0 means unlimited depth
+    max_paths = 0,  # 0 means unlimited paths
     logger = logging.getLogger(__name__)
 ):
     """
@@ -66,42 +65,60 @@ def enumerate_longest_paths(
     all_paths = []
 
     def dfs(current_cmpd, current_path, depth, consumed_cmpds):
-        if max_paths > 0 and len(all_paths) >= max_paths:
-            logger.info(f"Reached maximum number of paths ({max_paths}). Stopping enumeration.")
-            return
-        if (max_depth > 0 and depth >= max_depth) or (current_cmpd not in substrates2reactions):
+        """
+        Depth-first search to enumerate all longest paths from the current compound.
+        """
+        # Log the current state of the search by adding {depth} times a tab character
+        logger.debug(f"{'-> ' * depth}Exploring paths from compound {current_cmpd} with path: {current_path}")
+        # Basis case of recursion:
+        # If the current compound is not a substrate for a reaction, we reached a dead end
+        if current_cmpd not in substrates2reactions:
+            logger.debug(f"Dead end reached at compound {current_cmpd} with path: {current_path}")
+            # If the current path is not already in all_paths, add it
             if current_path not in all_paths:
                 all_paths.append(current_path)
                 logger.debug(f"Path {len(all_paths)}: {start_cmpd}, " + " -> ".join([f"({step})" for step in current_path]))
-            return
-
-        for rxn in substrates2reactions[current_cmpd]:
-            if max_paths > 0 and len(all_paths) >= max_paths:
-                logger.info(f"Reached maximum number of paths ({max_paths}). Stopping enumeration.")
-                break
-            # Avoid cycles by checking:
-            # - if the current reaction is already in the path, and
-            # - if none of the products are already consumed in the path
-            if rxn in current_path:
-                logger.debug(f"Cycle detected: reaction {rxn} already in path {current_path}. Skipping.")
-                continue
-            ok = True
-            products = reaction2products[rxn]
-            for product in products:
-                if product in consumed_cmpds:
-                    logger.debug(f"Product {product} already consumed in path {consumed_cmpds}. Skipping.")
-                    ok = False
-                    break
-            if ok:
+            else:
+                logger.debug(f"Path {current_path} already exists in all_paths. Skipping.")
+        else:
+            for rxn in substrates2reactions[current_cmpd]:
+                # Max number of paths reached, return True to stop further exploration
+                if len(all_paths) >= max_paths > 0:
+                    logger.info(f"Maximum number of paths ({max_paths}) reached. Stopping enumeration.")
+                    return True
+                # Maximum depth reached, return False to explore a new branch
+                if depth >= max_depth > 0:
+                    logger.debug(f"Maximum depth ({max_depth}) reached. Exploring a new branch.")
+                    return False
+                # Avoid cycles by checking:
+                # - if the current reaction is already in the path, and
+                # - if none of the products are already consumed in the path
+                if rxn in current_path:
+                    logger.debug(f"Cycle detected: reaction {rxn} already in path {current_path}. Skipping.")
+                    continue
+                ok = True
+                products = reaction2products[rxn]
                 for product in products:
-                    dfs(product, current_path + [rxn], depth + 1, consumed_cmpds + [current_cmpd])
+                    if product in consumed_cmpds:
+                        logger.debug(f"Product {product} already consumed in path {consumed_cmpds}. Skipping.")
+                        ok = False
+                        break
+                if ok:
+                    for product in products:
+                        max_paths_reached = dfs(product, current_path + [rxn], depth + 1, consumed_cmpds + [current_cmpd])
+                        logger.debug(f"{'-> ' * depth}Returning from a recursive call with product {product} and path: {current_path + [rxn]}")
+                        # If maximum paths reached, stop further exploration,
+                        # otherwise it means only depth limit was reached,
+                        # and we can continue exploring other parts of the graph
+                        if max_paths_reached:
+                            return max_paths_reached
 
     dfs(start_cmpd, [], 0, [start_cmpd])
     return all_paths
 
 
 # main function called from code with all arguments and parameters
-def enumerate(
+def enumerate_paths(
     mat_file,
     react_file,
     comp_file,
@@ -142,7 +159,6 @@ def enumerate(
         logger=logger
     )
 
-    logger.info(f"Found {len(paths)} maximal-length paths.")
     # Write output into a 0/1 matrix where
     # lines are pathways, and
     # columns are reaction indices in reactions list
