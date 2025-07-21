@@ -174,6 +174,7 @@ class TaskCofactors(GeneralTask):
         # In cmpdfile, remove lines that are in cofactors
         # Keep remaining compounds in a dict with id as key and structure as value
         compounds = {}
+        logger.debug(f"Removing cofactors from cmpdfile {cmpdfile}")
         with open(cmpdfile, 'r') as f:
             # Keep the header line
             header = f.readline()
@@ -185,6 +186,7 @@ class TaskCofactors(GeneralTask):
                 smiles = canonicalize_smiles(id_struct[1])
                 if smiles not in cofactors:
                     compounds[id_struct[0]] = id_struct[1]
+                    logger.debug(f"Keeping compound {id_struct[0]} with structure {id_struct[1]}")
                     f.write(line)
                 else:
                     logger.debug(f"Removing cofactor {line.strip()} from cmpdfile {cmpdfile}")
@@ -206,69 +208,148 @@ class TaskCofactors(GeneralTask):
         return reac_dict
 
     @staticmethod
-    def rm_cofactors_in_reactions(reacdict, compounds, cofactors, logger=logging.getLogger(__name__)):
-        # Replace reactants and products IDs with their structure
-        # using the cofactors dict
-        for _, values in reacdict.items():
-            values['reactants'] = [compounds[r] for r in values['reactants'] if r in compounds]
-            values['products'] = [compounds[p] for p in values['products'] if p in compounds]
-        # Remove cofactors from reactants and products
-        for _, values in reacdict.items():
-            values['reactants'] = [r for r in values['reactants'] if r not in cofactors]
-            values['products'] = [p for p in values['products'] if p not in cofactors]
-        # Remove reactions with empty reactants or products
-        len_reacdict = len(reacdict)
-        reacdict = {k: v for k, v in reacdict.items() if v['reactants'] and v['products']}
-        logger.debug(f"Removed {len_reacdict - len(reacdict)} reactions with empty reactants or products.")
-        logger.debug(f"Reactions after removing cofactors: {reacdict}")
-        return reacdict
+    def clean_reactions(reacdict, compounds, cofactors, logger=logging.getLogger(__name__)):
+        """
+        Replace compound IDs with structures and remove cofactors from both sides of reactions.
+        Also filters out reactions with empty reactant or product lists after removal.
+
+        Args:
+            reacdict (dict): Dictionary of reactions with compound IDs.
+            compounds (dict): Dictionary mapping compound IDs to structures.
+            cofactors (set): Set of cofactor structures to remove.
+            logger (Logger): Optional logger.
+
+        Returns:
+            dict: Cleaned reactions with structures instead of IDs and no cofactors.
+        """
+        cleaned = {}
+        for reac_id, values in reacdict.items():
+            # Map compound IDs to structures and remove cofactors
+            reactants = [
+                compounds[r] for r in values['reactants']
+                if r in compounds and compounds[r] not in cofactors
+            ]
+            products = [
+                compounds[p] for p in values['products']
+                if p in compounds and compounds[p] not in cofactors
+            ]
+
+            # Keep only reactions with non-empty sides
+            if reactants and products:
+                cleaned[reac_id] = {
+                    'reactants': reactants,
+                    'products': products
+                }
+
+        logger.debug(f"Reactions after structure mapping and cofactor removal: {cleaned}")
+        return cleaned
 
     @staticmethod
-    def filter_reactions(reacfile, reacdict, compounds, logger=logging.getLogger(__name__)):
-        # Read reactions from file and:
-        # - filter out those that are not in reac_dict,
-        # - remove cofactors from the reactions
-        # - remove new duplicates while merging rules
+    def parse_reacfile(reacfile):
+        """
+        Read the raw reaction file into lines.
+
+        Args:
+            reacfile (str): Path to the reaction file.
+
+        Returns:
+            list: List of lines from the file.
+        """
         with open(reacfile, 'r') as f:
-            reaclines = f.readlines()
-        # Write back the filtered reactions
+            return f.readlines()
+
+    @staticmethod
+    def build_reactions_dict(reacfile_lines, reacdict, compounds, logger=logging.getLogger(__name__)):
+        """
+        Build a structured dictionary from raw reaction file lines and cleaned reacdict.
+        Handles merging of rules for duplicate reactions (i.e., same stoichiometry).
+
+        Args:
+            reacfile_lines (list): Raw lines from the reaction file.
+            reacdict (dict): Cleaned reactions from `clean_reactions`.
+            compounds (dict): Valid compounds for checking presence.
+            logger (Logger): Optional logger.
+
+        Returns:
+            dict: Structured dictionary of filtered and merged reactions.
+        """
         reactions = {}
-        for line in reaclines:
-            # Split the line to get all elements
-            line = line.split('\t')
-            if line[0] in reacdict:
-                # Get reactants and products with stoichiometry
-                reactants = [r.replace('\n','') for r in line[2].split(':')]
-                products = [r.replace('\n','') for r in line[4].split(':')]
-                # Filter out cofactors from the reactions
-                logger.debug(f"Filtering out cofactors from reaction: {reactants} -> {products}")
-                reactants = [r for r in reactants if r.split('.')[-1].replace('[','').replace(']','') in compounds]
-                products = [p for p in products if p.split('.')[-1].replace('[','').replace(']','') in compounds]
-                logger.debug(f"\tbecomes: {reactants} -> {products}")
-                # If the reaction becomes same as another one (with stoichiometry), merge the rules
-                rules = set(line[1].split(','))
-                key = (','.join(sorted(reactants)), ','.join(sorted(products)))
-                if key in reactions:
-                    logger.debug(f"Duplicate reaction found: {reactants} -> {products}. Merging rules.")
-                    # Merge rules
-                    rules |= reactions[key][1]
-                    # Update the existing reaction with merged rules
-                    reactions[key][1] = rules
-                else:
-                    reactions[key] = [line[0], rules, reactants, products]
-        logger.debug(f"Filtered reactions: {reactions}")
+
+        for line in reacfile_lines:
+            parts = line.strip().split('\t')
+            if len(parts) < 5:
+                continue  # Skip malformed lines
+
+            reac_id = parts[0]
+            if reac_id not in reacdict:
+                continue  # Skip reactions not in the cleaned reaction dictionary
+
+            # Extract raw reactants and products from line
+            raw_reactants = parts[2].split(':')
+            raw_products = parts[4].split(':')
+
+            # Filter raw strings based on compound ID existence
+            reactants = [
+                r for r in raw_reactants
+                if r.split('.')[-1].strip('[]') in compounds
+            ]
+            products = [
+                p for p in raw_products
+                if p.split('.')[-1].strip('[]') in compounds
+            ]
+
+            if not reactants or not products:
+                continue  # Skip reactions with any empty side
+
+            # Extract rule identifiers
+            rules = set(parts[1].split(','))
+
+            # Use a key that collapses identical reactions with same stoichiometry
+            key = (','.join(sorted(reactants)), ','.join(sorted(products)))
+
+            if key in reactions:
+                # Merge rule sets for duplicate reactions
+                logger.debug(f"Duplicate reaction found: {reactants} -> {products}. Merging rules.")
+                reactions[key][1] |= rules
+            else:
+                # Store new reaction entry
+                reactions[key] = [reac_id, rules, reactants, products]
+
+        logger.debug(f"Final reactions dictionary: {reactions}")
         return reactions
 
     @staticmethod
     def rm_cofactors_in_reacfile(reacfile, cofactors, compounds, logger=logging.getLogger(__name__)):
-        # In reacfile, remove cofactors from reactants and products
-        # Lines are like: "TRS_0_0_0	RR-02-77772258027d599a-16-F	1.[TARGET_0000000001]	=	1.[CMPD_0000000003]:2.[CMPD_0000000001]"
-        # If a side becomes empty, remove the whole line
+        """
+        High-level wrapper that orchestrates:
+          - Reading and parsing the reaction file.
+          - Replacing IDs with structures.
+          - Removing cofactors.
+          - Filtering invalid reactions and merging rules.
+
+        Args:
+            reacfile (str): Path to the reaction file.
+            cofactors (set): Set of cofactor structures.
+            compounds (dict): Dictionary of compound ID -> structure.
+            logger (Logger): Optional logger.
+
+        Returns:
+            dict: Final filtered and merged reaction dictionary.
+        """
+        # Parse the reaction file into a dict format with ID references
         reacdict = TaskCofactors.dict_from_reacfile(reacfile, logger)
-        reacdict = TaskCofactors.rm_cofactors_in_reactions(reacdict, compounds, cofactors, logger)
-        reactions = TaskCofactors.filter_reactions(reacfile, reacdict, compounds, logger)
-        # Return a dictionary with reaction ID as key and a list of [rules, reactants, products]
-        return reactions
+
+        # Clean reactions by removing cofactors and replacing IDs with structures
+        cleaned_reacdict = TaskCofactors.clean_reactions(reacdict, compounds, cofactors, logger)
+
+        # Read raw lines from the file for rule extraction and duplicate merging
+        reacfile_lines = TaskCofactors.parse_reacfile(reacfile)
+
+        # Build final dictionary with merged rules and valid reactions
+        final_reactions = TaskCofactors.build_reactions_dict(reacfile_lines, cleaned_reacdict, compounds, logger)
+
+        return final_reactions
+
 
     def compute(self, timeout):
         """Process the conversion."""
@@ -276,11 +357,13 @@ class TaskCofactors(GeneralTask):
         if not os.path.exists(self.cofile):
             self.logger.warning(f"Cofactor file {self.cofile} does not exist.")
             return
+        self.logger.info(f"Removing cofactors and overwriting {self.cmpdfile} and {self.reacfile}.")
         cofactors = TaskCofactors.read_cofactors(self.cofile, self.logger)
         # Edit the cmpdfile to remove cofactors
         compounds = TaskCofactors.rm_cofactors_in_cmpdfile(self.cmpdfile, cofactors, self.logger)
         # Edit the reacfile to remove cofactors
         reactions = TaskCofactors.rm_cofactors_in_reacfile(self.reacfile, cofactors, compounds, self.logger)
+        print(reactions)
         # Write the filtered reactions back to the reacfile
         with open(self.reacfile, 'w') as f:
             for _, line in reactions.items():
@@ -706,7 +789,6 @@ def doall(args, logger=logging.getLogger(__name__)):
         customchassisfile=args.customsinkfile, forward=args.forward, logger=logger)
     launch(
         tasks=[c_task, r_task, s_task, e_task, p_task, f_task, i_task, d_task],
-        # tasks=[c_task, r_task],
         outdir=args.outdir, timeout=args.timeout)
 
 
