@@ -259,7 +259,7 @@ class TaskCofactors(GeneralTask):
             return f.readlines()
 
     @staticmethod
-    def build_reactions_dict(reacfile_lines, reacdict, compounds, logger=logging.getLogger(__name__)):
+    def merge_reactions_rules(reacfile_lines, reacdict, compounds, logger=logging.getLogger(__name__)):
         """
         Build a structured dictionary from raw reaction file lines and cleaned reacdict.
         Handles merging of rules for duplicate reactions (i.e., same stoichiometry).
@@ -315,6 +315,10 @@ class TaskCofactors(GeneralTask):
                 # Store new reaction entry
                 reactions[key] = [reac_id, rules, reactants, products]
 
+        # Convert rule sets into sorted lists for consistent output
+        for key in reactions:
+            reactions[key][1] = sorted(reactions[key][1])
+
         logger.debug(f"Final reactions dictionary: {reactions}")
         return reactions
 
@@ -346,10 +350,9 @@ class TaskCofactors(GeneralTask):
         reacfile_lines = TaskCofactors.parse_reacfile(reacfile)
 
         # Build final dictionary with merged rules and valid reactions
-        final_reactions = TaskCofactors.build_reactions_dict(reacfile_lines, cleaned_reacdict, compounds, logger)
+        final_reactions = TaskCofactors.merge_reactions_rules(reacfile_lines, cleaned_reacdict, compounds, logger)
 
         return final_reactions
-
 
     def compute(self, timeout):
         """Process the conversion."""
@@ -363,7 +366,6 @@ class TaskCofactors(GeneralTask):
         compounds = TaskCofactors.rm_cofactors_in_cmpdfile(self.cmpdfile, cofactors, self.logger)
         # Edit the reacfile to remove cofactors
         reactions = TaskCofactors.rm_cofactors_in_reacfile(self.reacfile, cofactors, compounds, self.logger)
-        print(reactions)
         # Write the filtered reactions back to the reacfile
         with open(self.reacfile, 'w') as f:
             for _, line in reactions.items():
