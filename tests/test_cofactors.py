@@ -1,18 +1,9 @@
 from unittest import TestCase
-from unittest import mock
 from unittest.mock import patch as mock_patch
 from os import path as os_path
-from os import remove as os_remove
-from hashlib import sha512
-from tempfile import NamedTemporaryFile, TemporaryFile
-from json import (
-    dump as json_dump,
-    load as json_load
-)
-from pickle import (
-    dump as pickle_dump,
-    load as pickle_load
-)
+from tempfile import NamedTemporaryFile
+from json import load as json_load
+from pickle import load as pickle_load
 from brs_utils import create_logger
 
 from rp2paths.RP2paths import TaskCofactors
@@ -20,6 +11,7 @@ from rp2paths.RP2paths import TaskCofactors
 HERE = os_path.dirname(os_path.abspath(__file__))
 
 class TestCofactors(TestCase):
+
     def setUp(self):
         self.datadir = os_path.join(HERE, 'data')
         self.inputdir = os_path.join(self.datadir, 'input')
