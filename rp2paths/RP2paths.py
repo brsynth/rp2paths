@@ -716,8 +716,8 @@ def paths(args, logger=logging.getLogger(__name__)):
     task = TaskPath(basename=args.basename, outfile=args.pathsfile,
                     unfold_stoichio=args.unfold_stoichio,
                     unfold_compounds=args.unfold_compounds,
-                    maxsteps=args.maxsteps, maxpaths=args.maxpaths,
-                    forward=args.forward, logger=logger)
+                    maxsteps=args.maxsteps,
+                    logger=logger)
     launch(tasks=[task], outdir=args.outdir, timeout=None)
 
 
