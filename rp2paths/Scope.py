@@ -50,9 +50,7 @@ def reactants(reac):
             n = int(v[0])
         except BaseException:
             continue
-        c = v[1]
-        c = re.sub('\[', '', re.sub('\]', '', c))
-        # c = re.sub('\[\[', '[', re.sub('\]\]', ']', c))  # TD: not needed
+        c = v[1].strip("[]")
         rl[c] = n
     return rl
 
@@ -176,7 +174,8 @@ class Scope(object):
         sinkRows = []
         for c in sinks:
             if c in self.dfmat.index:
-                sinkRows.append(int(np.where(self.dfmat.index == c)[0]))
+                # sinkRows.append(int(np.where(self.dfmat.index == c)[0]))
+                sinkRows.append(int(np.where(self.dfmat.index == c)[0][0]))
         cSorted2 = sorted(list(set(self.dfmat.index) - sinks))
         sinkRows.sort()
         smat = np.delete(self.dfmat.values, sinkRows, 0)
