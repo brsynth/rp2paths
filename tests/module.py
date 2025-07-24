@@ -6,6 +6,7 @@ Created on Jul 15 2020
 
 from _main import Main
 from os import path as os_path
+from tempfile import TemporaryDirectory
 
 
 class module(Main):
@@ -15,7 +16,8 @@ class module(Main):
     cls_name = 'RP2paths'
     cur_folder = os_path.dirname(os_path.realpath(__file__))
     infile = os_path.join(cur_folder, 'data', 'input', 'rp2_pathways.csv')
-    out_folder = os_path.join(cur_folder, 'out')
+    # out_folder = os_path.join(cur_folder, 'out')
+    out_folder = TemporaryDirectory(prefix='rp2paths_test_').name
     cmd  = str(f'all {infile} --outdir {out_folder}').split()
     bap  = getattr(__import__(mod_name), 'build_args_parser')
     args = bap().parse_args(cmd)
