@@ -1,0 +1,27 @@
+digraph pathway_25 {
+s_001 [color=green, fontcolor=green, fontsize=18, href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM2", label=H2O, penwidth=0, shape=rectangle];
+s_002 [color=green, fontcolor=green, fontsize=18, href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM4", label=O2, penwidth=0, shape=rectangle];
+s_003 [color=green, fontcolor=green, fontsize=18, href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM473", label=phenylacetaldehyde, penwidth=0, shape=rectangle];
+s_004 [color=green, fontcolor=green, fontsize=18, href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM6", label=NADPH, penwidth=0, shape=rectangle];
+c_001 [fontsize=18, image="img/CMPD_0000000003.svg", label=CMPD_0000000003, penwidth=0, shape=rectangle];
+c_002 [fontsize=18, image="img/CMPD_0000000009.svg", label=CMPD_0000000009, penwidth=0, shape=rectangle];
+c_003 [fontsize=18, image="img/CMPD_0000000028.svg", label=CMPD_0000000028, penwidth=0, shape=rectangle];
+p_001 [color=red, fontsize=18, image="img/TARGET_0000000001.svg", label=TARGET_0000000001, penwidth=1, shape=rectangle];
+r_001 [fontsize=24, label="RR-02-a0cc0be463ff412f-16-F", shape=oval];
+c_001 -> r_001  [arrowsize=2, color=green, penwidth=2];
+s_002 -> r_001  [arrowsize=2, color=green, penwidth=2];
+r_001 -> p_001  [arrowsize=2, color=red, penwidth=2];
+r_002 [fontsize=24, label="RR-02-217503934671e143-16-F", shape=oval];
+s_004 -> r_002  [arrowsize=2, color=green, penwidth=2];
+c_002 -> r_002  [arrowsize=2, color=green, penwidth=2];
+s_002 -> r_002  [arrowsize=2, color=green, penwidth=2];
+r_002 -> c_001  [arrowsize=2, color=red, penwidth=2];
+r_003 [fontsize=24, label="RR-02-b4f66f42787c8bf6-16-F", shape=oval];
+c_003 -> r_003  [arrowsize=2, color=green, penwidth=2];
+s_001 -> r_003  [arrowsize=2, color=green, penwidth=2];
+r_003 -> c_002  [arrowsize=2, color=red, penwidth=2];
+r_004 [fontsize=24, label="RR-02-47fa02d2300cc64c-16-F", shape=oval];
+s_003 -> r_004  [arrowsize=2, color=green, penwidth=2];
+s_001 -> r_004  [arrowsize=2, color=green, penwidth=2];
+r_004 -> c_003  [arrowsize=2, color=red, penwidth=2];
+}

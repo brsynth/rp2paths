@@ -1,0 +1,20 @@
+digraph pathway_7 {
+s_001 [color=green, fontcolor=green, fontsize=18, href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM10", label=NADH, penwidth=0, shape=rectangle];
+s_002 [color=green, fontcolor=green, fontsize=18, href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM164", label="4-hydroxybenzoate", penwidth=0, shape=rectangle];
+s_003 [color=green, fontcolor=green, fontsize=18, href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM4", label=O2, penwidth=0, shape=rectangle];
+c_001 [fontsize=18, image="img/CMPD_0000000003.svg", label=CMPD_0000000003, penwidth=0, shape=rectangle];
+c_002 [fontsize=18, image="img/CMPD_0000000009.svg", label=CMPD_0000000009, penwidth=0, shape=rectangle];
+p_001 [color=red, fontsize=18, image="img/TARGET_0000000001.svg", label=TARGET_0000000001, penwidth=1, shape=rectangle];
+r_001 [fontsize=24, label="RR-02-a0cc0be463ff412f-16-F", shape=oval];
+c_001 -> r_001  [arrowsize=2, color=green, penwidth=2];
+s_003 -> r_001  [arrowsize=2, color=green, penwidth=2];
+r_001 -> p_001  [arrowsize=2, color=red, penwidth=2];
+r_002 [fontsize=24, label="RR-02-0a885fdec2a1ff5f-16-F", shape=oval];
+c_002 -> r_002  [arrowsize=2, color=green, penwidth=2];
+s_001 -> r_002  [arrowsize=2, color=green, penwidth=2];
+s_003 -> r_002  [arrowsize=2, color=green, penwidth=2];
+r_002 -> c_001  [arrowsize=2, color=red, penwidth=2];
+r_003 [fontsize=24, label="RR-02-d3b162f199b260fc-16-F", shape=oval];
+s_002 -> r_003  [arrowsize=2, color=green, penwidth=2];
+r_003 -> c_002  [arrowsize=2, color=red, penwidth=2];
+}

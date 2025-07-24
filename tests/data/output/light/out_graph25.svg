@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="751pt" height="1121pt" viewBox="0.00 0.00 751.34 1121.02">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 1117.02)">
+<title>pathway_25</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-1117.02 747.34,-1117.02 747.34,4 -4,4"/>
+<!-- s_001 -->
+<g id="node1" class="node">
+<title>s_001</title>
+<g id="a_node1"><a xlink:href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM2" xlink:title="H2O" xlink:show="new">
+<polygon fill="none" stroke="green" stroke-width="0" points="231.25,-1113.02 177.25,-1113.02 177.25,-1077.02 231.25,-1077.02 231.25,-1113.02"/>
+<text text-anchor="middle" x="204.25" y="-1089.62" font-family="Times,serif" font-size="18.00" fill="green">H2O</text>
+</a>
+</g>
+</g>
+<!-- r_003 -->
+<g id="node11" class="node">
+<title>r_003</title>
+<ellipse fill="none" stroke="black" cx="226.25" cy="-749.14" rx="226.49" ry="22.76"/>
+<text text-anchor="middle" x="226.25" y="-741.94" font-family="Times,serif" font-size="24.00">RR-02-b4f66f42787c8bf6-16-F</text>
+</g>
+<!-- s_001&#45;&gt;r_003 -->
+<g id="edge9" class="edge">
+<title>s_001-&gt;r_003</title>
+<path fill="none" stroke="green" stroke-width="2" d="M182.54,-1076.81C172.49,-1067.43 161.61,-1054.92 156.25,-1041.02 149.01,-1022.25 154.19,-1015.77 156.25,-995.76 164.96,-910.88 166.06,-887.95 195.25,-807.76 197.43,-801.77 200.15,-795.62 203.06,-789.69"/>
+<polygon fill="green" stroke="green" stroke-width="2" points="209.33,-792.81 212.62,-771.88 196.99,-786.19 209.33,-792.81"/>
+</g>
+<!-- r_004 -->
+<g id="node12" class="node">
+<title>r_004</title>
+<ellipse fill="none" stroke="black" cx="394.25" cy="-1018.39" rx="229.11" ry="22.76"/>
+<text text-anchor="middle" x="394.25" y="-1011.19" font-family="Times,serif" font-size="24.00">RR-02-47fa02d2300cc64c-16-F</text>
+</g>
+<!-- s_001&#45;&gt;r_004 -->
+<g id="edge12" class="edge">
+<title>s_001-&gt;r_004</title>
+<path fill="none" stroke="green" stroke-width="2" d="M231.47,-1083.33C254.92,-1074.12 289.87,-1060.39 321.39,-1048.01"/>
+<polygon fill="green" stroke="green" stroke-width="2" points="324.37,-1054.36 340.43,-1040.53 319.25,-1041.33 324.37,-1054.36"/>
+</g>
+<!-- s_002 -->
+<g id="node2" class="node">
+<title>s_002</title>
+<g id="a_node2"><a xlink:href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM4" xlink:title="O2" xlink:show="new">
+<polygon fill="none" stroke="green" stroke-width="0" points="634.25,-632.51 580.25,-632.51 580.25,-596.51 634.25,-596.51 634.25,-632.51"/>
+<text text-anchor="middle" x="607.25" y="-609.11" font-family="Times,serif" font-size="18.00" fill="green">O2</text>
+</a>
+</g>
+</g>
+<!-- r_001 -->
+<g id="node9" class="node">
+<title>r_001</title>
+<ellipse fill="none" stroke="black" cx="520.25" cy="-210.63" rx="223.18" ry="22.76"/>
+<text text-anchor="middle" x="520.25" y="-203.43" font-family="Times,serif" font-size="24.00">RR-02-a0cc0be463ff412f-16-F</text>
+</g>
+<!-- s_002&#45;&gt;r_001 -->
+<g id="edge2" class="edge">
+<title>s_002-&gt;r_001</title>
+<path fill="none" stroke="green" stroke-width="2" d="M613.27,-596.25C622.59,-567.55 638.86,-508.1 633.25,-457.25 623.86,-372.16 636.32,-342.05 591.25,-269.25 585.92,-260.65 578.84,-252.75 571.21,-245.75"/>
+<polygon fill="green" stroke="green" stroke-width="2" points="575.6,-240.3 555.68,-233.06 566.74,-251.14 575.6,-240.3"/>
+</g>
+<!-- r_002 -->
+<g id="node10" class="node">
+<title>r_002</title>
+<ellipse fill="none" stroke="black" cx="389.25" cy="-479.88" rx="235" ry="22.76"/>
+<text text-anchor="middle" x="389.25" y="-472.68" font-family="Times,serif" font-size="24.00">RR-02-217503934671e143-16-F</text>
+</g>
+<!-- s_002&#45;&gt;r_002 -->
+<g id="edge6" class="edge">
+<title>s_002-&gt;r_002</title>
+<path fill="none" stroke="green" stroke-width="2" d="M580.08,-596.98C545.65,-576.03 485.54,-539.47 441.97,-512.96"/>
+<polygon fill="green" stroke="green" stroke-width="2" points="445.44,-506.88 424.72,-502.46 438.17,-518.84 445.44,-506.88"/>
+</g>
+<!-- s_003 -->
+<g id="node3" class="node">
+<title>s_003</title>
+<g id="a_node3"><a xlink:href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM473" xlink:title="phenylacetaldehyde" xlink:show="new">
+<polygon fill="none" stroke="green" stroke-width="0" points="473.67,-1113.02 314.82,-1113.02 314.82,-1077.02 473.67,-1077.02 473.67,-1113.02"/>
+<text text-anchor="middle" x="394.25" y="-1089.62" font-family="Times,serif" font-size="18.00" fill="green">phenylacetaldehyde</text>
+</a>
+</g>
+</g>
+<!-- s_003&#45;&gt;r_004 -->
+<g id="edge11" class="edge">
+<title>s_003-&gt;r_004</title>
+<path fill="none" stroke="green" stroke-width="2" d="M394.25,-1076.71C394.25,-1071.99 394.25,-1066.67 394.25,-1061.22"/>
+<polygon fill="green" stroke="green" stroke-width="2" points="401.25,-1061.15 394.25,-1041.15 387.25,-1061.15 401.25,-1061.15"/>
+</g>
+<!-- s_004 -->
+<g id="node4" class="node">
+<title>s_004</title>
+<g id="a_node4"><a xlink:href="http://www.metanetx.org/cgi-bin/mnxweb/chem_info?chem=MNXM6" xlink:title="NADPH" xlink:show="new">
+<polygon fill="none" stroke="green" stroke-width="0" points="473.25,-632.51 395.24,-632.51 395.24,-596.51 473.25,-596.51 473.25,-632.51"/>
+<text text-anchor="middle" x="434.25" y="-609.11" font-family="Times,serif" font-size="18.00" fill="green">NADPH</text>
+</a>
+</g>
+</g>
+<!-- s_004&#45;&gt;r_002 -->
+<g id="edge4" class="edge">
+<title>s_004-&gt;r_002</title>
+<path fill="none" stroke="green" stroke-width="2" d="M428.46,-596.44C422.08,-577.66 411.61,-546.79 403.09,-521.68"/>
+<polygon fill="green" stroke="green" stroke-width="2" points="409.71,-519.42 396.66,-502.73 396.46,-523.92 409.71,-519.42"/>
+</g>
+<!-- c_001 -->
+<g id="node5" class="node">
+<title>c_001</title>
+<g id="a_node5"><a xlink:title="CMPD_0000000003">
+<polygon fill="none" stroke="black" stroke-width="0" points="582.25,-421.25 280.25,-421.25 280.25,-269.25 582.25,-269.25 582.25,-421.25"/>
+<image xlink:href="img/CMPD_0000000003.svg" width="302px" height="152px" preserveAspectRatio="xMinYMin meet" x="280.247" y="-421.255"/>
+</a>
+</g>
+</g>
+<!-- c_001&#45;&gt;r_001 -->
+<g id="edge1" class="edge">
+<title>c_001-&gt;r_001</title>
+<path fill="none" stroke="green" stroke-width="2" d="M481.73,-269.03C486.12,-262.48 490.44,-256.05 494.5,-250"/>
+<polygon fill="green" stroke="green" stroke-width="2" points="500.4,-253.76 505.74,-233.25 488.78,-245.96 500.4,-253.76"/>
+</g>
+<!-- c_002 -->
+<g id="node6" class="node">
+<title>c_002</title>
+<g id="a_node6"><a xlink:title="CMPD_0000000009">
+<polygon fill="none" stroke="black" stroke-width="0" points="377.25,-690.51 75.25,-690.51 75.25,-538.51 377.25,-538.51 377.25,-690.51"/>
+<image xlink:href="img/CMPD_0000000009.svg" width="302px" height="152px" preserveAspectRatio="xMinYMin meet" x="75.2465" y="-690.51"/>
+</a>
+</g>
+</g>
+<!-- c_002&#45;&gt;r_002 -->
+<g id="edge5" class="edge">
+<title>c_002-&gt;r_002</title>
+<path fill="none" stroke="green" stroke-width="2" d="M318.7,-538.28C328.51,-530.3 338.1,-522.5 346.9,-515.34"/>
+<polygon fill="green" stroke="green" stroke-width="2" points="351.58,-520.56 362.67,-502.5 342.74,-509.7 351.58,-520.56"/>
+</g>
+<!-- c_003 -->
+<g id="node7" class="node">
+<title>c_003</title>
+<g id="a_node7"><a xlink:title="CMPD_0000000028">
+<polygon fill="none" stroke="black" stroke-width="0" points="506.25,-959.76 204.25,-959.76 204.25,-807.76 506.25,-807.76 506.25,-959.76"/>
+<image xlink:href="img/CMPD_0000000028.svg" width="302px" height="152px" preserveAspectRatio="xMinYMin meet" x="204.247" y="-959.765"/>
+</a>
+</g>
+</g>
+<!-- c_003&#45;&gt;r_003 -->
+<g id="edge8" class="edge">
+<title>c_003-&gt;r_003</title>
+<path fill="none" stroke="green" stroke-width="2" d="M282.08,-807.54C274.91,-800.17 267.89,-792.95 261.38,-786.26"/>
+<polygon fill="green" stroke="green" stroke-width="2" points="266.24,-781.22 247.28,-771.76 256.2,-790.98 266.24,-781.22"/>
+</g>
+<!-- p_001 -->
+<g id="node8" class="node">
+<title>p_001</title>
+<g id="a_node8"><a xlink:title="TARGET_0000000001">
+<polygon fill="none" stroke="red" points="671.25,-152 369.25,-152 369.25,0 671.25,0 671.25,-152"/>
+<image xlink:href="img/TARGET_0000000001.svg" width="302px" height="152px" preserveAspectRatio="xMinYMin meet" x="369.247" y="-152"/>
+</a>
+</g>
+</g>
+<!-- r_001&#45;&gt;p_001 -->
+<g id="edge3" class="edge">
+<title>r_001-&gt;p_001</title>
+<path fill="none" stroke="red" stroke-width="2" d="M520.25,-187.73C520.25,-183.11 520.25,-177.97 520.25,-172.5"/>
+<polygon fill="red" stroke="red" stroke-width="2" points="527.25,-172.25 520.25,-152.25 513.25,-172.25 527.25,-172.25"/>
+</g>
+<!-- r_002&#45;&gt;c_001 -->
+<g id="edge7" class="edge">
+<title>r_002-&gt;c_001</title>
+<path fill="none" stroke="red" stroke-width="2" d="M396.18,-456.98C397.74,-452.06 399.49,-446.53 401.36,-440.63"/>
+<polygon fill="red" stroke="red" stroke-width="2" points="408.05,-442.69 407.42,-421.51 394.71,-438.46 408.05,-442.69"/>
+</g>
+<!-- r_003&#45;&gt;c_002 -->
+<g id="edge10" class="edge">
+<title>r_003-&gt;c_002</title>
+<path fill="none" stroke="red" stroke-width="2" d="M226.25,-726.24C226.25,-721.62 226.25,-716.48 226.25,-711.01"/>
+<polygon fill="red" stroke="red" stroke-width="2" points="233.25,-710.76 226.25,-690.76 219.25,-710.76 233.25,-710.76"/>
+</g>
+<!-- r_004&#45;&gt;c_003 -->
+<g id="edge13" class="edge">
+<title>r_004-&gt;c_003</title>
+<path fill="none" stroke="red" stroke-width="2" d="M387.81,-995.49C386.38,-990.64 384.78,-985.21 383.08,-979.42"/>
+<polygon fill="red" stroke="red" stroke-width="2" points="389.73,-977.23 377.37,-960.02 376.3,-981.18 389.73,-977.23"/>
+</g>
+</g>
+</svg>
