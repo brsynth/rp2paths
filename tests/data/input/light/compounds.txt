@@ -1,0 +1,23 @@
+Compound ID	Structure
+CMPD_0000000001	[H]OC1(C(=O)OC([H])([H])[H])C([H])(OC(=O)C([H])([H])[H])C2(C([H])([H])C([H])([H])[H])C([H])=C([H])C([H])([H])N3C([H])([H])C([H])([H])C4(c5c([H])c(C6(C(=O)OC([H])([H])[H])c7c(c8c([H])c([H])c([H])c([H])c8n7[H])C([H])([H])C([H])([H])N7C([H])([H])C(C([H])([H])C([H])([H])[H])=C([H])C([H])(C7([H])[H])C6([H])[H])c(OC([H])([H])[H])c([H])c5N(C([H])([H])[H])C14[H])C32[H]
+CMPD_0000000004	[H]C1=C(C([H])([H])C([H])([H])[H])C2([H])N3C([H])([H])C([H])([H])c4c(n([H])c5c([H])c([H])c([H])c([H])c45)C2(C(=O)OC([H])([H])[H])C([H])([H])C1([H])C3([H])[H]
+CMPD_0000000005	[H]OC1(C(=O)OC([H])([H])[H])C([H])(OC(=O)C([H])([H])[H])C2(C([H])([H])C([H])([H])[H])C([H])=C([H])C([H])([H])N3C([H])([H])C([H])([H])C4(c5c([H])c([H])c(OC([H])([H])[H])c([H])c5N(C([H])([H])[H])C14[H])C32[H]
+CMPD_0000000006	[H]OC([H])([H])C1(C(=O)OC([H])([H])[H])c2c(c3c([H])c([H])c([H])c([H])c3n2[H])C([H])([H])C([H])([H])N2C([H])([H])C(=C([H])C([H])([H])[H])C1([H])C([H])([H])C2([H])[H]
+CMPD_0000000008	[H]OC1([H])C(O[H])(C(=O)OC([H])([H])[H])C2([H])N(C([H])([H])[H])c3c([H])c(OC([H])([H])[H])c([H])c([H])c3C23C([H])([H])C([H])([H])N2C([H])([H])C([H])=C([H])C1(C([H])([H])C([H])([H])[H])C23[H]
+CMPD_0000000010	[H]Oc1c([H])c([H])c2c(c1[H])N(C([H])([H])[H])C1([H])C(O[H])(C(=O)OC([H])([H])[H])C([H])(OC(=O)C([H])([H])[H])C3(C([H])([H])C([H])([H])[H])C([H])=C([H])C([H])([H])N4C([H])([H])C([H])([H])C21C43[H]
+CMPD_0000000012	[H]OC([H])=C(C(=O)OC([H])([H])[H])C1([H])C(=C([H])C([H])([H])[H])C([H])=[N+]2C([H])([H])C([H])([H])c3c(n([H])c4c([H])c([H])c([H])c([H])c34)C2([H])C1([H])[H]
+CMPD_0000000013	[H]C1=C([H])C2(C([H])([H])C([H])([H])[H])C([H])([H])C(C(=O)OC([H])([H])[H])=C3N([H])c4c([H])c([H])c([H])c([H])c4C34C([H])([H])C([H])([H])N(C1([H])[H])C42[H]
+CMPD_0000000015	[H]OC1(C(=O)OC([H])([H])[H])C([H])([H])C2(C([H])([H])C([H])([H])[H])C([H])=C([H])C([H])([H])N3C([H])([H])C([H])([H])C4(c5c([H])c([H])c(OC([H])([H])[H])c([H])c5N(C([H])([H])[H])C14[H])C32[H]
+CMPD_0000000016	[H]Oc1c([H])c([H])c2c(c1[H])N(C([H])([H])[H])C1([H])C(O[H])(C(=O)OC([H])([H])[H])C([H])(O[H])C3(C([H])([H])C([H])([H])[H])C([H])=C([H])C([H])([H])N4C([H])([H])C([H])([H])C21C43[H]
+CMPD_0000000017	[H]OC([H])(C([H])([H])[H])C12C([H])([H])C(C(=O)OC([H])([H])[H])=C3N([H])c4c([H])c([H])c([H])c([H])c4C34C([H])([H])C([H])([H])N(C([H])([H])C([H])([H])C1([H])[H])C42[H]
+CMPD_0000000018	[H]c1c([H])c([H])c2c(c1[H])N([H])C1=C(C(=O)OC([H])([H])[H])C([H])([H])C3(C([H])([H])C([H])([H])[H])C4([H])OC4([H])C([H])([H])N4C([H])([H])C([H])([H])C12C43[H]
+CMPD_0000000019	[H]C1=C(C(=O)OC([H])([H])[H])C2([H])C(=C([H])N3C([H])([H])C([H])([H])c4c(n([H])c5c([H])c([H])c([H])c([H])c45)C3([H])C2([H])[H])C([H])(C([H])([H])[H])O1
+CMPD_0000000020	[H]C(=O)C([H])(C(=O)OC([H])([H])[H])C1([H])C(=C([H])C([H])([H])[H])C([H])([H])N2C([H])([H])C([H])([H])c3c(n([H])c4c([H])c([H])c([H])c([H])c34)C2([H])C1([H])[H]
+CMPD_0000000021	[H]OC([H])=C(C(=O)OC([H])([H])[H])C1([H])C([H])(C([H])=C([H])[H])C([H])=[N+]2C([H])([H])C([H])([H])c3c(n([H])c4c([H])c([H])c([H])c([H])c34)C2([H])C1([H])[H]
+CMPD_0000000022	[H]OC1(C(=O)OC([H])([H])[H])C([H])([H])C2(C([H])([H])C([H])([H])[H])C([H])=C([H])C([H])([H])N3C([H])([H])C([H])([H])C4(c5c([H])c([H])c(OC([H])([H])[H])c([H])c5N([H])C14[H])C32[H]
+MNXM1	[H+]
+MNXM16	[H]OC(=O)C([H])(N([H])[H])C([H])([H])C([H])([H])[S+](C([H])([H])[H])C([H])([H])C1([H])OC([H])(n2c([H])nc3c(N([H])[H])nc([H])nc32)C([H])(O[H])C1([H])O[H]
+MNXM2	[H]O[H]
+MNXM21	[H]OC(=NC([H])([H])C([H])([H])SC(=O)C([H])([H])[H])C([H])([H])C([H])([H])N=C(O[H])C([H])(O[H])C(C([H])([H])[H])(C([H])([H])[H])C([H])([H])OP(=O)(O[H])OP(=O)(O[H])OC([H])([H])C1([H])OC([H])(n2c([H])nc3c(N([H])[H])nc([H])nc32)C([H])(O[H])C1([H])OP(=O)(O[H])O[H]
+MNXM4	O=O
+TARGET_0000000001	[H]OC1(C(=O)OC([H])([H])[H])C([H])(OC(=O)C([H])([H])[H])C2(C([H])([H])C([H])([H])[H])C([H])=C([H])C([H])([H])N3C([H])([H])C([H])([H])C4(c5c([H])c(C6(C(=O)OC([H])([H])[H])c7c(c8c([H])c([H])c([H])c([H])c8n7[H])C([H])([H])C([H])([H])N7C([H])([H])C([H])(C6([H])[H])C([H])([H])C(O[H])(C([H])([H])C([H])([H])[H])C7([H])[H])c(OC([H])([H])[H])c([H])c5N(C([H])([H])[H])C14[H])C32[H]
