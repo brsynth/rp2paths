@@ -59,7 +59,7 @@ class NoScopeMatrix(Exception):
 class GeneralTask(object):
     """Generic class for handling the execution of task."""
 
-    def __init__(self, forward=False, check_args = True, logger=logging.getLogger(__name__)):
+    def __init__(self, forward=False, check_args=False, logger=logging.getLogger(__name__)):
         self.forward = forward
         self.logger = logger
         if check_args:
