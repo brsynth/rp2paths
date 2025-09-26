@@ -1,0 +1,24 @@
+[project]
+name = "rp2paths"
+version = "2.0.0"
+description = "Enumerating pathways from RetroPath2.0 results."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+keywords = [
+    "cheminformatics",
+    "reaction rules",
+    "reaction templates",
+    "reaction prediction",
+    "retrosynthesis",
+    "retro-biosynthesis",
+    "metabolic engineering",
+]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "semver2"
+version_provider = "pep621"
+update_changelog_on_bump = true
