@@ -1236,5 +1236,12 @@ def build_args_parser(prog='rp2paths'):
         help='Set the logging level',
         type=str, required=False, default='ERROR',
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'])
+    
+    # No color
+    parser.add_argument(
+        '--no-color', dest='no_color',
+        help='Disable colored logging',
+        required=False, action='store_true',
+        default=False)
 
     return parser

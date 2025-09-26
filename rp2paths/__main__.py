@@ -19,7 +19,7 @@ def main():
     # Disable RDKit logging
     RDLogger.DisableLog('rdApp.*')
     # Setup logger
-    logger = create_logger('rp2paths', args.loglevel)
+    logger = create_logger('rp2paths', args.loglevel, no_color=args.no_color)
 
     try:
         args.func(args, logger)
