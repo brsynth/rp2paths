@@ -1,3 +1,9 @@
+## 2.1.0 (2025-09-30)
+
+### Feat
+
+- add --no-color global option
+
 ## 2.0.0 (2025-09-26)
 
 ### Feat
