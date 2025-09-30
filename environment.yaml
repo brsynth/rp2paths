@@ -12,4 +12,4 @@ dependencies:
   - graphviz
   - python-graphviz
   - lxml
-  - brs_utils
+  - brs_utils >=1.24.0

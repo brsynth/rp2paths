@@ -26,6 +26,7 @@ python -m rp2paths all <retropath2_scope> [--outdir <outdir>]
 ```
 
 where:
+
 - `all` specify that all the tasks needed for retrieving pathways will be executed at once.
 - `<retropath2_scope>` is the metabolic space outputted by the RetroPath2.0 workflow.
 - `--outdir <outdir>` specify the directory in which all files will be outputted.
@@ -35,7 +36,8 @@ In the `<outdir>` folder, the complete set of pathways enumerated will be writte
 ### Available options
 
 Additional options are described in the embedded help:
-```
+
+```sh
 # List of possible modes
 python -m rp2paths -h
 
@@ -55,6 +57,7 @@ python -m rp2paths all examples/naringenin/rp2-results.csv --outdir examples/nar
 ```
 
 ### No scope warnings
+
 A warning message `WARNING: *** Scope Task: no scope matrix was produced, exit` indicates that no reaction have been indified as being part of a pathway. This can happen when the retrosynthesis exploration performed by RetroPath2.0 does not reach a minimal set of sink compounds.
 
 ## For developers
@@ -62,6 +65,7 @@ A warning message `WARNING: *** Scope Task: no scope matrix was produced, exit` 
 ### Development installation
 
 After a git clone:
+
 ```bash
 cd <repository>
 conda env create -f environment.yaml -n <dev_env>
@@ -70,23 +74,26 @@ conda activate <dev_env>
 ```
 
 ## Tests
+
 Test can be run with the following commands:
 
 ### Natively
+
 ```bash
 cd tests
 pytest -v
 ```
 
-# CI/CD
+## CI/CD
+
 For further tests and development tools, a CI toolkit is provided in `ci` folder (see [ci/README.md](ci/README.md)).
 
-
-
 ## How to cite RP2paths?
+
 Please cite:
 
 Delepine B, Duigou T, Carbonell P, Faulon JL. RetroPath2.0: A retrosynthesis workflow for metabolic engineers. Metabolic Engineering, 45: 158-170, 2018. DOI: https://doi.org/10.1016/j.ymben.2017.12.002
 
 ## Licence
+
 RP2paths is released under the MIT licence. See the LICENCE.txt file for details.
