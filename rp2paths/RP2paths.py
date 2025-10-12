@@ -666,8 +666,12 @@ def launch(tasks, outdir, timeout):
     os.chdir(os.path.join(outdir))
     # Compute each task
     for t in tasks:
-        t._check_args()
-        t.compute(timeout=timeout)
+        try:
+            t._check_args()
+            t.compute(timeout=timeout)
+        except Exception as e:
+            print(f"Program will exit because of an error occurred while processing task {t}: {e}")
+            exit(1)
     # Back to initial folder
     os.chdir(os.path.join(base_dir))
 
