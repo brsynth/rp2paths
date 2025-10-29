@@ -1,13 +1,16 @@
+## 2.1.1 (2025-10-30)
+
+### Fix
+
+- **rp2erxn.py**: skips without failure transformation having dot-containing products (#8)
+
 ## 2.1.0 (2025-09-30)
-
-### Feat
-
-- add --no-color global option
 
 ## 2.0.0 (2025-09-26)
 
 ### Feat
 
+- add --no-color global option
 - **RP2Paths.py**: remove cofactors from compound and reaction files
 - add --forward mode, to be used with empty sink
 
@@ -71,7 +74,7 @@
 
 ## 1.1.0 (2020-10-06)
 
-## v1.0.2 (2020-10-08)
+## 1.0.2 (2020-10-06)
 
 ## 1.0.1 (2020-10-06)
 
