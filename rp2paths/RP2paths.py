@@ -407,7 +407,7 @@ class TaskScope(GeneralTask):
         Scope_compute(out_folder=self.outdir, sink_file=self.sinkfile,
                       reaction_file=self.reacfile, target=self.target,
                       minDepth=self.minDepth, forward=self.forward,
-                      maxIter=self.maxsteps,
+                      maxIter=self.maxsteps-1,
                       logger=self.logger)
         self._check_output()
 
