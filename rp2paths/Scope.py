@@ -246,7 +246,7 @@ class Scope(object):
 
 
 def compute(out_folder, sink_file, reaction_file, target,
-            maxIter=None, minDepth=False, keepBoots=False, forward=False, logger=getLogger(__name__)):
+            maxIter=-1, minDepth=False, keepBoots=False, forward=False, logger=getLogger(__name__)):
     """Compute scope."""
     """ Extract the sub-network where reactions can be fired, either because
     substrates are in sink or they are products of other reactions can be fired"""
@@ -261,6 +261,7 @@ def compute(out_folder, sink_file, reaction_file, target,
     else:
         startDepth = endDepth = maxIter
     for depth in range(startDepth, endDepth+1):
+        print('Computing scope at depth %d and maxIter %d' % (depth, maxIter))
         rxn, rxnFull, maxDepth = readReaction(reaction_file, maxIter=depth,
                                               keepBoots=keepBoots)
         if not forward:
