@@ -1,3 +1,10 @@
+## 2.1.2 (2025-10-31)
+
+### Fix
+
+- **Scope.py**: maxIter default value
+- **RP2Paths.py**: maxIter-1
+
 ## 2.1.1 (2025-10-30)
 
 ### Fix

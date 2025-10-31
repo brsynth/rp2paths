@@ -1,6 +1,6 @@
 [project]
 name = "rp2paths"
-version = "2.1.1"
+version = "2.1.2"
 description = "Enumerating pathways from RetroPath2.0 results."
 readme = "README.md"
 license = "MIT"
