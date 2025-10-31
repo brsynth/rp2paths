@@ -376,7 +376,7 @@ class TaskCofactors(GeneralTask):
 class TaskScope(GeneralTask):
     """Handling the execution of the scope task."""
 
-    def __init__(self, reacfile, sinkfile, target, minDepth=False,
+    def __init__(self, reacfile, sinkfile, target, minDepth=False, maxsteps=None,
                  customsinkfile=None, forward=False, logger=logging.getLogger(__name__)):
         """Initialize."""
         self.outdir = '.'
@@ -384,6 +384,7 @@ class TaskScope(GeneralTask):
         self.sinkfile = sinkfile
         self.target = target
         self.minDepth = minDepth
+        self.maxsteps = maxsteps
         # Custom sink? If yes, replace sinkfile
         if customsinkfile is not None:
             self.sinkfile = customsinkfile
@@ -406,6 +407,7 @@ class TaskScope(GeneralTask):
         Scope_compute(out_folder=self.outdir, sink_file=self.sinkfile,
                       reaction_file=self.reacfile, target=self.target,
                       minDepth=self.minDepth, forward=self.forward,
+                      maxIter=self.maxsteps,
                       logger=self.logger)
         self._check_output()
 
@@ -703,7 +705,7 @@ def remove_cofactors(args, logger=logging.getLogger(__name__)):
 def scope(args, logger=logging.getLogger(__name__)):
     """Compute the scope using new version."""
     task = TaskScope(reacfile=args.reacfile, sinkfile=args.sinkfile,
-                     target=args.target, minDepth=args.minDepth,
+                     target=args.target, minDepth=args.minDepth, maxsteps=args.maxsteps,
                      customsinkfile=args.customsinkfile, logger=logger)
     launch(tasks=[task], outdir=args.outdir, timeout=None)
 
@@ -766,7 +768,7 @@ def doall(args, logger=logging.getLogger(__name__)):
     # Extract sinks and reactions, either in retro (default) or forward direction
     s_task = TaskScope(
         reacfile=args.reacfile, sinkfile=args.sinkfile,
-        target=args.target, minDepth=args.minDepth,
+        target=args.target, minDepth=args.minDepth, maxsteps=args.maxsteps,
         customsinkfile=args.customsinkfile,
         forward=args.forward, logger=logger)
     e_task = TaskEfm(

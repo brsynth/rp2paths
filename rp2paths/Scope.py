@@ -257,8 +257,7 @@ def compute(out_folder, sink_file, reaction_file, target,
     else:
         startDepth = maxDepth
     if maxIter is not None:
-        minDepth = min(minDepth, maxIter)
-        endDepth = min(maxDepth, maxIter)
+        startDepth = endDepth = maxIter
     else:
         endDepth = maxDepth
     for depth in range(startDepth, endDepth+1):
