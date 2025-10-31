@@ -64,7 +64,7 @@ def readSinks(sinkFile):
     return sinks
 
 
-def readReaction(rxnFile, maxIter=None, keepBoots=False):
+def readReaction(rxnFile, maxIter=-1, keepBoots=False):
     """Get the reaction to consider for the scope."""
     maxDepth = 0
     rxn = {}
@@ -80,7 +80,7 @@ def readReaction(rxnFile, maxIter=None, keepBoots=False):
                 maxDepth = niter
         except BaseException:
             pass
-        if maxIter is not None:
+        if maxIter != -1:
             if niter > maxIter:
                 continue
         subs = m[2]
@@ -261,7 +261,6 @@ def compute(out_folder, sink_file, reaction_file, target,
     else:
         startDepth = endDepth = maxIter
     for depth in range(startDepth, endDepth+1):
-        print('Computing scope at depth %d and maxIter %d' % (depth, maxIter))
         rxn, rxnFull, maxDepth = readReaction(reaction_file, maxIter=depth,
                                               keepBoots=keepBoots)
         if not forward:
