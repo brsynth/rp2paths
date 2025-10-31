@@ -376,7 +376,7 @@ class TaskCofactors(GeneralTask):
 class TaskScope(GeneralTask):
     """Handling the execution of the scope task."""
 
-    def __init__(self, reacfile, sinkfile, target, minDepth=False, maxsteps=None,
+    def __init__(self, reacfile, sinkfile, target, minDepth=False, maxsteps=0,
                  customsinkfile=None, forward=False, logger=logging.getLogger(__name__)):
         """Initialize."""
         self.outdir = '.'

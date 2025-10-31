@@ -256,10 +256,10 @@ def compute(out_folder, sink_file, reaction_file, target,
         startDepth = 0
     else:
         startDepth = maxDepth
-    if maxIter is not None:
-        startDepth = endDepth = maxIter
-    else:
+    if maxIter == -1:
         endDepth = maxDepth
+    else:
+        startDepth = endDepth = maxIter
     for depth in range(startDepth, endDepth+1):
         rxn, rxnFull, maxDepth = readReaction(reaction_file, maxIter=depth,
                                               keepBoots=keepBoots)
