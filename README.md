@@ -33,6 +33,12 @@ where:
 
 In the `<outdir>` folder, the complete set of pathways enumerated will be written in the `out_paths.csv` file. In addition, for each pathway there will be a .dot file (.dot representation of the graph) and a .svg file (.svg depiction of the pathway).
 
+### Use cases
+<!-- cli-test -->
+```bash
+python -m rp2paths all tests/data/input/rp2_pathways.csv --outdir output
+```
+
 ### Available options
 
 Additional options are described in the embedded help:
