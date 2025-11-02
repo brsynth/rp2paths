@@ -79,6 +79,41 @@ def check_limits(nb_paths, max_paths, depth, max_depth, logger = logging.getLogg
         limit_reached = True
     return limit_reached, return_value
 
+def find_max_shortest_path(
+    start_cmpd,
+    substrates2reactions,
+    reaction2products,
+    logger=logging.getLogger(__name__),
+):
+    """
+    Find the maximum from amongst all the shortest path lengths from
+    start_cmpd to each compound.
+    """
+    shortest_lengths = {}
+    sub = start_cmpd
+    shortest_lengths[sub] = 0
+    for iter in range(1000):  # arbitrary large number to avoid infinite loops
+        if sub not in substrates2reactions:
+            continue
+        for rxn in substrates2reactions[sub]:
+            products = reaction2products[rxn]
+            for product in products:
+                current_length = shortest_lengths.get(product, float('inf'))
+                new_length = shortest_lengths.get(sub, 0) + 1
+                if new_length < current_length:
+                    shortest_lengths[product] = new_length
+        # Update sub to the next compound to explore
+        next_subs = [p for rxn in substrates2reactions.get(sub, []) for p in reaction2products[rxn]]
+        if not next_subs:
+            break
+        sub = next_subs[0]  # just pick one to continue
+
+    # Finally extract the maximum shortest path lengths
+    max_shortest_length = max(shortest_lengths.values(), default=0)
+    logger.debug(f"Maximum shortest path length from {start_cmpd} is {max_shortest_length}")
+
+    return max_shortest_length
+
 def enumerate_longest_paths(
     start_cmpd,
     substrates2reactions,
@@ -93,6 +128,17 @@ def enumerate_longest_paths(
     because they reach a dead end or the maximum depth or the maximum number of unique paths.
     """
     all_paths = []
+
+    # Limit pathways length to max. depth of RetroPath2.0 or less
+    depth_rp2 = find_max_shortest_path(
+        start_cmpd,
+        substrates2reactions,
+        reaction2products,
+        logger=logger
+    )
+    if max_depth == 0 or max_depth > depth_rp2:
+        max_depth = depth_rp2
+        logger.info(f"Setting maximum depth to {max_depth} based on RetroPath2.0 analysis.")
 
     def dfs(current_cmpd, current_path, depth, consumed_cmpds):
         """
