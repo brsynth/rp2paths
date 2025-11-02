@@ -7,8 +7,6 @@ on:
 
   push:
     branches: [ main, master, dev ]
-    paths:
-      - '**.py'
   pull_request:
     branches: [ main, master ]
 
@@ -36,5 +34,5 @@ jobs:
           activate-environment: test
       - name: Building & Testing conda package
         run: |
-          conda install -y python pytest pytest-mock
+          conda env update -f environment-dev.yaml -n test
           python -m pytest

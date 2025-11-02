@@ -64,7 +64,7 @@ def readSinks(sinkFile):
     return sinks
 
 
-def readReaction(rxnFile, maxIter=None, keepBoots=False):
+def readReaction(rxnFile, maxIter=-1, keepBoots=False):
     """Get the reaction to consider for the scope."""
     maxDepth = 0
     rxn = {}
@@ -80,7 +80,7 @@ def readReaction(rxnFile, maxIter=None, keepBoots=False):
                 maxDepth = niter
         except BaseException:
             pass
-        if maxIter is not None:
+        if maxIter != -1:
             if niter > maxIter:
                 continue
         subs = m[2]
@@ -246,7 +246,7 @@ class Scope(object):
 
 
 def compute(out_folder, sink_file, reaction_file, target,
-            maxIter=None, minDepth=False, keepBoots=False, forward=False, logger=getLogger(__name__)):
+            maxIter=-1, minDepth=False, keepBoots=False, forward=False, logger=getLogger(__name__)):
     """Compute scope."""
     """ Extract the sub-network where reactions can be fired, either because
     substrates are in sink or they are products of other reactions can be fired"""
@@ -256,11 +256,10 @@ def compute(out_folder, sink_file, reaction_file, target,
         startDepth = 0
     else:
         startDepth = maxDepth
-    if maxIter is not None:
-        minDepth = min(minDepth, maxIter)
-        endDepth = min(maxDepth, maxIter)
-    else:
+    if maxIter == -1:
         endDepth = maxDepth
+    else:
+        startDepth = endDepth = maxIter
     for depth in range(startDepth, endDepth+1):
         rxn, rxnFull, maxDepth = readReaction(reaction_file, maxIter=depth,
                                               keepBoots=keepBoots)

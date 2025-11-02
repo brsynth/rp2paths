@@ -376,7 +376,7 @@ class TaskCofactors(GeneralTask):
 class TaskScope(GeneralTask):
     """Handling the execution of the scope task."""
 
-    def __init__(self, reacfile, sinkfile, target, minDepth=False,
+    def __init__(self, reacfile, sinkfile, target, minDepth=False, maxsteps=0,
                  customsinkfile=None, forward=False, logger=logging.getLogger(__name__)):
         """Initialize."""
         self.outdir = '.'
@@ -384,6 +384,7 @@ class TaskScope(GeneralTask):
         self.sinkfile = sinkfile
         self.target = target
         self.minDepth = minDepth
+        self.maxsteps = maxsteps
         # Custom sink? If yes, replace sinkfile
         if customsinkfile is not None:
             self.sinkfile = customsinkfile
@@ -406,6 +407,7 @@ class TaskScope(GeneralTask):
         Scope_compute(out_folder=self.outdir, sink_file=self.sinkfile,
                       reaction_file=self.reacfile, target=self.target,
                       minDepth=self.minDepth, forward=self.forward,
+                      maxIter=self.maxsteps-1,
                       logger=self.logger)
         self._check_output()
 
@@ -666,8 +668,12 @@ def launch(tasks, outdir, timeout):
     os.chdir(os.path.join(outdir))
     # Compute each task
     for t in tasks:
-        t._check_args()
-        t.compute(timeout=timeout)
+        try:
+            t._check_args()
+            t.compute(timeout=timeout)
+        except Exception as e:
+            print(f"Program will exit because of an error occurred while processing task {t}: {e}")
+            exit(1)
     # Back to initial folder
     os.chdir(os.path.join(base_dir))
 
@@ -699,7 +705,7 @@ def remove_cofactors(args, logger=logging.getLogger(__name__)):
 def scope(args, logger=logging.getLogger(__name__)):
     """Compute the scope using new version."""
     task = TaskScope(reacfile=args.reacfile, sinkfile=args.sinkfile,
-                     target=args.target, minDepth=args.minDepth,
+                     target=args.target, minDepth=args.minDepth, maxsteps=args.maxsteps,
                      customsinkfile=args.customsinkfile, logger=logger)
     launch(tasks=[task], outdir=args.outdir, timeout=None)
 
@@ -762,7 +768,7 @@ def doall(args, logger=logging.getLogger(__name__)):
     # Extract sinks and reactions, either in retro (default) or forward direction
     s_task = TaskScope(
         reacfile=args.reacfile, sinkfile=args.sinkfile,
-        target=args.target, minDepth=args.minDepth,
+        target=args.target, minDepth=args.minDepth, maxsteps=args.maxsteps,
         customsinkfile=args.customsinkfile,
         forward=args.forward, logger=logger)
     e_task = TaskEfm(

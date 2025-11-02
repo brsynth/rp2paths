@@ -201,6 +201,7 @@ def compute(infile, cmpdfile='compounds.txt', rxnfile='reactions.txt',
 
     # 1) Check consistency and 2) Populate compounds
     all_cmpds = dict()
+    banished_trs = set()
     for tid in sorted(content.keys()):  # Order determine CMPD IDs
         first = True
         for row in content[tid]:
@@ -228,20 +229,42 @@ def compute(infile, cmpdfile='compounds.txt', rxnfile='reactions.txt',
             sys.exit(0)
         try:
             assert prods_from_rxn == prods_from_cmpd
-        except BaseException:
-            print('Assertion error: differences in products')
-            print(tid)
-            print(prods_from_rxn, prods_from_cmpd)
-            sys.exit(0)
+        except AssertionError:
+            if any("." in smi for smi in prods_from_cmpd):
+                print(
+                    "Unexpected multiple products detected in 'Product "
+                    "SMILES' column from RetroPath2.0 result file. This "
+                    "is likely due to a sanitization issue from "
+                    "RetroPath2.0 result file."
+                )
+                print(f" L Transformation skipped: {tid}")
+                print(f" L Products from reaction: {prods_from_rxn}")
+                print(f" L Products from 'Product SMILES' column: {prods_from_cmpd}")
+                banished_trs.add(tid)
+                continue
+            else:
+                print('Assertion error: differences in products')
+                print(tid)
+                print(prods_from_rxn, prods_from_cmpd)
+                sys.exit(0)
         # Populate
         for smi in sorted(list(subs_from_rxn | prods_from_rxn)):
             if smi not in all_cmpds.keys():
                 cmpd = Compound(smi)
                 all_cmpds[smi] = cmpd
 
+    # Debug info
+    if len(banished_trs) > 0:
+        print(f"Total transformations skipped: {len(banished_trs)}")
+        for tid in sorted(banished_trs):
+            print(f" - {tid}")
+
     # Populate transformations
     all_trs = dict()
     for tid in content.keys():
+        # Skip transformations that were marked as banished
+        if tid in banished_trs:
+            continue
         first = True
         for row in content[tid]:
             if first:
