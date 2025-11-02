@@ -15,7 +15,9 @@ import argparse
 import signal
 import subprocess
 import logging
+
 from rdkit import Chem
+
 from rp2paths.rp2erxn import compute as rp2erxn_compute
 from rp2paths.Scope import compute as Scope_compute
 from rp2paths.EFMHandler import EFMHandler
@@ -70,7 +72,7 @@ class GeneralTask(object):
     def _launch_external_program(self, command, baselog, timeout,
                                  use_shell=False):
         """Make a system call to an external program."""
-        if hasattr(os,'setsid'): #setsid not present on Windows
+        if hasattr(os, 'setsid'):  # setsid not present on Windows
             p = subprocess.Popen(command, stdout=subprocess.PIPE,  # nosec
                                  stderr=subprocess.PIPE, shell=use_shell,
                                  preexec_fn=os.setsid)
@@ -88,7 +90,7 @@ class GeneralTask(object):
             fout.write(' '.join(command) + '\n')
             print('TIMEOUT:' + ' '.join(command) + '\n')
             ferr.write('TIMEOUT')
-            if hasattr(os,'killpg'): #killpg not present on Windows
+            if hasattr(os, 'killpg'):  # killpg not present on Windows
                 os.killpg(p.pid, signal.SIGKILL)
             else:
                 from signal import CTRL_C_EVENT
@@ -462,7 +464,7 @@ class TaskEfm(GeneralTask):
                 -out text-boolean {filename("efm")}'
 
             self._launch_external_program(command=command, baselog='efm',
-                                        timeout=timeout, use_shell=True)
+                                          timeout=timeout, use_shell=True)
         else:
             # Enumerate all longest pathways w/o running EFM
             enumerate_paths(
@@ -705,14 +707,16 @@ def remove_cofactors(args, logger=logging.getLogger(__name__)):
 def scope(args, logger=logging.getLogger(__name__)):
     """Compute the scope using new version."""
     task = TaskScope(reacfile=args.reacfile, sinkfile=args.sinkfile,
-                     target=args.target, minDepth=args.minDepth, maxsteps=args.maxsteps,
+                     target=args.target, minDepth=args.minDepth,
+                     maxsteps=args.maxsteps,
                      customsinkfile=args.customsinkfile, logger=logger)
     launch(tasks=[task], outdir=args.outdir, timeout=None)
 
 
 def efm(args, logger=logging.getLogger(__name__)):
     """Enumerate EFMs."""
-    task = TaskEfm(ebin=args.ebin, basename=args.basename, max_steps=args.maxsteps, max_paths=args.maxpaths,
+    task = TaskEfm(ebin=args.ebin, basename=args.basename,
+                   max_steps=args.maxsteps, max_paths=args.maxpaths,
                    forward=args.forward, logger=logger)
     launch(tasks=[task], outdir=args.outdir, timeout=args.timeout)
 
@@ -1242,7 +1246,7 @@ def build_args_parser(prog='rp2paths'):
         help='Set the logging level',
         type=str, required=False, default='ERROR',
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'])
-    
+
     # No color
     parser.add_argument(
         '--no-color', dest='no_color',
