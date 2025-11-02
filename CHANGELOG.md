@@ -1,3 +1,9 @@
+## 2.1.3 (2025-11-02)
+
+### Refactor
+
+- **RP2paths.py**: trigger version update
+
 ## 2.1.2 (2025-10-31)
 
 ### Fix
