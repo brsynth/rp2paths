@@ -90,11 +90,24 @@ def find_max_shortest_path(
     start_cmpd to each compound.
     """
     shortest_lengths = {}
-    sub = start_cmpd
-    shortest_lengths[sub] = 0
-    for iter in range(1000):  # arbitrary large number to avoid infinite loops
+    visited = set()
+    next_subs = [start_cmpd]
+    shortest_lengths[start_cmpd] = 0
+
+    for _ in range(1_000_000):  # arbitrary large number to avoid infinite loops
+        if not next_subs:
+            # No more compounds to explore
+            break
+
+        # Get the next compound to explore
+        sub = next_subs.pop(0)
+        visited.add(sub)
+
+        # Explore reactions from this compound as substrate, if any
         if sub not in substrates2reactions:
             continue
+
+        # Update shortest lengths for products of reactions using this substrate
         for rxn in substrates2reactions[sub]:
             products = reaction2products[rxn]
             for product in products:
@@ -102,11 +115,12 @@ def find_max_shortest_path(
                 new_length = shortest_lengths.get(sub, 0) + 1
                 if new_length < current_length:
                     shortest_lengths[product] = new_length
-        # Update sub to the next compound to explore
-        next_subs = [p for rxn in substrates2reactions.get(sub, []) for p in reaction2products[rxn]]
-        if not next_subs:
-            break
-        sub = next_subs[0]  # just pick one to continue
+
+        # Update next_subs for future exploration
+        for rxn in substrates2reactions.get(sub, []):
+            for p in reaction2products[rxn]:
+                if p not in visited and p not in next_subs:
+                    next_subs.append(p)
 
     # Finally extract the maximum shortest path lengths
     max_shortest_length = max(shortest_lengths.values(), default=0)
