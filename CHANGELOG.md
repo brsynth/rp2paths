@@ -1,3 +1,10 @@
+## 2.1.4 (2025-11-14)
+
+### Fix
+
+- **enumerate.py**: reflows `enumerate_longest_paths` and registers pathway prior closing cycle loop
+- **enumerate.py**: correctly visits the full metabolic network
+
 ## 2.1.3 (2025-11-02)
 
 ### Refactor
