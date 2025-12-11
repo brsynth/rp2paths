@@ -448,10 +448,10 @@ class TaskEfm(GeneralTask):
             command = f'java -jar \
                 {elemodes} \
                 -kind stoichiometry \
-                -stoich {filename("mat")} \
-                -rev {filename("rever")} \
-                -meta {filename("comp")} \
-                -reac {filename("react")} \
+                -stoich \"{filename("mat")}\" \
+                -rev \"{filename("rever")}\" \
+                -meta \"{filename("comp")}\" \
+                -reac \"{filename("react")}\" \
                 -arithmetic double \
                 -zero 1e-10  \
                 -compression default \
@@ -461,7 +461,8 @@ class TaskEfm(GeneralTask):
                 -normalize min \
                 -adjacency-method pattern-tree-minzero \
                 -rowordering MostZerosOrAbsLexMin \
-                -out text-boolean {filename("efm")}'
+                -out text-boolean \"{filename("efm")}\"'
+            self.logger.debug(f"Running {command}...")
 
             self._launch_external_program(command=command, baselog='efm',
                                           timeout=timeout, use_shell=True)
