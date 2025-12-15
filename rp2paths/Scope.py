@@ -220,6 +220,8 @@ class Scope(object):
 
     def outFiles(self, niter, rxnFull, outFolder):
         """Write scope."""
+        logger = getLogger(__name__)
+        logger.debug('Writing output files to %s', outFolder)
         smat = self.dfmat.values
         with open(path.join(outFolder, 'out_react'), 'w', newline='') as out_react:
             cv = csv.writer(out_react, delimiter=' ', quoting=csv.QUOTE_ALL)
@@ -250,7 +252,26 @@ def compute(out_folder, sink_file, reaction_file, target,
     """Compute scope."""
     """ Extract the sub-network where reactions can be fired, either because
     substrates are in sink or they are products of other reactions can be fired"""
+
+    logger.debug('Computing scope for target %s', target)
+    logger.debug('Using reaction file %s', reaction_file)
+    logger.debug('Using sink file %s', sink_file)
+    logger.debug('Output folder %s', out_folder)
+    logger.debug('Max iterations %s', str(maxIter))
+    logger.debug('Min depth flag %s', str(minDepth))
+    logger.debug('Keep bootstraps flag %s', str(keepBoots))
+    logger.debug('Forward flag %s', str(forward))
+
     rxn, rxnFull, maxDepth = readReaction(reaction_file, keepBoots=keepBoots)
+    logger.debug('Total reactions read: %d', len(rxn))
+    logger.debug('Maximum reaction depth: %d', maxDepth)
+    logger.debug('Reaction details:')
+    for rid in rxn:
+        logger.debug('Reaction %s: %s', rid, str(rxn[rid]))
+    logger.debug('Full reaction details:')
+    for rid in rxnFull:
+        logger.debug('Reaction %s: %s', rid, str(rxn[rid]))
+    
     cleanOutFiles(out_folder)
     if minDepth:
         startDepth = 0
@@ -261,8 +282,17 @@ def compute(out_folder, sink_file, reaction_file, target,
     else:
         startDepth = endDepth = maxIter
     for depth in range(startDepth, endDepth+1):
+        logger.debug('Computing scope at depth %d', depth)
         rxn, rxnFull, maxDepth = readReaction(reaction_file, maxIter=depth,
                                               keepBoots=keepBoots)
+        logger.debug('Total reactions read: %d', len(rxn))
+        logger.debug('Maximum reaction depth: %d', maxDepth)
+        logger.debug('Reaction details:')
+        for rid in rxn:
+            logger.debug('Reaction %s: %s', rid, str(rxn[rid]))
+        logger.debug('Full reaction details:')
+        for rid in rxnFull:
+            logger.debug('Reaction %s: %s', rid, str(rxn[rid]))
         if not forward:
             sinks = readSinks(sink_file)
         else: # empty sink
@@ -277,6 +307,7 @@ def compute(out_folder, sink_file, reaction_file, target,
             scope.removeSinks(sinks)
         scope.foldCols()
         scope.addOutput(target)
+        logger.debug('Scope matrix shape: %s', str(scope.dfmat.shape))
         if scope.dfmat.shape[0] > 0:
             scope.outFiles(niter, rxnFull, out_folder)
             break
