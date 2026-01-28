@@ -18,6 +18,8 @@ import logging
 
 from rdkit import Chem
 
+from rr_cache import rrCache
+
 from rp2paths.rp2erxn import compute as rp2erxn_compute
 from rp2paths.Scope import compute as Scope_compute
 from rp2paths.EFMHandler import EFMHandler
@@ -25,6 +27,9 @@ from rp2paths.ImgHandler import ImgHandler
 from rp2paths.DotHandler import DotHandler
 from rp2paths.PathFilter import PathFilter
 from rp2paths.enumerate import enumerate_paths
+
+
+script_path = os.path.dirname(os.path.realpath(__file__))
 
 
 def canonicalize_smiles(smiles: str) -> str:
@@ -101,7 +106,23 @@ class GeneralTask(object):
 
     def _check_args(self):
         """Make some checking on arguments."""
-        raise NotImplementedError("baseclass")
+        # raise NotImplementedError("baseclass")
+        self.logger.debug(f"cmpdnamefile: {self.cmpdnamefile}")
+        if self.cmpdnamefile is None:
+            self.cmpdnamefile = os.path.join(script_path, 'mnx-data', f'compounds-name_{self.cspace}.tsv')
+        self.logger.debug(f"cmpdnamefile: {self.cmpdnamefile}")
+        self.logger.debug(f"os.path.exists(self.cmpdnamefile): {os.path.exists(self.cmpdnamefile)}")
+        if not os.path.exists(self.cmpdnamefile):
+            # Generate the file from rrCache
+            self.logger.warning('--cmpdnamefile not provided or not a valid path, compounds name is being generated from rrCache.')
+            # Create the file with the filename cmpdnamefile
+            cache = rrCache(cspace=self.cspace)
+            with open(self.cmpdnamefile, 'w') as f:
+                f.write('Compound ID\tName\n')
+                # Read the cache
+                for cmpd_id in cache.get('cid_strc'):
+                    cmpd_name = cache.get('cid_strc')[cmpd_id].get('name', cmpd_id)
+                    f.write(f'{cmpd_id}\t{cmpd_name}\n')
 
     def compute(self, timeout):
         """Make some computation."""
@@ -571,27 +592,26 @@ class TaskFilter(GeneralTask):
 class TaskImg(GeneralTask):
     """Handling computation of pictures."""
 
-    def __init__(self, pathsfile, cmpdfile, imgdir, cmpdnamefile=None, forward=False, logger=logging.getLogger(__name__)):
+    def __init__(self, pathsfile, cmpdfile, imgdir, cmpdnamefile, cspace, forward=False, logger=logging.getLogger(__name__)):
         """Initialize."""
         self.pathsfile = pathsfile
         self.cmpdfile = cmpdfile
         self.imgdir = imgdir
         self.cmpdnamefile = cmpdnamefile
+        self.cspace = cspace
         super(TaskImg, self).__init__(forward=forward, logger=logger)
         self.tryCairo = True
         self.width = 400
         self.height = 200
         self.kekulize = True
+        self.logger = logger
 
     def _check_args(self):
         if not os.path.isdir(self.imgdir):
             os.mkdir(self.imgdir)
         if not os.path.exists(self.pathsfile):
             raise IOError(self.pathsfile)
-        if self.cmpdnamefile is not None:
-            if not os.path.exists(self.cmpdnamefile):
-                self.cmpdnamefile = None
-                print('Warning: --cmpdnamefile is not a valid path, name of compounds will be not available.')
+        super(TaskImg, self)._check_args()
 
     def compute(self, timeout):
         """Compute pictures."""
@@ -615,7 +635,7 @@ class TaskImg(GeneralTask):
 class TaskDot(GeneralTask):
     """Generating pathways as dot files."""
 
-    def __init__(self, pathsfile, chassisfile, target, outbasename,
+    def __init__(self, pathsfile, chassisfile, target, outbasename, cspace,
                  imgdir=None, cmpdnamefile=None, customchassisfile=None,
                  forward=False, logger=logging.getLogger(__name__)):
         """Initialization."""
@@ -625,6 +645,7 @@ class TaskDot(GeneralTask):
         self.outbasename = outbasename
         self.imgdir = imgdir
         self.cmpdnamefile = cmpdnamefile
+        self.cspace = cspace
         # Custom sink? If yes, replace chassisfile
         if customchassisfile is not None:
             self.chassisfile = customchassisfile
@@ -636,10 +657,7 @@ class TaskDot(GeneralTask):
         for filepath in (self.pathsfile, self.chassisfile):
             if not os.path.exists(filepath):
                 raise IOError(filepath)
-        if self.cmpdnamefile is not None:
-            if not os.path.exists(self.cmpdnamefile):
-                self.cmpdnamefile = None
-                print('Warning: --cmpdnamefile is not a valid path, name of compounds will be not available.')
+        super(TaskDot, self)._check_args()
 
     def compute(self, timeout):
         """Generate all dot files."""
@@ -746,7 +764,7 @@ def img(args, logger=logging.getLogger(__name__)):
     """Compute compound and pathway pictures."""
     task = TaskImg(pathsfile=args.pathsfile, cmpdfile=args.cmpdfile,
                    imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile,
-                   forward=args.forward, logger=logger)
+                   cspace=args.cspace, logger=logger)
     launch(tasks=[task], outdir=args.outdir, timeout=None)
 
 
@@ -755,7 +773,7 @@ def dot(args, logger=logging.getLogger(__name__)):
     task = TaskDot(pathsfile=args.pathsfile, chassisfile=args.sinkfile,
                    target=args.target, outbasename=args.dotfilebase,
                    imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile,
-                   customchassisfile=args.customsinkfile,
+                   cspace=args.cspace, customchassisfile=args.customsinkfile,
                    forward=args.forward, logger=logger)
     launch(tasks=[task], outdir=args.outdir, timeout=None)
 
@@ -794,11 +812,11 @@ def doall(args, logger=logging.getLogger(__name__)):
         notPathsStartingBy=args.notPathsStartingBy, logger=logger)
     i_task = TaskImg(
         pathsfile=args.pathsfile, cmpdfile=args.cmpdfile,
-        imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile, forward=args.forward, logger=logger)
+        imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile, cspace=args.cspace, forward=args.forward, logger=logger)
     d_task = TaskDot(
         pathsfile=args.pathsfile, chassisfile=args.sinkfile,
         target=args.target, outbasename=args.dotfilebase,
-        imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile,
+        imgdir=args.imgdir, cmpdnamefile=args.cmpdnamefile, cspace=args.cspace,
         customchassisfile=args.customsinkfile, forward=args.forward, logger=logger)
     launch(
         tasks=[c_task, r_task, s_task, e_task, p_task, f_task, i_task, d_task],
@@ -806,8 +824,6 @@ def doall(args, logger=logging.getLogger(__name__)):
 
 
 def build_args_parser(prog='rp2paths'):
-
-    script_path = os.path.dirname(os.path.realpath(__file__))
 
     # Args: converting the EMS from RetroPath2.0 Knime workflow
     c_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
@@ -820,11 +836,6 @@ def build_args_parser(prog='rp2paths'):
         help='Folder to put all results',
         type=str, required=False,
         default=os.getcwd()+'/')
-    c_args.add_argument(
-        '--forward', '-r', dest='forward',
-        help='Consider reactions in the forward direction',
-        required=False, action='store_true',
-        default=False)
 
     # Remove cofactors from the cmpd and reac files    
     r_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
@@ -875,6 +886,11 @@ def build_args_parser(prog='rp2paths'):
         is used (default behavior). If a file is provided then **only** \
         compounds listed in this file will be used.',
         type=str, required=False, default=None)
+    s_args.add_argument(
+        '--forward', '-r', dest='forward',
+        help='Consider reactions in the forward direction',
+        required=False, action='store_true',
+        default=False)
 
     # Args: enumerating EFMs
     e_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
@@ -903,6 +919,11 @@ def build_args_parser(prog='rp2paths'):
         are doing.',
         type=str, required=False,
         default='TARGET_0000000001')
+    e_args.add_argument(
+        '--forward', '-r', dest='forward',
+        help='Consider reactions in the forward direction',
+        required=False, action='store_true',
+        default=False)
 
     # Args: computing each possible pathways
     p_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
@@ -992,7 +1013,19 @@ def build_args_parser(prog='rp2paths'):
         '--cmpdnamefile', dest='cmpdnamefile',
         help='File with name of compounds.',
         type=str, required=False,
-        default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
+        default=None)
+    i_args.add_argument(
+        '--chemical-space', dest='cspace',
+        help='Chemical space to use for naming compounds. \
+        Possible values are: mnx3.1 (default), \
+        mnx4.0..., rr2026.',
+        type=str, required=False,
+        default='mnx3.1')
+    i_args.add_argument(
+        '--forward', '-r', dest='forward',
+        help='Consider reactions in the forward direction',
+        required=False, action='store_true',
+        default=False)
 
     # Args: computing dot files
     d_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
@@ -1010,7 +1043,14 @@ def build_args_parser(prog='rp2paths'):
         '--cmpdnamefile', dest='cmpdnamefile',
         help='File with name of compounds.',
         type=str, required=False,
-        default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
+        default=None)
+    d_args.add_argument(
+        '--chemical-space', dest='cspace',
+        help='Chemical space to use for naming compounds. \
+        Possible values are: mnx3.1 (default), \
+        mnx4.0..., rr2026.',
+        type=str, required=False,
+        default='mnx3.1')
     d_args.add_argument(
         '--customsinkfile', dest='customsinkfile',
         help='User-defined sink file, i.e. file listing compounds to \
@@ -1030,6 +1070,11 @@ def build_args_parser(prog='rp2paths'):
         are doing.',
         type=str, required=False,
         default='TARGET_0000000001')
+    d_args.add_argument(
+        '--forward', '-r', dest='forward',
+        help='Consider reactions in the forward direction',
+        required=False, action='store_true',
+        default=False)
 
     # Args: computing all tasks in once
     a_args = argparse.ArgumentParser(prog='rp2paths', add_help=False)
@@ -1107,7 +1152,14 @@ def build_args_parser(prog='rp2paths'):
         '--cmpdnamefile', dest='cmpdnamefile',
         help='File with name of compounds.',
         type=str, required=False,
-        default=os.path.join(script_path, 'mnx-data', 'mnx-compounds-name.tsv'))
+        default=None)
+    a_args.add_argument(
+        '--chemical-space', dest='cspace',
+        help='Chemical space to use for naming compounds. \
+        Possible values are: mnx3.1 (default), \
+        mnx4.0..., rr2026.',
+        type=str, required=False,
+        default='mnx3.1')
     a_args.add_argument(
         '--target',
         help='Target compound internal ID. This internal ID specifies \
